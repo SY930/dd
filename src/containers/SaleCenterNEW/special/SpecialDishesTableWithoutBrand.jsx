@@ -86,6 +86,7 @@ class SpecialDishesTableWithoutBrand extends Component {
             num = '0';
         }
         record.newPrice = num;
+        record.salePercent = (num / record.price * 10).toFixed(2)
         this.setState({data});
         this.props.onChange(data.map(item => ({...item})));
     }
@@ -105,7 +106,7 @@ class SpecialDishesTableWithoutBrand extends Component {
             const dishObj = dishes.find(item => item.value === curr);
             if (dishObj) {
                 const reservedDish = this.state.data.find(item => item.value === dishObj.value);
-                acc.push(reservedDish ? {...dishObj, newPrice: reservedDish.newPrice, salePercent: reservedDish.salePercent} : dishObj)
+                acc.push(reservedDish ? {...dishObj, newPrice: reservedDish.newPrice, salePercent: reservedDish.salePercent} : { ...dishObj, salePercent: '10' } )
             }
             return acc;
         }, [])
