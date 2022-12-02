@@ -89,7 +89,7 @@ class SpecialDetailInfo extends React.Component {
         const totalAmountLimit = _rule ? Number(_rule.totalFoodMax) : 0;
         const customerUseCountLimit = _rule ? Number(_rule.customerUseCountLimit) : 0;
         const shortRule = _rule ? Number(_rule.shortRule) : 0;
-        const calType = _rule.calType ? _rule.calType : '0';
+        const calType = (_rule && _rule.calType) ? _rule.calType : '0';
         return {
             isLimited: Number(!!amountLimit),
             amountLimit: amountLimit || 1,
@@ -135,6 +135,7 @@ class SpecialDetailInfo extends React.Component {
         if (isZhouheiya(this.props.user.groupID)) {
             priceLst = data
         } else {
+            console.log("🚀 ~ file: specialDetailInfo.jsx ~ line 149 ~ SpecialDetailInfo ~ priceLst=data.map ~ data", data)
             priceLst = data.map((item) => {
                 return {
                     foodUnitID: item.itemID,
