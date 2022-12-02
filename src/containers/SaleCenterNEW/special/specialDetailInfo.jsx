@@ -85,12 +85,11 @@ class SpecialDetailInfo extends React.Component {
     getInitState() {
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-        console.log("🚀 ~ file: specialDetailInfo.jsx ~ line 79 ~ SpecialDetailInfo ~ getInitState ~ _rule", _rule)
         const amountLimit = _rule ? Number(_rule.specialFoodMax) : 0;
         const totalAmountLimit = _rule ? Number(_rule.totalFoodMax) : 0;
         const customerUseCountLimit = _rule ? Number(_rule.customerUseCountLimit) : 0;
         const shortRule = _rule ? Number(_rule.shortRule) : 0;
-        const calType = _rule ? _rule.calType : '0';
+        const calType = _rule.calType ? _rule.calType : '0';
         return {
             isLimited: Number(!!amountLimit),
             amountLimit: amountLimit || 1,
