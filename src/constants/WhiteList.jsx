@@ -25,10 +25,10 @@ export const businessTypesList = [
         bizName: '零售',
         isDefault: true,
     },
-    // {
-    //     biz: 'food',
-    //     bizName: '餐饮',
-    // }
+    {
+        biz: 'food',
+        bizName: '餐饮',
+    }
 ]
 // 是否周黑鸭集团
 export function isZhouheiya(groupID = getAccountInfo().groupID) {
