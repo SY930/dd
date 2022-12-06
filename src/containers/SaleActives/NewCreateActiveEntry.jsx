@@ -15,6 +15,8 @@ import FaceFormWrapper from "./ManyFace"; //千人千面
 import OnlineRestaurantGiftGiving from "./OnlineRestaurantGiftGiving"; //线上餐厅弹窗送礼
 import NewScoreConvertGift from "./NewScoreConvertGift"; //积分换礼
 import SeckillInLimitedTime from "./SeckillInLimitedTime"; //限时秒杀活动
+import BenefitCardBargain from './BenefitCardBargain'; // 权益卡砍价
+
 const createActiveList = [
     {
         title: "千人千面",
@@ -24,18 +26,23 @@ const createActiveList = [
     {
         title: "线上餐厅弹窗送礼",
         key: "23",
-        comp: OnlineRestaurantGiftGiving
+        comp: OnlineRestaurantGiftGiving,
     },
     {
         title: "积分换礼",
         key: "89",
-        comp: NewScoreConvertGift
+        comp: NewScoreConvertGift,
     },
     {
         title: "限时秒杀",
         key: "95",
-        comp: SeckillInLimitedTime
-    }
+        comp: SeckillInLimitedTime,
+    },
+    {
+        title: '权益卡砍价',
+        key: '7777777',
+        comp: BenefitCardBargain,
+    },
 ];
 
 @connect(({ loading, createActiveTwoCom }) => ({ loading, createActiveTwoCom }))
@@ -93,7 +100,7 @@ class NewCreateActiveEntry extends Component {
         this.handleSubmitFn(this.handleCallback);
     };
 
-    handleCallback = () => {};
+    handleCallback = () => { };
 
     render() {
         const { typeKey = "", itemID, isView, isActive, mode } = this.state.urlObj;

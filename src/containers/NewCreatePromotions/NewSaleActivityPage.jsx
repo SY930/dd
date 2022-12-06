@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import registerPage from '../../../index';
 import { NEW_SALE_ACTIVITY_BOX, SALE_CENTER_PAYHAVEGIFT, SALE_ACTIVE_NEW_PAGE } from "../../constants/entryCodes";
-import { axiosData, checkAuthLicense } from '../../helpers/util';
+import { axiosData, checkAuthLicense, checkPermission } from '../../helpers/util';
 import { COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
@@ -63,7 +63,6 @@ import {
 import { saleCenterResetScopeInfoAC } from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import { resetOccupiedWeChatInfo } from "../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 import { toggleIsUpdateAC } from "../../redux/actions/saleCenterNEW/myActivities.action";
-import { checkPermission } from "../../helpers/util";
 import { BASIC_PROMOTION_CREATE, SPECIAL_PROMOTION_CREATE } from "../../constants/authorityCodes";
 import SpecialActivityMain from '../SpecialPromotionNEW/activityMain'; // 特色营销
 import BasicActivityMain from '../SaleCenterNEW/activityMain'; // 基础营销弹窗
@@ -95,8 +94,9 @@ import { isZhouheiya, isGeneral } from "../../constants/WhiteList";
 const activityList = [
     '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82'
 ]
-@registerPage([NEW_SALE_ACTIVITY_BOX], {
-})
+
+const newPageKeys = ['85', '23', '95', '7777777'];
+@registerPage([NEW_SALE_ACTIVITY_BOX], {})
 @connect(mapStateToProps, mapDispatchToProps)
 @injectIntl()
 class NewCustomerPage extends Component {
@@ -652,7 +652,7 @@ class NewCustomerPage extends Component {
             return closePage(SALE_ACTIVE_NEW_PAGE)
         }
         const currentPromotion = newPromotionCardPageConfig.find(item => item.key == key);
-        if (['85', '23', '95'].includes(key)) { // 打开新页面
+        if (newPageKeys.includes(`${key}`)) { // 打开新页面
             setTimeout(() => {
                 jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, mode: 'add' })
             }, 100);

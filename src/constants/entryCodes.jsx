@@ -55,7 +55,7 @@ export const ONLINE_PROMOTION_MANAGEMENT_GROUP = '1000086001'; // 线上营销�
 export const ONLINE_PROMOTION_MANAGEMENT_SHOP = '1000086003'; // 线上营销管理 店铺视角
 
 export const TRD_PROMOTION_INTERFACE = '100009992';
-export const NEW_SALE_BOX = '10000730001';                  // 营销盒子（新）
+export const NEW_SALE_BOX = '10000730001';                  // 营销盒子（旧）
 export const NEW_SALE_ACTIVITY_BOX = '10000730008';         // 营销活动（新）
 export const NEW_ON_SALE_ACTIVITY_BOX = '10000730088';         // 促销活动（新）
 

@@ -1030,6 +1030,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: "",
             key: "95",
         },
+        {
+            idx: 35,
+            title: '权益卡砍价',
+            text: '',
+            example: "",
+            key: "7777777",
+        },
     ];
     return basic;
 })();
