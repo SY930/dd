@@ -35,7 +35,7 @@ import {
 import PriceInput from "../common/PriceInput";
 
 //周黑鸭需求
-import { isCheckApproval, isZhouheiya } from '../../../constants/WhiteList';
+import { isCheckApproval, isZhouheiya, priceRulsGroupID } from '../../../constants/WhiteList';
 import Approval from '../../../containers/SaleCenterNEW/common/Approval';
 import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
 
@@ -327,10 +327,11 @@ class SpecialDetailInfo extends React.Component {
         })
     }
     renderLimitRules() {
-        const { intl } = this.props;
+        const { intl, user } = this.props;
         const k6hdpuyl = intl.formatMessage(SALE_STRING.k6hdpuyl);
         const k5kp4vhr = intl.formatMessage(SALE_STRING.k5kp4vhr);
         const k5f4b1b9 = intl.formatMessage(SALE_STRING.k5f4b1b9);
+        const { groupID } = user
         return (
             <div>
                 <div style={{ color: 'rgba(0,0,0,0.85)'}} className={styles.coloredBorderedLabel}>
@@ -448,7 +449,7 @@ class SpecialDetailInfo extends React.Component {
                 </div>
                 }
                 {
-                    !isZhouheiya(this.props.user.groupID) && <div style={{ height: '40px', paddingLeft: 35, marginTop: '8px' }} className={styles.flexContainer}>
+                    !isZhouheiya(groupID) && priceRulsGroupID.includes(`${groupID}`) && <div style={{ height: '40px', paddingLeft: 35, marginTop: '8px' }} className={styles.flexContainer}>
                     <div style={{ lineHeight: '28px', marginRight: '14px' }}>价格计算规则</div>
                     <div style={{ width: '400px' }}>
                         <Col span={24}>
