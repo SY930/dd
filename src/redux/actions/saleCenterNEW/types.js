@@ -1035,7 +1035,7 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             title: '权益卡砍价',
             text: '',
             example: "",
-            key: "7777777",
+            key: "91",
         },
     ];
     return basic;

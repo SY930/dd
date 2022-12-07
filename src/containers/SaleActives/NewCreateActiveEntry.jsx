@@ -40,7 +40,7 @@ const createActiveList = [
     },
     {
         title: '权益卡砍价',
-        key: '7777777',
+        key: '91',
         comp: BenefitCardBargain,
     },
 ];

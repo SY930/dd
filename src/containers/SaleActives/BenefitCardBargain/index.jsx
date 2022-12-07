@@ -9,7 +9,7 @@ import { Spin } from 'antd';
 import BaseInfo from './BaseInfo';
 import ActiveRules from './ActiveRules'
 import HelpRules from './HelpRules'
-
+import { asyncParseForm } from "../../../helpers/util";
 import styles from './styles.less'
 
 class BenefitCardBargain extends Component {
@@ -57,7 +57,16 @@ class BenefitCardBargain extends Component {
     //         this.setState({ formData1: { ...step1Data, triggerSceneList }, formData2: { faceRule: formData2, ...setp2Data }, loading: false });
     //     });
     // }
-}
+  }
+
+  handleSubmit = () => {
+    // const { this.baseForm , form2 } = this.state
+        const forms = [this.baseForm , this.activeForm, this.helpForm];
+        asyncParseForm(forms).then(({ values, error }) => {
+          if (error) return;
+          console.log(values, 'values')
+        })
+  }
 
   render() {
     const { loading, formData } = this.state;

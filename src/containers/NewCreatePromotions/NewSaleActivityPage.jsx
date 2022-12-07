@@ -95,7 +95,7 @@ const activityList = [
     '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82'
 ]
 
-const newPageKeys = ['85', '23', '95', '7777777'];
+const newPageKeys = ['85', '23', '95', '91'];
 @registerPage([NEW_SALE_ACTIVITY_BOX], {})
 @connect(mapStateToProps, mapDispatchToProps)
 @injectIntl()

@@ -6,12 +6,14 @@
  */
 import DateRange from '../../PromotionV3/Camp/DateRange';
 import { Tooltip, Icon } from 'antd';
+import styles from './styles.less'
 
 const formItemLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 14 },
 };
 
+const wrapperCol = { offset: 5, span: 14 };
 
 const formItems1 = {
   eventType: {
@@ -58,7 +60,7 @@ const formItems2 = {
   gears: {
     type: 'custom',
     label: '',
-    wrapperCol: { offset: 5, span: 14 },
+    wrapperCol,
     required: true,
     render: () => { },
   },
@@ -69,6 +71,12 @@ const formItems2 = {
     options: [
       { label: '砍至指定价格', value: '1' },
     ],
+  },
+  bargainTip: {
+    type: 'custom',
+    label: '',
+    wrapperCol,
+    render: () => (<p className={styles.tips}>“砍至指定价格”砍价到指定的价格才可以购</p>)
   },
   giftCount: {
     type: 'text',
@@ -86,6 +94,12 @@ const formItems2 = {
         return callback();
       },
     }],
+  },
+  giftCountTip: {
+    type: 'custom',
+    label: '',
+    wrapperCol,
+    render: () => (<p className={styles.tips}>用户将权益卡砍至此价格才完成购买，底价需</p>)
   },
   bargainCount: {
     type: 'text',
@@ -106,11 +120,23 @@ const formItems2 = {
       },
     }],
   },
+  bargainCountTip: {
+    type: 'custom',
+    label: '',
+    wrapperCol,
+    render: () => (<p className={styles.tips}>用户砍价至底价所需要邀请的帮砍助力人数</p>)
+  },
   ratio: {
     type: 'custom',
     label: '首刀砍价比例',
     required: true,
     render: () => {},
+  },
+  ratioTip: {
+    type: 'custom',
+    label: '',
+    wrapperCol,
+    render: () => (<p className={styles.tips}>用户自己的首刀比例会在设置的区间范围内随</p>)
   },
   bargainValidity: {
     type: 'text',
@@ -125,6 +151,12 @@ const formItems2 = {
         return callback();
       },
     }],
+  },
+  bargainValidityTip: {
+    type: 'custom',
+    label: '',
+    wrapperCol,
+    render: () => (<p className={styles.tips}>用户发起砍价，邀请好友有效时间</p>)
   },
   countLimit: {
     type: 'text',
@@ -141,6 +173,12 @@ const formItems2 = {
         return callback();
       },
     }],
+  },
+  countLimitTip: {
+    type: 'custom',
+    label: '',
+    wrapperCol,
+    render: () => (<p className={styles.tips}> 每个用户在此活动时间内可以发起的次数</p>)
   },
 };
 

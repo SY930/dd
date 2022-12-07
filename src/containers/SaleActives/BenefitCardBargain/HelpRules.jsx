@@ -53,7 +53,7 @@ class HelpRules extends Component {
           notFoundContent={'未搜索到结果'}
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
-          {cardOptions.map(({ benefitCardName, cardTypeID }) => (<Option key={`${cardTypeID}`} value={`${cardTypeID}`}>{benefitCardName}</Option>))}
+          {cardOptions.map(({ cardTypeName, cardTypeID }) => (<Option key={`${cardTypeID}`} value={`${cardTypeID}`}>{cardTypeName}</Option>))}
         </Select>)}
       </div>)
   }

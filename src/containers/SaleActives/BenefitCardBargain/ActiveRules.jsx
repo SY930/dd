@@ -10,7 +10,7 @@ import BaseForm from 'components/common/BaseForm';
 import { formItems2, formItemLayout, columns } from './config'
 import { getBenefitCards, queryCardDetail } from './AxiosFactory'
 
-const formKeys = ['benefitCard', 'gears', 'bargainType', 'giftCount', 'bargainCount', 'ratio', 'bargainValidity', 'countLimit'];
+const formKeys = ['benefitCard', 'gears', 'bargainType','bargainTip', 'giftCount', 'giftCountTip', 'bargainCount', 'bargainCountTip', 'ratio', 'ratioTip', 'bargainValidity', 'bargainValidityTip', 'countLimit', 'countLimitTip'];
 
 const Option = Select.Option
 const InputGroup = Input.Group;
@@ -113,7 +113,7 @@ class BaseInfo extends Component {
           {d({
             key: 'a',
             rules: [{
-              require: true, message: '请设置首刀砍价比例',
+              required: true, message: '请设置首刀砍价比例',
               validator: (rule, value, callback) => {
                 if (!/^\d+$/.test(value)) {
                   return callback('请输入数字');
@@ -132,7 +132,7 @@ class BaseInfo extends Component {
             {d({
               key: 'bbb',
               rules: [{
-                require: true,
+                required: true,
                 validator: (rule, value, callback) => {
                   if (!value) {
                     return callback('请设置首刀砍价比例')
