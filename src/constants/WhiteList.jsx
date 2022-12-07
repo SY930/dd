@@ -19,7 +19,7 @@ export const zhouheiyaMarketingtype = ['69', '88', '89', '90'];
 
 export const WJLPGroupID = ['259613', '317528'] // 针对魏家凉皮 促销活动管理列表 表头顺序 259613测试集团，线上待定
 
-export const priceRulsGroupID = ['259250', '11157', '189702']
+export const priceRulsGroupID = ['259250', '49367', '11157', '189702']
 
 export const businessTypesList = [
     {
