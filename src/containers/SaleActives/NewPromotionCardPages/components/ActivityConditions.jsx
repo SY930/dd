@@ -66,7 +66,6 @@ class ActivityConditions extends Component {
             let formDatas = {};
             let scoreformDatas = {};
             let cardNumformDatas = {};
-            // console.log(nextProps.eventGiftConditionList, 'nextProps.eventGiftConditionList')
             nextProps.eventGiftConditionList.forEach((item) => {
                 let { gifts = [] } = item;
                 let id = uuid++;
@@ -330,7 +329,6 @@ class ActivityConditions extends Component {
     }
 
     onPlusGift = (data) => {
-        console.log('onPlusGift', data);
     }
 
     onMinusGift = (pid) => {

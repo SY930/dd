@@ -11,6 +11,7 @@ import WXContent from '../Comp/WXContent';
 import DouyinContent from '../Comp/DouyinContent'
 import AliContent from '../Comp/AliContent';
 import EDiscountContent from '../Comp/EDiscountContent';
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 // import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -205,8 +206,6 @@ class CreateCouponContent extends Component {
             shopIsAuth: '0',
             smidList: [],
             aliShops: [],
-            // editData,
-
         })
     }
 
@@ -373,6 +372,7 @@ class CreateCouponContent extends Component {
     }
 
     handleDouyinSubmit = (values, groupId) => {
+        const { groupID } = this.props;
         const { giftValidRange = [], batchName, stock = {}, shopId, promotionType } = values;
         const { effectGiftTimeHours, giftType, giftItemID, effectType, promotionName = '' } = this.state
         const EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format(DATE_FORMAT) : ''
@@ -404,11 +404,18 @@ class CreateCouponContent extends Component {
             giftType,
             giftName: promotionName,
         };
+
+        if (isZhouheiya(groupID)) {
+            couponCodeBatchInfo.promotionType = 1;
+        }
+
         return couponCodeBatchInfo;
     }
 
     handleAliAndWxSubmit = (values) => {
-        const { channelID, platformType, type } = this.props
+        const { channelID, platformType, type, groupID, editData
+        } = this.props
+
         const { effectType, effectGiftTimeHours, merchantID, giftType, giftItemID, entranceWords } = this.state;
         const rangePicker = values.rangePicker || [];
         const giftValidRange = values.giftValidRange || [];
@@ -440,7 +447,7 @@ class CreateCouponContent extends Component {
             endTime,
             startTime,
             giftItemID,
-            giftType,
+            giftType: giftType || editData.giftType,
             merchantID,
             platformType,
         }
@@ -461,7 +468,7 @@ class CreateCouponContent extends Component {
             datas.masterMerchantID = this.state.masterMerchantID;
             datas.jumpAppID = this.state.WXJumpAppID;
             datas.maxCouponsPerUser = values.maxCouponsPerUser;
-            datas.couponCodeDockingType = values.couponCodeDockingType;
+            datas.couponCodeDockingType = isZhouheiya(groupID) ? '1' : values.couponCodeDockingType;
             datas.miniProgramsAppId = values.miniProgramsAppId;
             datas.miniProgramsPath = values.miniProgramsPath;
             datas.validateWay = values.validateWay;
@@ -728,9 +735,9 @@ class CreateCouponContent extends Component {
                                 if (!v) {
                                     return cb();
                                 }
-                                v.number > 0 && v.number <= 999999 ? cb() : cb(rule.message);
+                                v.number > 0 && v.number <= 99999 ? cb() : cb(rule.message);
                             },
-                            message: '礼品个数为1到999999',
+                            message: '礼品个数为1到99999',
                         },
                     ],
                 })(<PriceInput
@@ -913,7 +920,7 @@ class CreateCouponContent extends Component {
     }
 
     render() {
-        const { form, title, type } = this.props;
+        const { form, title, type, groupID } = this.props;
         const { getFieldDecorator } = form;
         const { giftItemID, merchantType, editData, aliShops } = this.state;
         // let title = '新建第三方支付宝券';
@@ -942,7 +949,7 @@ class CreateCouponContent extends Component {
                 <Row>
                     <Col span={24} offset={1} className={styles.IndirectBox}>
                         <Form form={form} className={styles.crmSuccessModalContentBox}>
-                            {((type === 3) || (type === 4)) && <FormItem
+                            {((type === 3) || (type === 4)) && !isZhouheiya(groupID) && <FormItem
                                 label="业态选择"
                                 {...formItemLayout}
                                 required={true}
@@ -1049,7 +1056,7 @@ class CreateCouponContent extends Component {
                             }
                             {type === 1 && this.renderZhifubaoContent(merchantType)}
                             {type === 1 && <AliContent form={form} merchantType={merchantType} aliShops={aliShops} onChangeEntranceWords={this.onChangeEntranceWords} />}
-                            {type === 2 && <WXContent form={form} merchantType={merchantType} editData={editData} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
+                            {type === 2 && <WXContent form={form} merchantType={merchantType} groupID={groupID} editData={editData} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
                             {type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
                             {type === 5 && <EDiscountContent form={form} merchantType={merchantType} giftValue={this.state.giftValue} />}
                         </Form>

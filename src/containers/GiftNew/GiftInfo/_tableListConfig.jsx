@@ -6,6 +6,7 @@ import { GIFT_DETAIL_QUERY, GIFT_LIST_DELETE, GIFT_LIST_UPDATE } from '../../../
 import GiftCfg from '../../../constants/Gift';
 import { isBrandOfHuaTianGroupList, isMine } from '../../../constants/projectHuatianConf';
 
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 // { label: '代金券', value: '10' },
 // { label: '菜品优惠券', value: '20' },
 // { label: '菜品兑换券', value: '21' },
@@ -24,7 +25,7 @@ const ONLINE_STORE_VISIBLE_GIFT_TYPE = [
   '10', '20', '21', '30', '40', '42', '80', '110', '111', '81'
 ]
 
-export const COLUMNS = [
+export const COLUMNS = groupID => [
   {
     title: COMMON_LABEL.serialNumber,
     dataIndex: 'num',
@@ -40,9 +41,38 @@ export const COLUMNS = [
     // fixed: 'left',
     width: 200,
     render(value, record) {
-      const { giftType } = record
-      // 90 礼品定额卡 91 微信礼品卡 113 现金红包
-      const hideCopyBtn = ['90', '91', '113']
+      const { giftType, hasOperateAuth } = record
+            // 90 礼品定额卡 91 微信礼品卡 113 现金红包
+            const hideCopyBtn = ['90', '91', '113']
+
+
+            // 权限处理 只能查看 & 详情
+            if (!hasOperateAuth && hasOperateAuth === 0 && isZhouheiya(groupID)) {
+                return (
+                    <span>
+                        <a
+                            href="javaScript:;"
+                            onClick={() => {
+                                this.handleEdit(record, 'detail')
+                            }}
+                        >
+                            {COMMON_LABEL.view}
+                        </a>
+
+                        <Authority rightCode={GIFT_DETAIL_QUERY}>
+                            {
+                                (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                                    <a disabled={true}>详情</a>
+                                ) : (
+                                    <a href="javaScript:;" onClick={() => this.handleMore(record)}>{COMMON_LABEL.detail}</a>
+                                )
+                            }
+                        </Authority>
+
+                    </span>
+
+                )
+            }
       return (
         <span>
           <Authority rightCode={GIFT_LIST_UPDATE}>
@@ -117,6 +147,9 @@ export const COLUMNS = [
     // fixed: 'left',
     width: 100,
     render: (value, record, index) => {
+            if (isZhouheiya(groupID)) {
+                return record && record.giftType ? <span>{mapValueToLabel(GiftCfg.giftTypeName, String(record.giftType)) && mapValueToLabel(GiftCfg.giftTypeName, String(record.giftType)).replace(/菜品/g, '')}</span> : ''
+            }
       return <span>{mapValueToLabel(GiftCfg.giftTypeName, String(record.giftType))}</span>
     },
   }, {

@@ -1,6 +1,6 @@
 {
   "name": "@hualala/platform-sale",
-  "version": "2.128.16",
+  "version": "2.131.5",
   "description": "商户平台营销中心(sale)业务包，基于@hualala/platform-base定义的规范实现",
   "main": "index.js",
   "scripts": {
@@ -20,9 +20,10 @@
     "@hualala/frontend-shell": "1.5.15",
     "@hualala/platform-base": "5.0.9",
     "@hualala/react-lazyload": "^2.3.0",
-    "@hualala/sc-goodsRef": "^0.2.32",
+    "@hualala/sc-goodsRef": "^0.3.12",
     "common-bin": "^2.9.0",
     "copy-to-clipboard": "^3.3.1",
+    "js-export-excel": "^1.1.4",
     "memoize-one": "^5.0.0",
     "qrcode.react": "0.9.3",
     "rc-calendar": "9.15.5",
@@ -31,6 +32,7 @@
     "react-intl": "2.7.2",
     "react-virtualized": "^9.22.3",
     "redux-saga": "^0.16.0",
+    "sa-sdk-javascript": "^1.8.5",
     "solarlunar": "2.0.7",
     "sortablejs": "^1.13.0",
     "valid-url": "^1.0.9",

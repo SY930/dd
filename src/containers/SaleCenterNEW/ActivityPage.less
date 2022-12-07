@@ -990,6 +990,12 @@
         vertical-align: bottom;
     }
 
+    .disCountFormItemStyle {
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+    }
+
     .explainBack {
         :global {
             .ant-form-explain {
@@ -1700,8 +1706,28 @@
     .cardWrap(@shallowOrange);
 }
 
-.cardWrap_22 {
+.cardWrap_23 {
     .cardWrap(@deepOrange);
+}
+
+.cardWrap_30 {
+    .cardWrap(@shallowOrange);
+}
+
+.cardWrap_31 {
+    .cardWrap();
+}
+
+.cardWrap_32 {
+    .cardWrap(@deepOrange);
+}
+
+.cardWrap_33 {
+    .cardWrap(@deepOrange);
+}
+
+.cardWrap_22 {
+    .cardWrap(@shallowOrange);
 }
 
 .priceInputSingle {
@@ -2525,6 +2551,43 @@
     .moveMoreShow {
         // display: block;
     }
+    .improtBtn {
+        // margin-left: 80px;
+    }
+    .searchBox {
+        display: flex;
+        align-items: center;
+        > ul {
+            flex: 1;
+        }
+    }
+    .goodsSelectedBox {
+        position: relative;
+            width: 134px;
+            height: 28px;
+            /* line-height: 26px; */
+            border: 1px solid #d9d9d9;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding: 0 10px;
+
+        > span {
+            position: absolute;
+            right: 5px;
+        }
+    }
+    .moreTreeSelect  {
+        :global {
+            .ant-select-selection--multiple {
+                overflow: auto !important;
+            }
+        }
+    }
+
     :global {
         .ant-table-tbody > tr > td, .ant-table-thead > tr > th {
             line-height: 35px;
@@ -2778,6 +2841,11 @@
 }
 
 .generateBatchGiftsHeader {
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    margin: 5px 0;
+    border-radius: 3px;
+    height: 75px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2960,7 +3028,7 @@
 .stepOneDisabled {
     position: absolute;
     height: 500px;
-    width: 590px;
+    width: 650px;
     z-index: 100;
     cursor: not-allowed;
 }
@@ -3013,6 +3081,13 @@
     .actionIconPostion {
         position: relative;
         top: -6px;
+    }
+    .multilineTexts {
+        line-height: 20px;
+        white-space: normal;
+        text-align: left;
+        max-height: 60px;
+        overflow-y: auto;
     }
     :global {
         .ant-switch-checked {
@@ -3441,6 +3516,71 @@
         background: #4ca2ee;
     }
 }
+.importActiveModal {
+    .importActiveContent {
+        text-align: center;
+    }
+    .importWrapStyle {
+        margin-bottom: 6px;
+        :global {
+            .uplpoadBox {
+                line-height: 30px;
+                .uploadArea {
+                    width: 232px;
+                    display: inline-block;
+                    border: 1px solid #d9d9d9;
+                    height: 32px;
+                    box-sizing: border-box;
+                    position: relative;
+                    vertical-align: middle;
+                    overflow: hidden;
+                    .ant-upload-list-item {
+                        margin: 0;
+                        &:hover{
+                            background: #fff;
+                        }
+                        &-info {
+                            line-height: 30px;
+                        }
+                        .ant-upload-list-item-info:hover {
+                            background: #fff;
+                            .anticon-cross {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+            .uploadHandler {
+                margin-left: 10px;
+                vertical-align: middle;
+                display: inline-block;
+                width: 80px;
+                .upload-demo-start {
+                    box-sizing: border-box;
+                }
+            }
+      
+            // 文本列表
+            .ant-upload-list {
+                padding-right: 90px;
+            }
+            // 上传按钮
+            .ant-upload {
+                position: absolute;
+                width: 80px;
+                height: 32px;
+                right: 0px;
+                bottom: 0px;
+                button {
+                    height: 32px;
+                    border: none;
+                    border-left: 1px solid #d9d9d9;
+                }
+            }
+        }
+      }
+    }
 
 .viewRuleVisibleModal {
     font-size: 12px;
@@ -3455,5 +3595,42 @@
     }
     .computeRule {
       margin-right: 10px;
+    }
+  }
+
+  .shippingFeesInfo_orderAmount {
+    padding: 13px 16px;
+    background: #f2f2f2;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    margin-left: 138px;
+  }
+
+  .shippingFeesInfoBox {
+    position: relative;
+    .freeAmountBox {
+        position: absolute;
+        right: 48px;
+        top: -44px;
+    }
+    .useCountMaxLimitBox {
+        position: absolute;
+        right: 48px;
+        top: -44px;
+    }
+    :global {
+        .ant-form {
+            .ant-form-item {
+                &:nth-child(3) {
+                    padding: 0;
+                }
+                &:nth-child(5) {
+                    padding: 0;
+                }
+                &:nth-child(7) {
+                    padding: 0;
+                }
+            }
+        }
     }
   }

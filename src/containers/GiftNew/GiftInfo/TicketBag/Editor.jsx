@@ -16,19 +16,6 @@ import EveryDay from './EveryDay';
 import { putTicketBag, postTicketBag } from './AxiosFactory';
 const Option = Select.Option;
 const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
-
-// const ImageView = (props) => {
-//     const url = `http://res.hualala.com/${props.value || 'basicdoc/ca249689-3339-4895-b481-43322147862f.png'}`
-//     const _styles = {
-//         width: '198px',
-//         height: '96px',
-//         objectFit: 'contain',
-//     }
-//     return (
-//         <img src={url} alt="logo" style={_styles}></img>
-//     )
-// }
 
 export default class Editor extends Component {
     state = {

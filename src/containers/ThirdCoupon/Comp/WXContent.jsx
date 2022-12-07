@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form, Row, Col, Select, Input, Radio, Icon, Tooltip } from 'antd'
 import { getMpAppList, getPayChannel, getLinks, getWeChatMpAndAppInfo } from '../AxiosFactory';
 import styles from '../AlipayCoupon.less';
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -101,7 +102,7 @@ class WXContent extends Component {
     }
 
     render() {
-        const { form, editData } = this.props;
+        const { form, editData, groupID } = this.props;
         const { getFieldDecorator } = form;
         const icon = (<span>小程序名称<Tooltip title="用户领取微信商家券后，同步在小程序个人中心展示。"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>)
         const iconAppAndMp = (<span>小程序/公众号<Tooltip title="用户领取微信商家券后，同步在小程序/公众号个人中心展示。"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>)
@@ -192,7 +193,7 @@ class WXContent extends Component {
                         />
                     )}
                 </Form.Item>
-                <Form.Item
+                {!isZhouheiya(groupID) && <Form.Item
                     label="券code模式"
                     labelCol={{ span: 5 }}
                     wrapperCol={{ span: 15 }}
@@ -209,7 +210,8 @@ class WXContent extends Component {
                             <Radio value="1">MERCHANT_API<Tooltip title="投放线上餐厅送礼等场景"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></Radio>
                         </RadioGroup>
                     )}
-                </Form.Item>
+                </Form.Item>}
+
                 <Form.Item
                     label="核销方式"
                     labelCol={{ span: 5 }}

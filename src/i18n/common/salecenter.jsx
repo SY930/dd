@@ -5,6 +5,7 @@ const SALE_STRING = {
     k5dlp2gl: { id: 'Sale.k5dlp2gl', defaultMessage: '未开始' },
     k5dlp7zc: { id: 'Sale.k5dlp7zc', defaultMessage: '执行中' },
     k5dlpczr: { id: 'Sale.k5dlpczr', defaultMessage: '已结束' },
+    l88f03b4: { id: 'Sale.l88f03b4', defaultMessage: '已禁用' },
     k5eng042: { id: 'Sale.k5eng042', defaultMessage: '全部' },
     k5eng7pt: { id: 'Sale.k5eng7pt', defaultMessage: '置顶' },
     k5engebq: { id: 'Sale.k5engebq', defaultMessage: '置底' },

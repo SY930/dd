@@ -48,6 +48,13 @@ export const notValidDiscountNum = (strNum) => {
     return false;
 }
 
+//周黑鸭需求
+import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
+import GoodsRef from '@hualala/sc-goodsRef';
+import PriceInput from '../common/PriceInput';
+import { isZhouheiya, isCheckApproval, checkGoodsScopeListIsNotEmpty, businessTypesList } from '../../../constants/WhiteList';
+import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+
 @injectIntl()
 class DiscountDetailInfo extends React.Component {
     constructor(props) {
@@ -81,6 +88,10 @@ class DiscountDetailInfo extends React.Component {
                 ruleType: '0',
                 isDishVisibleIndex: '0',
                 targetScope: '0',
+                //周黑鸭需求
+                maxFreeLimitType: '0',
+                countType: '1',
+
             };
         }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
@@ -88,7 +99,17 @@ class DiscountDetailInfo extends React.Component {
         _rule = Object.assign({}, _rule);
         const _categoryOrDish = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']);
         const _scopeLstLength = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().length;
-        const _ruleType = _rule.stageType == '2' ? (_scopeLstLength == 0 ? '1' : '2') : '0';
+        //周黑鸭需求
+        let _ruleType
+        let _scopeLst = []
+        if (isZhouheiya(this.props.user.accountInfo.groupID)) {
+            let goodsScopeList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'goodsScopeList']).toJS();
+            _scopeLst = goodsScopeList
+            _ruleType = _rule.stageType == '2' ? (!checkGoodsScopeListIsNotEmpty(_scopeLst) ? '1' : '2') : '0';
+        } else {
+            _ruleType = _rule.stageType == '2' ? (_scopeLstLength == 0 ? '1' : '2') : '0';
+        }
+
         return {
             ruleType: _ruleType,
             isDishVisibleIndex: _ruleType,
@@ -108,6 +129,11 @@ class DiscountDetailInfo extends React.Component {
             }],
             discount: _rule.discountRate ? Number((_rule.discountRate * 10).toFixed(3)).toString() : '',
             targetScope: _categoryOrDish,
+
+            //周黑鸭需求
+            countType: _rule.countType ? _rule.countType : '1',
+            maxFreeLimitType: _rule.maxFreeLimitType ? _rule.maxFreeLimitType : '0',
+            maxFreeAmount: _rule.maxFreeAmount
         };
     }
 
@@ -115,6 +141,21 @@ class DiscountDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
+        //周黑鸭需求
+        if (isZhouheiya(this.props.user.accountInfo.groupID)) {
+            let goodsScopeList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'goodsScopeList']).toJS();
+            if (goodsScopeList.length > 0) {
+                this.goodsScopeList = goodsScopeList[0]
+            }
+
+            let requiredLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'requiredLst']).toJS();
+            this.requiredLst = {
+                containData: { goods: requiredLst },
+                containType: 1,
+                exclusiveData: {},
+                participateType: 1
+            }
+        }
     }
 
     handleSubmit = (cbFn) => {
@@ -144,6 +185,11 @@ class DiscountDetailInfo extends React.Component {
                 stageType: this.state.ruleType,
                 targetScope: this.state.targetScope,
                 discountRate: handlerDiscountToParam(this.state.discount),
+                requiredLst: this.state.requiredLst,
+                maxFreeLimitType: this.state.maxFreeLimitType,
+                maxFreeAmount: this.state.maxFreeAmount,
+                countType: this.state.countType
+
             };
             this.props.setPromotionDetail({
                 rule,
@@ -159,6 +205,10 @@ class DiscountDetailInfo extends React.Component {
                             discountRate: handlerDiscountToParam(ruleInfo.end),
                         }
                     }),
+                    requiredLst: this.state.requiredLst,
+                    maxFreeLimitType: this.state.maxFreeLimitType,
+                    maxFreeAmount: this.state.maxFreeAmount,
+                    countType: this.state.countType
                 }
                 this.props.setPromotionDetail({
                     rule,
@@ -167,6 +217,22 @@ class DiscountDetailInfo extends React.Component {
                 nextFlag = false;
             }
         }
+
+         //周黑鸭需求
+        if(isZhouheiya(this.props.user.accountInfo.groupID)){
+            if(this.state.maxFreeLimitType == 1 && !this.state.maxFreeAmount){
+                nextFlag = false;
+            }
+
+            this.props.setPromotionDetail({
+                approval: this.state.approvalInfo,
+            });
+
+            if (isCheckApproval && (!this.state.approvalInfo.activityCost || !this.state.approvalInfo.estimatedSales || !this.state.approvalInfo.auditRemark)) {
+                return
+            }
+        }
+
         return nextFlag;
     };
 
@@ -243,6 +309,95 @@ class DiscountDetailInfo extends React.Component {
         )
     }
 
+    renderMustFood() {
+        return (
+            <div>
+                <FormItem
+                    label={'必选菜品'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <GoodsRef
+                        defaultValue={this.requiredLst}
+                        businessTypesList={businessTypesList}
+                        containLabel=""
+                        exclusiveShow={false}
+                        onChange={(goods) => {
+                            this.props.setPromotionDetail({
+                                requiredLst: goods.containData.goods,
+                            });
+                        }}
+                        showContainSeletorOption={{ categoryShow: false }}
+                        showParticipateLabel={{ participate: false, unParticipate: false }}
+                    >
+                    </GoodsRef>
+                </FormItem>
+            </div>
+        )
+    }
+
+    //周黑鸭需求
+    renderGoodRef() {
+
+        return (
+            <div>
+                <FormItem
+                    label={'活动范围'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <GoodsRef
+                        defaultValue={this.goodsScopeList}
+                        businessTypesList={businessTypesList}
+                        onChange={(goods) => {
+                            this.props.setPromotionDetail({
+                                goodsScopeList: [goods],
+                            });
+                        }} ></GoodsRef>
+                </FormItem>
+
+            </div>
+        )
+    }
+    //周黑鸭需求
+    renderMaxCount = () => {
+        return (
+            <FormItem
+                label={'最大减免金额'}
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+                validateStatus={this.state.maxFreeLimitType == 1 && !this.state.maxFreeAmount?'error':'success'}
+                help={this.state.maxFreeLimitType == 1 && !this.state.maxFreeAmount?'最大减免金额需大于0':null}
+            >
+                <PriceInput
+                    disabled={this.state.maxFreeLimitType == '0'}
+                    addonBefore={
+                        <Select size="default"
+                            onChange={(val) => {
+                                this.setState({ maxFreeLimitType: val, maxFreeAmount: '' })
+                            }}
+                            value={this.state.maxFreeLimitType}
+                        >
+                            <Option key={'0'} value={'0'}>不限制</Option>
+                            <Option key={'1'} value={'1'}>限制</Option>
+                        </Select>
+                    }
+                    addonAfter={'元'}
+                    maxNum={6}
+                    value={{ number: this.state.maxFreeAmount }}
+                    defaultValue={{ number: this.state.maxFreeAmount }}
+                    onChange={(val) => {
+                        this.setState({ maxFreeAmount: val.number })
+                    }}
+                    modal="int"
+                />
+            </FormItem>
+        )
+    }
+
     renderRulesComponent = () => {
         const { intl } = this.props;
         const k5gez90v = intl.formatMessage(SALE_STRING.k5gez90v);
@@ -313,6 +468,10 @@ class DiscountDetailInfo extends React.Component {
                                                     foodCategory: [],
                                                     excludeDishes: [],
                                                 });
+                                                //周黑鸭需求
+                                                this.props.setPromotionDetail({
+                                                    goodsScopeList: [],
+                                                });
                                             }
                                             this.setState({
                                                 ruleType,
@@ -333,6 +492,19 @@ class DiscountDetailInfo extends React.Component {
                                 discountMode={true}
                                 relation={this.state.ruleType == '0' ? SALE_LABEL.k5gez998 : SALE_LABEL.k5ezcu1b}
                                 addonAfterUnit={k5ezdc19}
+                                addonAfter={isZhouheiya(this.props.user.groupID)?<Select
+                                    disabled={index != 0}
+                                    style={{ width: 40 }}
+                                    size="default"
+                                    placeholder=""
+                                    value={this.state.countType}
+                                    onChange={(val) => {
+                                        this.setState({ countType: val })
+                                    }}
+                                >
+                                    <Option key="1" value="1">元</Option>
+                                    <Option key="2" value="2">份</Option>
+                                </Select>:null}
                                 disabled={this.state.ruleType == '0'}
                                 value={_value}
                                 onChange={(value) => {
@@ -459,15 +631,28 @@ class DiscountDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {this.state.isDishVisibleIndex !== '1' ?
+		    {isZhouheiya(this.props.user.accountInfo.groupID)&&this.renderMaxCount()}
+                    {!isZhouheiya(this.props.user.accountInfo.groupID) && this.state.isDishVisibleIndex !== '1' ?
                         <ConnectedScopeListSelector
                             component={component}
                             isShopMode={this.props.isShopFoodSelectorMode}
                         />
-                    : null}
+                        : null}
+                    {isZhouheiya(this.props.user.accountInfo.groupID) && this.state.isDishVisibleIndex !== '1' ?
+                        this.renderGoodRef()
+                        : null}
                     {this.renderAdvancedSettingButton()}
-                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={payLimit} /> : null}
-                </Form>
+                    {this.state.display && isZhouheiya(this.props.user.accountInfo.groupID) && this.renderMustFood()}
+                    {this.state.display && !isZhouheiya(this.props.user.accountInfo.groupID) ? <AdvancedPromotionDetailSetting payLimit={payLimit} /> : null}
+                    {this.state.display && isZhouheiya(this.props.user.accountInfo.groupID) ? <AdvancedPromotionDetailSettingNew bizType={1} payLimit={payLimit}/> : null}
+                    {isZhouheiya(this.props.user.accountInfo.groupID) ? <Approval onApprovalInfoChange={(val) => {
+                        this.setState({
+                            approvalInfo: {
+                                ...val
+                            }
+                        })
+                    }} /> : null}                
+	    </Form>
             </div>
         )
     }
@@ -478,7 +663,7 @@ function mapStateToProps(state) {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
-
+        user: state.user.toJS(),
     }
 }
 

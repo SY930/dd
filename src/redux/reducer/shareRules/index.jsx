@@ -21,6 +21,7 @@ import {
     SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_START,
     SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_SUCCESS,
     SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_FAIL,
+    SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_REFRESH
 } from '../../actions/shareRules';
 
 const $initialState = Immutable.fromJS({
@@ -90,6 +91,9 @@ export const share_rules = ($$state = $initialState, action) => {
         case SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_FAIL:
             return $$state
                 .set('isRemoving', false)
+        case SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_REFRESH:
+            return $$state
+                .set('refreshFlag', action.payload.flag)
         default: return $$state;
     }
 };

@@ -599,10 +599,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     >
                         <Radio key={0} value={0}>{k5m3oq98}</Radio >
                         <Radio key={1} value={1}>{k5m4pxa1}</Radio >
-                        {
+                        {/* {
                             this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020' ?
                                 <Radio key={2} value={2}>{SALE_LABEL.k5m4pxid}</Radio > : null
-                        }
+                        } */}
                     </RadioGroup >
                 </FormItem>
                 {

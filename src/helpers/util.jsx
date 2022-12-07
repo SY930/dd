@@ -32,6 +32,24 @@ export const toJSON = response => {
     // return code === 200 ? response.json() : { code, message };
 }
 
+
+// 将日期字符串分割为年月日时分秒
+export const timeFormat = (param, type) => {
+    const time = `${param}`
+    if (!(/^\d{14}$/.test(time))) return ''
+
+
+    const typeMap = {
+        day:'$1-$2-$3',
+        time:'$4:$5:$6',
+        date:'$1-$2-$3 $4:$5:$6',
+        default:'$1-$2-$3 $4:$5:$6',
+    }
+    return time.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/g, typeMap[type || 'default'])
+}
+
+// 时间类型
+
 /**
  * 提供fetch函数的第二个参数
  * 如果参数缺header的化自动补全
@@ -479,7 +497,7 @@ export function doRedirect() {
 }
 
 export function Focus(dom, callback) {
-    if (process.env.__CLIENT__ === true) {
+        if (process.env && process.env.__CLIENT__ == true) {
         if (dom) {
             let index = 0
             let initFlag = true;
@@ -518,7 +536,7 @@ export function Focus(dom, callback) {
     }
 }
 export function enterKeyHandler(dom, callback) {
-    if (process.env.__CLIENT__ === true) {
+        if (process.env && process.env.__CLIENT__ === true) {
         window.focusIndex = 0;
         $(dom).on("keydown", '.enter-focus', function (e) {
             let index = -1,
@@ -545,7 +563,7 @@ export function enterKeyHandler(dom, callback) {
 }
 
 export function enterKeyHandlerLeftTable(dom, rightTableFocusNum) {
-    if (process.env.__CLIENT__ === true) {
+        if (process.env && process.env.__CLIENT__ === true) {
         window.rightFocusIndex = 0;
         $(dom).on("keydown", '.left-enter-focus', function (e) {
             if (e.keyCode == 13) {
@@ -802,5 +820,25 @@ export function checkAuthLicense(licenseData = {}, productCode = 'HLL_CRM_NEW', 
         } else {
             return { authPluginStatus: false };
         }
+    }
+}
+
+export const formatGoodsData = (goods, category) => {
+    const _goods = goods.map(item => ({
+        ...item,
+        goodsID: item.foodID,
+        goodsName: item.foodName,
+        goodsCode: item.py,
+    }));
+
+    const _category = category.map(item => ({
+        ...item,
+        categoryID: item.value,
+        categoryName: item.label,
+    }));
+
+    return {
+        _goods,
+        _category,
     }
 }

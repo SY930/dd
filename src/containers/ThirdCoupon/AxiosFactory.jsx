@@ -8,6 +8,7 @@
 import _ from 'lodash';
 import { message } from 'antd';
 import { axios, getStore } from '@hualala/platform-base';
+import { isZhouheiya } from '../../constants/WhiteList.jsx'
 /**
  * axios 默认请求参数
  * url 加 ？ 的目的就是为了在浏览器 network 里面方便看到请求的接口路径
@@ -15,20 +16,25 @@ import { axios, getStore } from '@hualala/platform-base';
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'alipay/', '/api/v1/universal?'];
 
-const giftTypeName = [
-    { label: '全部', value: '' },
-    { label: '代金券', value: '10' },
-    { label: '菜品兑换券', value: '21' },
-    { label: '折扣券', value: '111' },
-    { label: '打折劵', value: '602' },
-    { label: '满减券', value: '601' },
-    { label: '商品劵', value: '603' },
-];
-
 function getAccountInfo() {
     const { user } = getStore().getState();
     return user.get('accountInfo').toJS();
 }
+
+
+const giftTypeName = () => {
+    const { groupID } = getAccountInfo()
+    return [
+        { label: '全部', value: '' },
+        { label: '代金券', value: '10' },
+        { label: isZhouheiya(groupID) ? '兑换券' : '菜品兑换券', value: '21' },
+        { label: '折扣券', value: '111' },
+        { label: '打折劵', value: '602' },
+        { label: '满减券', value: '601' },
+        { label: '商品劵', value: '603' },
+    ];
+}
+
 
 function proGiftTreeData(giftTypes) {
     // const _giftTypes = _.filter(giftTypes, (giftItem) => {
@@ -38,7 +44,8 @@ function proGiftTreeData(giftTypes) {
     let treeData = [];
     const gifts = [];
     giftTypes.map((gt, idx) => {
-        const giftTypeItem = _.find(giftTypeName, { value: String(gt.giftType) }) || {};
+        const giftTypeItem = _.find(giftTypeName(), { value: String(gt.giftType) }) || {};
+
         treeData.push({
             label: giftTypeItem.label || '--',
             key: gt.giftType,
@@ -63,9 +70,9 @@ function proGiftTreeData(giftTypes) {
 
 function proDouyinGiftTreeData(giftTypes) {
     const treeData = [];
-    const filterGiftTypes = giftTypes.filter(v => giftTypeName.some(g => g.value == v.giftType));
+    const filterGiftTypes = giftTypes.filter(v => giftTypeName().some(g => g.value == v.giftType));
     filterGiftTypes.map((gt, idx) => {
-        const giftTypeItem = _.find(giftTypeName, { value: String(gt.giftType) }) || {};
+        const giftTypeItem = _.find(giftTypeName(), { value: String(gt.giftType) }) || {};
         treeData.push({
             label: giftTypeItem.label || '--',
             key: gt.promotionType,
@@ -285,7 +292,7 @@ async function getAlipayCouponList() {
 }
 
 // 支付宝大促
-async function getAlipayPromotionList(enrollSceneType) {
+async function getAlipayPromotionList(datas) {
     const method = 'AlipayRecruitPlanInfoService/recruitPlanListQuery.ajax';
     const { groupID } = getAccountInfo();
     const params = {
@@ -295,7 +302,7 @@ async function getAlipayPromotionList(enrollSceneType) {
             groupID,
             pageNum: 1,
             pageSize: 100,
-            enrollSceneType,
+            ...datas,
         },
         method,
     };
@@ -311,7 +318,7 @@ async function getAlipayPromotionList(enrollSceneType) {
 }
 
 // 选择大促加载报名素材
-async function getAlipayRecruitPlan(value) {
+async function getAlipayRecruitPlan(datas) {
     const method = 'AlipayRecruitPlanInfoService/recruitPlanQuery.ajax';
     const { groupID } = getAccountInfo();
     const params = {
@@ -319,9 +326,9 @@ async function getAlipayRecruitPlan(value) {
         type,
         data: {
             groupID,
-            planId: value,
+            ...datas,
         },
-        method
+        method,
     };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
@@ -449,7 +456,7 @@ async function getWeChatMpAndAppInfo() {
 async function getMpAppList() {
     const method = '/miniProgramCodeManage/getApps';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, page: { current: 1, pageSize: 10000000 } }, method, type };
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, page: { current: 1, pageSize: 1000 } }, method, type };
     const response = await axios.post(url + method, params);
     const { result: { code, message: msg }, apps = [] } = response;
     if (code === '000') {

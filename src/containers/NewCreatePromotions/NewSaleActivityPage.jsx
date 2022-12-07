@@ -88,6 +88,9 @@ import newPromotionCardPageConfig from '../SaleActives/NewPromotionCardPages/com
 import { updateCurrentPromotionPageAC } from '../SaleActives/NewPromotionCardPages/store/action';
 import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList";
 
+//周黑鸭新增
+import { isZhouheiya, isGeneral } from "../../constants/WhiteList";
+
 // 特色营销 跳转页面
 const activityList = [
     '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82'
@@ -445,7 +448,7 @@ class NewCustomerPage extends Component {
             }
             return true;
         }
-        message.error(msg);
+        console.log(msg);
     }
 
     onClickOpen = async (eventWay) => {
@@ -471,6 +474,11 @@ class NewCustomerPage extends Component {
             return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
         }
         if (isSpecial) {
+            // 调用重置特色营销数据和重置占用微信ID数据
+            if(isZhouheiya()){
+                this.props.saleCenterResetSpecailDetailInfo();
+            }
+
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity, ifskip)
         } else {
@@ -635,10 +643,18 @@ class NewCustomerPage extends Component {
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (key) => {
         if (key) this.setState({ curKey: key })
-        const currentPromotion = newPromotionCardPageConfig.find(item => item.key == key);
-        if (['85', '23'].includes(key)) { // 打开新页面
+        if (['89'].includes(key)) { // 打开新页面
+            // 调用重置特色营销数据和重置占用微信ID数据
+            this.props.saleCenterResetSpecailDetailInfo();
             setTimeout(() => {
-                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key })
+                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, mode: 'add' })
+            }, 100);
+            return closePage(SALE_ACTIVE_NEW_PAGE)
+        }
+        const currentPromotion = newPromotionCardPageConfig.find(item => item.key == key);
+        if (['85', '23', '95'].includes(key)) { // 打开新页面
+            setTimeout(() => {
+                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, mode: 'add' })
             }, 100);
             return closePage(SALE_ACTIVE_NEW_PAGE)
         } else if (currentPromotion && currentPromotion.menuID) {
@@ -703,6 +719,27 @@ class NewCustomerPage extends Component {
                 }
                 item.list = data
                 isKeeperEmpty = data.length <= 0
+            }
+            
+            //隐藏周黑鸭不需要的活动
+            if(isZhouheiya()) {
+                if(!['会员拉新', '促进复购'].includes(item.title)) {
+                    item.list = [];
+                } else if (item.title == "会员拉新") {
+                    let { list = [] } = item;
+                    item.list = list.filter(item => ['69'].includes(item.key));
+                } else if (item.title == "促进复购") {
+                    let { list = [] } = item;
+                    item.list = list.filter(item => ['89', '88', '90'].includes(item.key));
+                }
+            } else {
+                if (item.title == "会员拉新") {
+                    let { list = [] } = item;
+                    item.list = list.filter(item => !['69'].includes(item.key));
+                } else if (item.title == "促进复购") {
+                    let { list = [] } = item;
+                    item.list = list.filter(item => !['89', '88', '90'].includes(item.key));
+                }
             }
             return item
         })
@@ -927,6 +964,9 @@ function mapDispatchToProps(dispatch) {
             return dispatch(fetchSpecialDetailAC(opts))
         },
         updateCurrentPromotionPage: opts => dispatch(updateCurrentPromotionPageAC(opts)),
+        saleCenterSetSpecialBasicInfo: (opts) => {
+            dispatch(saleCenterSetSpecialBasicInfoAC(opts));
+        },
     }
 }
 

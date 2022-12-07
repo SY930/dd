@@ -17,6 +17,8 @@ import { createMemberGroupNew } from '../sendGifts/stepThreeHelp'
 
 import { createMemberGroup } from '../sendGifts/stepThreeHelp'
 import { connect } from 'react-redux';
+//周黑鸭新增
+import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
 export default class NewPromotion extends React.Component {
     constructor(props) {
         super(props);
@@ -92,6 +94,7 @@ export default class NewPromotion extends React.Component {
             event: {
                 ...specialPromotion.$eventInfo,
                 groupID: user.accountInfo.groupID,
+                accountRole: user.accountInfo.roleType,
                 userID: user.accountInfo.accountID,
                 loginName: user.accountInfo.loginName,
                 userName: user.accountInfo.userName,
@@ -124,7 +127,17 @@ export default class NewPromotion extends React.Component {
                 //    cardGroupRemark: groupMembersRemark,
             }
         }
-        const jumpToCrmFlag = specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift;
+
+        if(isZhouheiya(this.props.user.accountInfo.groupID)){
+            //处理新商品组件数据
+            if(specialPromotion.$eventInfo._newGoodsCompData) {
+                const _newGoodsCompData = specialPromotion.$eventInfo._newGoodsCompData;
+                opts.event.goodScopeRequest = _newGoodsCompData;
+                delete opts._newGoodsCompData;
+            }
+        }
+        
+        let jumpToCrmFlag = specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift;
         if (this.props.isNew === false && !this.props.isCopy) {
             if (this.props.promotionType === '53' && flag) { // 群发礼品完成前需要先判断发券是否超过限制
                 this.isShowUpperLimitModal(opts, cb, jumpToCrmFlag, 'update');

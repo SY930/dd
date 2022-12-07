@@ -427,7 +427,7 @@ class PromotionBasicInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-        const { promotionBasicInfo, fetchPromotionCategories, fetchPromotionTags, isCopy, myActivities, propmotionType } = this.props;
+        const { promotionBasicInfo, fetchPromotionCategories, fetchPromotionTags, isCopy, myActivities, propmotionType, isNew } = this.props;
         if (propmotionType == '5010') {
             const myActivitiesJs = myActivities.toJS()
             const foodRuleList = myActivitiesJs.$promotionDetailInfo && myActivitiesJs.$promotionDetailInfo.data && myActivitiesJs.$promotionDetailInfo.data.promotionInfo && myActivitiesJs.$promotionDetailInfo.data.promotionInfo.foodRuleList || [{}]
@@ -438,6 +438,18 @@ class PromotionBasicInfo extends React.Component {
             })
         }
 
+        if (propmotionType == '2090' && isNew) {
+            const opts = {
+                data: {
+                    groupID: this.props.user.accountInfo.groupID,
+                    promotionType: propmotionType,
+                },
+                fail: (val) => { message.error(val) },
+            }
+            this.setState({ hasQuery: true }, () => {
+                this.props.fetchFilterShops(opts);
+            })
+        }
         document.addEventListener('click', this.onFakeDatePickerBlur)
         fetchPromotionCategories({
             groupID: this.props.user.accountInfo.groupID,
@@ -483,7 +495,7 @@ class PromotionBasicInfo extends React.Component {
             name: promotionBasicInfo.getIn(['$basicInfo', 'name']),
             category: promotionBasicInfo.getIn(['$basicInfo', 'category']),
             showName: promotionBasicInfo.getIn(['$basicInfo', 'showName']),
-            code: isCopy ? undefined : promotionBasicInfo.getIn(['$basicInfo', 'code']),
+            code: isCopy ? `CX${moment(new Date()).format('YYYYMMDDHHmmss') + new Date().getMilliseconds()}` : promotionBasicInfo.getIn(['$basicInfo', 'code']) ? promotionBasicInfo.getIn(['$basicInfo', 'code']) : `CX${moment(new Date()).format('YYYYMMDDHHmmss') + new Date().getMilliseconds()}`,
             tags: Immutable.List.isList(promotionBasicInfo.getIn(['$basicInfo', 'tags'])) ? promotionBasicInfo.getIn(['$basicInfo', 'tags']).toJS() : [],
             description: promotionBasicInfo.getIn(['$basicInfo', 'description']),
             dateRange: isCopy ? Array(2) : [promotionBasicInfo.getIn(['$basicInfo', 'startDate']), promotionBasicInfo.getIn(['$basicInfo', 'endDate'])],
@@ -501,7 +513,9 @@ class PromotionBasicInfo extends React.Component {
         })
         // 活动名称 auto focus
         try {
-            this.promotionNameInputRef.focus()
+            if(!this.props.onlyModifyShop) {
+                this.promotionNameInputRef.focus()
+            }
         } catch (e) {
             // oops
         }
@@ -524,7 +538,7 @@ class PromotionBasicInfo extends React.Component {
                 name: _promotionBasicInfo.getIn(['$basicInfo', 'name']),
                 category: _promotionBasicInfo.getIn(['$basicInfo', 'category']),
                 showName: _promotionBasicInfo.getIn(['$basicInfo', 'showName']),
-                code: isCopy ? undefined : _promotionBasicInfo.getIn(['$basicInfo', 'code']),
+                code: isCopy ? `CX${moment(new Date()).format('YYYYMMDDHHmmss') + new Date().getMilliseconds()}` : _promotionBasicInfo.getIn(['$basicInfo', 'code']) ? _promotionBasicInfo.getIn(['$basicInfo', 'code']) : `CX${moment(new Date()).format('YYYYMMDDHHmmss') + new Date().getMilliseconds()}`,
                 tags: Immutable.List.isList(_promotionBasicInfo.getIn(['$basicInfo', 'tags'])) ? _promotionBasicInfo.getIn(['$basicInfo', 'tags']).toJS() : [],
                 description: _promotionBasicInfo.getIn(['$basicInfo', 'description']),
                 dateRange: isCopy ? Array(2) : [_promotionBasicInfo.getIn(['$basicInfo', 'startDate']), _promotionBasicInfo.getIn(['$basicInfo', 'endDate'])],
@@ -570,13 +584,13 @@ class PromotionBasicInfo extends React.Component {
             });
         }
         const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        if ((promotionType == '5010' || promotionType == '5020') && nextProps.promotionBasicInfo.getIn(['$basicInfo', 'promotionID']) && !this.state.hasQuery) {
+        if (['5010', '5020', '2090'].includes(promotionType) && nextProps.promotionBasicInfo.getIn(['$basicInfo', 'promotionID']) && !this.state.hasQuery) {
             const opts = {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
                     promotionType,
-                    startDate: this.state.dateRange[0].format('YYYYMMDD'),
-                    endDate: this.state.dateRange[1].format('YYYYMMDD'),
+                    startDate:  this.state.dateRange[0] ?  this.state.dateRange[0].format('YYYYMMDD') : null,
+                    endDate:  this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : null,
                 },
                 fail: (val) => { message.error(val) },
             }
@@ -912,7 +926,7 @@ class PromotionBasicInfo extends React.Component {
                     this.setState({ rangePickerstatus: 'error' })
                 }
             }
-            if ((promotionType == '5010' || promotionType == '5020') && this.state.dateRange[0] && this.state.dateRange[1]) {
+            if (['5010', '5020', '2090'].includes(promotionType) && this.state.dateRange[0] && this.state.dateRange[1]) {
                 const opts = {
                     data: {
                         groupID: this.props.user.accountInfo.groupID,

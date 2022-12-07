@@ -602,9 +602,9 @@ class MyFaceRule extends Component {
     }
 
     renderAPPEvents = (v, i) => {
-        const { triggerSceneList } = this.props;
+        const { triggerSceneList, sceneList } = this.props;
         let _eventSelectOptions = this.state.eventSelectOption
-        if (triggerSceneList.includes('4')) {
+        if (triggerSceneList.some(item => (item == 14 || item == 4)) || sceneList == '21') {
             _eventSelectOptions = _eventSelectOptions.filter(item => item.value !== 'shoppingCartAddFood')
         }
         return (
@@ -645,6 +645,7 @@ class MyFaceRule extends Component {
 
 
     renderAcitveImage = (v, i) => {
+        const { sceneList } = this.props;
         return (
             <div className={styles.activeImageBox}>
                 <ImageUploader
@@ -655,9 +656,10 @@ class MyFaceRule extends Component {
                     }}
                 />
                 <div className={styles.uploaderTip}>
-                    <p>* 图片建议尺寸 526 * 788像素 </p>
+                    { sceneList === '21' ? <p>* 图片建议尺寸 750 * 1624像素</p> : <p>* 图片建议尺寸 526 * 788像素 </p>}
                     <p>* 大小不超过1M </p>
                     <p>* 支持png、jpg、jpeg、gif</p>
+                    { sceneList === '21' && <p>* 因手机分辨率不同，部分手机可能会有部分图片元素显示不全的情况，元素请尽量集中于图片中部位置。</p>}
                 </div>
             </div>
         )
@@ -687,7 +689,7 @@ class MyFaceRule extends Component {
 
     render() {
         const { value = [], form, clientType, sceneList } = this.props;
-        // triggerSceneList 支付成功的海报和banner点击触发事件 菜品加入购物车不能有
+        // triggerSceneList 支付成功的海报和banner、开屏页点击触发事件 菜品加入购物车不能有
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {

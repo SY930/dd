@@ -67,8 +67,10 @@ const wayOpts = [
     { value: '16', label: '积分兑换发放' },
     { value: '17', label: 'openAPI发放' },
     { value: '18', label: '下单抽抽乐' },
+    { value: '19', label: '限时秒杀' },
     { value: '124', label: '券包' },
     { value: '166', label: '消费送礼活动' },
+
 ];
 const stockOpts = [
     { value: '1', label: '不限制' },

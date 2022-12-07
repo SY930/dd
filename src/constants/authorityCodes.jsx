@@ -25,3 +25,9 @@ export const GIFT_LIST_QUERY = 'marketing.lipinxinxixin.query';
 export const GIFT_LIST_UPDATE = 'marketing.lipinxin.update';
 export const GIFT_LIST_DELETE = 'marketing.lipinxin.delete';
 export const GIFT_LIST_CREATE = 'marketing.lipinxin.create';
+//实体卡，电子卡
+export const CARD_QUERY = 'crm.sale.card.query';
+export const CARD_CREATE = 'crm.sale.card.create';
+export const CARD_UPDATE = 'crm.sale.card.update';
+export const CARD_DELETE = 'crm.sale.card.delete';
+export const CARD_CHECK = 'crm.sale.card.check';

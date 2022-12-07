@@ -53,6 +53,7 @@ class GiftImagePath extends Component {
                     this.props.onChange('')
                 }
             },
+            limitSize: this.props.limitSize,
         };
         return (
             <Row>

@@ -61,6 +61,7 @@ const fullOptionSmsGate = [ // 选项有5种
     '63',
     '68',
     '70',
+    '89'
 ];
 
 const simpleOptionSmsGate = [ // 选项有2种
@@ -138,6 +139,7 @@ class StepOneWithDateRange extends React.Component {
             selectWeekValue = ['1'];
             selectMonthValue = ['1'];
         }
+        this.initEventCode = `YX${moment(new Date()).format('YYYYMMDDHHmmss') + new Date().getMilliseconds()}`;
         this.state = {
             categoryList: [],//类别数据
             tagList: [],//标签数据
@@ -147,6 +149,7 @@ class StepOneWithDateRange extends React.Component {
             description: null,
             dateRange: Array(2),
             name: '',
+            eventCode: this.initEventCode,
             startTime: '', // 礼品发放时间
             smsGate: '0',
             timeString: '',
@@ -186,6 +189,7 @@ class StepOneWithDateRange extends React.Component {
     }
 
     componentDidMount() {
+        const { isCopy } = this.props;
         this.props.getSubmitFn({
             prev: undefined,
             next: this.handleSubmit,
@@ -219,7 +223,7 @@ class StepOneWithDateRange extends React.Component {
             specialPromotion.eventStartDate !== '' && specialPromotion.eventEndDate !== '') {
             this.setState({
                 name: specialPromotion.eventName || this.state.name, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
-                eventCode: !this.props.isUpdate ? specialPromotion.eventCode : specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
+                eventCode: isCopy ? this.initEventCode : specialPromotion.eventCode || this.state.eventCode,
                 description: specialPromotion.eventRemark || this.state.description,
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 dateRange: this.props.isCopy ? Array(2) : [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')],
@@ -230,7 +234,7 @@ class StepOneWithDateRange extends React.Component {
                 timeString: specialPromotion.startTime.substring(8),
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 name: specialPromotion.eventName || this.state.name,
-                eventCode: !this.props.isUpdate ? specialPromotion.eventCode : specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
+                eventCode: isCopy ? this.initEventCode : specialPromotion.eventCode || this.state.eventCode,
                 description: specialPromotion.eventRemark || this.state.description,
             })
         }
@@ -244,7 +248,9 @@ class StepOneWithDateRange extends React.Component {
         }
         // 活动名称auto focus
         try {
-            this.promotionNameInputRef.focus()
+            if(!this.props.onlyModifyShop && this.props.isUpdate) {
+                this.promotionNameInputRef.focus()
+            }
         } catch (e) {
             // oops
         }
@@ -748,6 +754,12 @@ class StepOneWithDateRange extends React.Component {
     handleNameChange(e) {
         this.setState({
             name: e.target.value,
+        });
+    }
+
+    handleEventCodeChange = (e) => {
+        this.setState({
+            eventCode: e.target.value,
         });
     }
 
@@ -1268,6 +1280,32 @@ class StepOneWithDateRange extends React.Component {
                             />
                         )}
                     </FormItem>
+		    {
+                        ['69', '89', '88'].includes(this.props.type) && 
+                        <FormItem label='活动编码' className={styles.FormItemStyle} {...formItemLayout}>
+                            {getFieldDecorator('eventCode', {
+                                rules: [
+                                    { required: true, message: '活动编码不能为空' },
+                                    { max: 50, message: `${this.props.intl.formatMessage(STRING_SPE.de8fcgn43i698)}` },
+                                    {
+                                        whitespace: true,
+                                        required: true,
+                                        message: '字母、数字组成，不多于50个字符',
+                                        pattern: /^[A-Za-z0-9]{1,50}$/,
+                                    }
+                                ],
+                                initialValue: this.state.eventCode,
+                            })(
+                                <Input
+                                    // disabled={this.props.isUpdate && this.props.isCopy === false}
+                                    disabled={true}
+                                    placeholder='请输入编码名称'
+                                    onChange={this.handleEventCodeChange}
+                                />
+                            )}
+                        </FormItem>
+                    }
+		    {!['69', '89', '88'].includes(this.props.type) && 
                     <FormItem
                         label={<span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>}
                         className={styles.FormItemStyle}
@@ -1282,9 +1320,14 @@ class StepOneWithDateRange extends React.Component {
                             }],
                             initialValue: this.state.eventCode,
                         })(
-                            <Input placeholder='请输入活动编码' onChange={(e) => this.setState({ eventCode: e.target.value })} />
+                                <Input
+                                    // disabled={this.props.isUpdate && this.props.isCopy === false}
+                                    placeholder='请输入编码名称'
+                                    onChange={this.handleEventCodeChange}
+                                />
                         )}
                     </FormItem>
+		    }
 
                     {/* <FormItem
                         label='标签'
@@ -1464,7 +1507,7 @@ class StepOneWithDateRange extends React.Component {
                                         <Col span={21}>
                                             {getFieldDecorator('rangePicker', {
                                                 rules: [{
-                                                    required: true,
+                                                    required: this.props.type != '88' ? true : false,
                                                     message: `${this.props.intl.formatMessage(STRING_SPE.du3ac84kn21119)}`,
                                                 }],
                                                 ...dateRangeProps,
@@ -1528,7 +1571,7 @@ class StepOneWithDateRange extends React.Component {
 
                     }
                     {
-                        this.props.type != '77' ?
+                        this.props.type != '77' && this.props.type != '69' ?
                         <FormItem
                             label={this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}
                             className={styles.FormItemStyle}
@@ -1537,7 +1580,10 @@ class StepOneWithDateRange extends React.Component {
                         >
                             {getFieldDecorator('description', {
                                 rules: [
-                                    { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.d7ekp859ld12164)}` },
+                                    { 
+                                        required: this.props.type != '88' ? true : false,
+                                        message: `${this.props.intl.formatMessage(STRING_SPE.d7ekp859ld12164)}`
+                                     },
                                     { max: 1000, message: `${this.props.intl.formatMessage(STRING_SPE.d17009e3e35b1366)}` },
                                 ],
                                 initialValue: this.state.description,

@@ -88,7 +88,13 @@ import {
 import { CategoryAndFoodSelectors } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelectors';
 import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
 import { GiftCategoryAndFoodSelectorNew } from '../../SaleCenterNEW/common/CategoryAndFoodSelectorNew';
-
+// 周黑鸭需求
+// import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
+import AdvancedPromotionDetailSettingNew from './common/AdvancedPromotionDetailSettingNew'
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
+import { isZhouheiya } from '../../../constants/WhiteList.jsx';
+import ShopAreaSelector from 'components/ShopAreaSelector';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -213,7 +219,12 @@ class GiftAddModalStep extends React.PureComponent {
             cardTypeShopList: {},
             canUseShopIDs: [],
             canUseShopIDsAll: [],
-            crossDay:0
+            crossDay:0,
+	    //周黑鸭新增
+	    shopAreaSelectType: '1',
+            display: this.props.type !== 'add',
+            advancedState: {},
+            newGoodsObj: {},
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -297,6 +308,10 @@ class GiftAddModalStep extends React.PureComponent {
 
         if (GroupSepcial.includes(groupID)) {
             this.loadShops();
+        }
+	
+	if ([10, 20, 21, 111].includes(+data.giftType) && isZhouheiya(groupID)) {
+            this.goodScopeRequestClone = data.goodScopeRequestClone
         }
     }
 
@@ -797,6 +812,14 @@ class GiftAddModalStep extends React.PureComponent {
         return params;
     }
 
+    //周黑鸭新增
+    getChildState = (v) => {
+        const { advancedState } = this.state
+        this.setState({
+            advancedState: { advancedState, ...v },
+        })
+    }
+
     /**
      * @description 调整商城券参数。 后端没有新增相关商城券字段，复用原来的菜品券字段。但是前段是新增的，所以上传的时候要对参数进行调整
      * @ref http://wiki.hualala.com/pages/viewpage.action?pageId=19224682
@@ -952,7 +975,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     handleFinish = () => {
-        const { values, groupTypes, delivery,crossDay, allSubRightGroup } = this.state;
+        const { values, groupTypes, delivery,crossDay, allSubRightGroup, groupID } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -990,6 +1013,10 @@ class GiftAddModalStep extends React.PureComponent {
             // if(values && values.shopIDs && values.shopIDs.length > 0){
             //     params.shopNames = values.shopIDs;
             // }
+            // 新店铺组件参数处理
+            if ([10, 20, 21, 111].includes(+values.giftType) && isZhouheiya(groupID)) {
+                values.selectedShops = values.selectedShops.list
+            }
             if(values.selectedShops && values.selectedShops.length > 0){
                 params.shopNames = values.selectedShops;
             }
@@ -1218,7 +1245,7 @@ class GiftAddModalStep extends React.PureComponent {
             params.goldGift = Number((params.aggregationChannels || []).includes('goldGift'));
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
             params.moneyLimitType = '0';
-            params.moenyLimitValue = '100';
+            params.moenyLimitValue = isZhouheiya(params.groupID) ? '0' : '100';
             params.amountType = '';
             params.crossDay = crossDay;
             if(params.customerUseCountLimit !='0' && params.maxUseLimit && params.customerUseCountLimit){
@@ -1235,7 +1262,11 @@ class GiftAddModalStep extends React.PureComponent {
                     params.moneyLimitType = moneyLimitTypeData.moneyLimitType;
                     
                     if(params.moneyLimitTypeAndValue.moenyLimitValue){
-                        params.moenyLimitValue = params.moneyLimitType == '0' ? '100' : params.moneyLimitTypeAndValue.moenyLimitValue;
+                        if(isZhouheiya(params.groupID)){
+                            params.moenyLimitValue = params.moneyLimitType == '0' ? '0' : params.moneyLimitTypeAndValue.moenyLimitValue;
+                        } else {
+                          params.moenyLimitValue = params.moneyLimitType == '0' ? '100' : params.moneyLimitTypeAndValue.moenyLimitValue;
+                        }
                     }
                 }
                 if(moneyLimitTypeData && moneyLimitTypeData.amountType){
@@ -1257,6 +1288,8 @@ class GiftAddModalStep extends React.PureComponent {
             if(hasMallArr.includes(value)){
                 this.adjustParamsOfMallGift(params);
             }
+
+
             if(hasMallArr.includes(value) && params.applyScene != '0'){
                 if(!params.shopIDs){
                     message.warning('请选择适用商城')
@@ -1274,7 +1307,65 @@ class GiftAddModalStep extends React.PureComponent {
             delete params.operateTime;
             delete params.aggregationChannels;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
-            this.checkShopWechatData(params,callServer,groupName,this.submitData);
+
+            // { label: '代金券', value: '10' },
+            // { label: '兑换券', value: '21' },
+            // { label: '折扣券', value: '111' },
+            // { label: '优惠券', value: '20' },
+
+            // 礼品属性     applyScene: 0
+            // 适用业务     supportOrderTypeLst：31 // 堂食
+            // 使用场景     isOfflineCanUsing   2 // 仅线下
+            // 允许线上通过券码兑换  isOnlineExchangeable 0// 关闭
+            // 投放场景   // 无
+            // 是否关联第三方券 TrdTemplate: '' // 否
+            // 配菜计算 // 0
+
+
+            if (isZhouheiya(params.groupID)) {
+                if (['10', '21', '20'].includes(params.giftType)) { // 折扣券没有applyScene参数
+                    params.applyScene = '0';
+                }
+
+                if (['20', '21'].includes(params.giftType)) { // 菜品优惠，兑换券有配菜计算subRule
+                    params.subRule = 0;
+                }
+                params.supportOrderTypeLst = '31';
+                params.isOfflineCanUsing = '2';
+                params.isOnlineExchangeable = '0';
+                params.TrdTemplate = '';
+
+                if (Object.keys(this.state.advancedState).length) {
+                    params.mutexActivityId = this.state.advancedState.mutexActivityId
+                    params.mutexActivityType = this.state.advancedState.mutexActivityType
+                    params.sharedAndNotOverlieActivityId = this.state.advancedState.sharedAndNotOverlieActivityId
+                    params.sharedAndNotOverlieType = this.state.advancedState.sharedAndNotOverlieType
+                    params.sharedAndOverlieActivityId = this.state.advancedState.sharedAndOverlieActivityId
+                    params.sharedAndOverlieType = this.state.advancedState.sharedAndOverlieType
+                    params.ruleUseType = this.state.advancedState.ruleUseType
+                } else if (params.mutedata) {
+                    params.mutexActivityId = params.mutedata.mutexActivityId || []
+                    params.mutexActivityType = params.mutedata.mutexActivityType || []
+                    params.sharedAndNotOverlieActivityId = params.mutedata.sharedAndNotOverlieActivityId || []
+                    params.sharedAndNotOverlieType = params.mutedata.sharedAndNotOverlieType || []
+                    params.sharedAndOverlieActivityId = params.mutedata.sharedAndOverlieActivityId || []
+                    params.sharedAndOverlieType = params.mutedata.sharedAndOverlieType || []
+                    params.ruleUseType = params.mutedata.ruleUseType || '0'
+                }
+                delete params.mutedata
+
+                if ([10, 20, 21, 111].includes(+params.giftType)) {
+                    params = {
+                        ...params,
+                        goodScopeRequest: { ...this.state.newGoodsObj },
+    
+                    }
+                    delete params.goodScopeRequestClone
+                    delete params.foodsboxs;
+                    delete params.foodScopes;
+                }
+            }
+            this.checkShopWechatData(params, callServer, groupName, this.submitData);
         });
     }
     // 最后提交数据
@@ -1290,6 +1381,13 @@ class GiftAddModalStep extends React.PureComponent {
             endSaving();
         });
     }
+
+    getGoodsState(v) {
+        this.setState({
+            ...v,
+        })
+    }
+
     // 判断选择的小程序或者公众号与微信支付商家券下账务主体是否绑定关系
     checkShopWechatData(params,callServer,groupName,cb) {
         const _that = this;
@@ -1351,6 +1449,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderDiscountTypeAndValue(decorator) {
         const { discountType, discountRate } = this.props.gift.data;
+        const { groupID } = this.state;
         return decorator({
             key: 'discountRate',
             rules: [
@@ -1380,10 +1479,10 @@ class GiftAddModalStep extends React.PureComponent {
                     >
                         {
                             [
-                            { label: '整单折扣', value: '0' },
-                            { label: '指定菜品折扣', value: '1' },
-                            { label: '单品折扣', value: '2' },
-                        ].map((t) => {
+                                { label: '整单折扣', value: '0' },
+                                { label: isZhouheiya(groupID) ? '指定商品折扣' : '指定菜品折扣', value: '1' },
+                                { label: '单品折扣', value: '2' },
+                            ].map((t) => {
                                 return <Option key={t.label} value={t.value}>{t.label}</Option>
                             })
                         }
@@ -1878,6 +1977,125 @@ class GiftAddModalStep extends React.PureComponent {
         });
     }
 
+shopAreaSelectorChange = (value) => {
+        const { values } = this.state;
+        const { areaList, brandList } = value.otherRes || {};
+
+
+        let orgs = [];
+        // todo门店path暂无
+        orgs = value.list.map((shopID) => {
+            if (value.radioValue === 'area') {
+                let shopPath = (areaList.find(item => item.orgID == shopID) || {}).path
+                if (shopPath && shopPath.length) {
+                    if (shopPath[shopPath.length - 1] == '/') {
+                        shopPath += `${shopID}/`
+                    } else {
+                        shopPath = `${shopPath}/${shopID}/`
+                    }
+                }
+
+                return {
+                    shopID,
+                    shopType: '2',
+                    shopPath,
+                }
+            }
+            return {
+                shopID,
+                shopType: '1',
+            }
+        })
+        // values.shopNames = orgs;
+        values.orgs = orgs;
+        values.shopScopeType = 1;
+        values.excludeShops = [];
+        this.setState({
+            values: Object.assign({}, values),
+            shopAreaSelectType: value.radioValue === 'shop' ? '1' : '2',
+        });
+    }
+
+
+    zhouheiyaShopNames(decorator) {
+        const { shopNames = [], excludeShops = [], selectBrands = [], applyScene, orgs = [] } = this.state.values;
+        const { type, gift: { value, data } } = this.props;
+        const { shopAreaSelectType, groupID } = this.state
+        const brandList = selectBrands.map(x => x.targetID);
+        // 折扣券样式单独处理
+
+        let _style = {
+            color: 'orange',
+            display: orgs.length > 0 ? 'none' : 'block',
+            width: '76%',
+            height: '32px',
+            lineHeight: '32px',
+            background: '#FFFBE6',
+            borderRadius: '4px',
+            border: '1px solid #FFE58F',
+            marginTop: '4px',
+            marginBottom: '14px',
+            paddingLeft: '10px',
+            marginLeft: '83px',
+        }
+
+        if (value === '111') {
+            _style = {
+                ..._style,
+                width: '300px',
+                display: 'flex',
+                marginLeft: '70px',
+            }
+        }
+
+
+        let _pdata = '未选择门店时默认所有门店通用'
+        if (shopAreaSelectType == '2') {
+            _pdata = '未选择区域时默认所有门店区域'
+        }
+
+        const shopAreaSelectTypeObj = {
+            '1': 'shop',
+            '2': 'area',
+
+        }
+        return (
+            <Row style={{ marginBottom: orgs.length === 0 ? -15 : 0, width: value === '111' ? '422px' : '400px', marginLeft: value === '111' ? 136 : -16 }}>
+                <Col style={{ position: 'relative' }}>
+                    {applyScene == 2 || (selectBrands && selectBrands.length == 0 && excludeShops.length == 0) ? null : <div className={styles.disabledWrapper}></div>}
+                    {/* {decorator({
+                        // onChange: this.changeShopNames,
+                        onChange: this.shopAreaSelectorChange,
+                        initialValue: {
+                            radioValue: orgs[0] ? orgs[0].shopType == '1' ? 'shop' : 'area' : 'shop',
+                            list: orgs.map(i => i.shopID),
+                        },
+
+                    })( */}
+                    <ShopAreaSelector
+                        groupID={groupID}
+                        accountID={this.props.accountInfo.get('accountID')}
+                        brandList={brandList}
+                        isCreateCoupon={true}
+                        formatRes={(params) => {
+                            return params;
+                        }}
+                        onChange={this.shopAreaSelectorChange}
+                        value={{
+                            radioValue: orgs[0] ? (orgs[0].shopType == '1' ? 'shop' : 'area') : (shopAreaSelectTypeObj[shopAreaSelectType] || 'shop'),
+                            list: orgs.map(i => i.shopID),
+                        }}
+                        typeList={['shop', 'area']}
+                        labelCol={{ span: value === '111' ? 4 : 5 }}
+                        // filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
+                    />
+                    {/* )} */}
+                </Col>
+                <p style={_style}>{_pdata}</p>
+            </Row>
+        )
+    }
+    
     changeShopNamesJSB = (val) => {
         const {values} = this.state;
         values.shopNames = val;
@@ -2072,12 +2290,13 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderMoneyLimitTypeAndValue(decorator) {
         const { gift: { data, value } } = this.props;
-        
+
+        const { groupID } = this.state;
         const { isActivityFoods } = this.state;
         const {
             moneyLimitType = '0',
-            moenyLimitValue = '100',
-            amountType = ''
+            moenyLimitValue = isZhouheiya(groupID) ? '0' : '100',
+            amountType = '',
         } = data;
         return (
             decorator({
@@ -2097,7 +2316,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderFoodsboxs(decorator) {
         const { gift: { data,value } } = this.props;
-        const { values:{mallScope}} = this.state;
+        const { values:{mallScope}, groupID} = this.state;
         let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
         let scopeList;
         if (foodSelectType == 2) { // 全部菜品
@@ -2110,6 +2329,9 @@ class GiftAddModalStep extends React.PureComponent {
             scopeList = couponFoodScopeList.map(food => ({scopeType: 2, ...food}));
             foodSelectType = 0;
         }
+
+        const isZhy = isZhouheiya(groupID)
+
         return (
             <FormItem
                 style={{
@@ -2121,11 +2343,15 @@ class GiftAddModalStep extends React.PureComponent {
                 }}>
                 {
                     decorator({})(
-                        hasMallArr.includes(value) ? 
+                        (isZhy ? [...hasMallArr, '111'] : hasMallArr).includes(value) ? 
                             <CategoryAndFoodSelectors
                                 scopeLst={scopeList}
                                 showEmptyTips={true}
                                 mallScope={mallScope}
+				giftType={value}
+                                groupID={groupID}
+                                goodScopeRequest={this.goodScopeRequestClone}
+                                getGoodsState={this.getGoodsState.bind(this)}
                             />
                             :value == '110'?
                             <GiftCategoryAndFoodSelectorNew
@@ -2144,7 +2370,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderFoodName(decorator, form) {
         const { gift: { data,value } } = this.props;
-        const { values:{mallScope}} = this.state;
+        const { values:{mallScope}, groupID} = this.state;
         let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
         let scopeList;
         if (foodSelectType == 2) { // 全部菜品
@@ -2198,7 +2424,10 @@ class GiftAddModalStep extends React.PureComponent {
                                 showEmptyTips={true}
                                 mallScope={mallScope}
                                 giftType={value}
+                                groupID={groupID}
                                 foodUnitType={this.state.foodUnitType}
+                                goodScopeRequest={this.goodScopeRequestClone}
+                                getGoodsState={this.getGoodsState.bind(this)}
                             />
                             :
                             <GiftCategoryAndFoodSelector
@@ -2777,32 +3006,59 @@ class GiftAddModalStep extends React.PureComponent {
             />
         )
     }
-    //重新选择所属品牌，清空适用店铺和排除店铺
-    changeSelectedBrands(value,form){
-        const {values} = this.state;
-        const { gift: { value:giftType }, type } = this.props;
+    // 重新选择所属品牌，清空适用店铺和排除店铺
+    changeSelectedBrands(value, form) {
+        const { values, groupID } = this.state;
+        const { gift: { value: giftType }, type,} = this.props;
         values.selectedShops = [];
         values.excludeShops = [];
         values.shopNames = [];
         values.shopIDs = [];
         values.selectBrands = value;
-        form.setFieldsValue({
-            selectedShops: [],
-            excludeShops: [],
-            shopIDs:[]
-        });
-        if(giftType == '22' || giftType == '110' || giftType == '111' ){
-            if(this.secondForm){
-                this.secondForm.setFieldsValue({
-                    selectedShops: [],
-                    excludeShops: [],
-                    shopIDs:[]
-                });
+
+        if(isZhouheiya(groupID)){
+            const isNewShopCheck = [10, 20, 21, 111].includes(+giftType);
+            if (isNewShopCheck) {
+                values.selectedShops = { radioValue: 'shop', list: [] };
             }
+            form.setFieldsValue({
+                selectedShops: isNewShopCheck ? { radioValue: 'shop', list: [] } : [],
+                excludeShops: [],
+                shopIDs: [],
+            });
+            if (giftType == '22' || giftType == '110' || giftType == '111') {
+                if (this.secondForm) {
+                    this.secondForm.setFieldsValue({
+                        selectedShops: giftType == '111' ? { radioValue: 'shop', list: [] } : [],
+                        excludeShops: [],
+                        shopIDs: [],
+                    });
+                }
+            }
+            this.setState({
+                values: Object.assign({}, values),
+            });
+        } else {
+            form.setFieldsValue({
+                selectedShops: [],
+                excludeShops: [],
+                shopIDs:[]
+            });
+            if(giftType == '22' || giftType == '110' || giftType == '111' ){
+                if(this.secondForm){
+                    this.secondForm.setFieldsValue({
+                        selectedShops: [],
+                        excludeShops: [],
+                        shopIDs:[]
+                    });
+                }
+            }
+            this.setState({ 
+                values: Object.assign({},values)
+            });
+    
         }
-        this.setState({ 
-            values:Object.assign({},values)
-        });
+    
     }
     renderSelectBrands = (decorator,form) => {
         const { values} = this.state;
@@ -2815,6 +3071,37 @@ class GiftAddModalStep extends React.PureComponent {
         })(
             <SelectBrands type={value} groupID={groupID} describe={describe}/>
         )
+    }
+    onChangeClick = () => {
+        this.setState(
+            { display: !this.state.display }
+        )
+    };
+
+    renderAdvancedSettingButton() {
+        return (
+            <FormItem
+                className={[styles.FormItemStyle, styles.formItemForMore].join(' ')}
+                wrapperCol={{ span: 17, offset: 19 }}
+            >
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
+                <span className={styles.gDate} onClick={this.onChangeClick}>
+                    {SALE_LABEL.k5ezdx9f} {!this.state.display &&
+                        <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                    {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
+                </span>
+            </FormItem>
+        )
+    }
+
+
+    renderAdvancedPromotionDetailSettingNew() {
+        const { values: { orgs, mutedata } } = this.state;
+        const { gift: { value, data } } = this.props;
+
+        return (<div className={styles.settingNew}>
+            <AdvancedPromotionDetailSettingNew bizType={2} mutedata={mutedata} orgs={orgs} giftType={value} cb={this.getChildState} giftItemID={data.giftItemID}/>
+        </div>)
     }
 
     renderSubLedgerAmount = (decorator,form) => {
@@ -2976,12 +3263,12 @@ class GiftAddModalStep extends React.PureComponent {
         }
 
         // 定义所有类型的表单项，根据不同礼品类型进行配置
-        const formItems = {
+        let formItems = {
             ...FORMITEMS,
             giftType: {
                 label: '礼品类型',
                 type: 'custom',
-                render: () => describe,
+                render: () => (isZhouheiya(groupID) ? describe.replace(/菜品/g, '') : describe),
             },
             // 新增礼品商城属性
             // 券应用场景（店铺，商城）
@@ -3142,7 +3429,9 @@ class GiftAddModalStep extends React.PureComponent {
             giftImagePath: {
                 label: '礼品图样',
                 type: 'custom',
-                render: decorator => decorator({})(<GiftImagePath contentHeight='auto'/>),
+                render: decorator => decorator({
+                    initialValue: isZhouheiya(groupID) ? (this.props.gift.data.giftImagePath || 'http://res.hualala.com/basicdoc/210d6edc-d01f-473b-b7ae-1f319f808350.png') : this.props.gift.data.giftImagePath,
+                })(<GiftImagePath contentHeight='auto' limitSize={1024000} />),
             },
             selectBrands: {
                 label: `${GroupSepcial.includes(groupID) && describeAry.includes(describe) ? '' : '所属品牌'}`,
@@ -3270,6 +3559,27 @@ class GiftAddModalStep extends React.PureComponent {
                         message: '汉字、字母、数字、小数点，50个字符以内',
                         pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
                     },*/
+                ],
+                disabled: type !== 'add' && type !== 'copy',
+            },
+
+            area: {
+                label: '地区',
+                type: 'text',
+                placeholder: '请输入地区',
+                size: 'large',
+                rules: [
+                    { required: false, message: '地区不能为空' },
+                    // {
+                    //     validator: (rule, v, cb) => {
+                    //         if (String(v || '').includes('，') || String(v || '').includes(',')) {
+                    //             cb(rule.message);
+                    //         }
+                    //         cb();
+                    //     },
+                    //     message: '请不要输入逗号',
+                    // },
+                    { max: 20, message: '不能超过20个字符' },
                 ],
                 disabled: type !== 'add' && type !== 'copy',
             },
@@ -3544,9 +3854,10 @@ class GiftAddModalStep extends React.PureComponent {
                         {`${value == 21 ? '兑换' : '赠送'}规则`}&nbsp;
                         <Tooltip title={
                             <p>
-                                {`当${value == 21 ? '兑换' : '赠送'}菜品包含多个菜品时，可通过设置控制${value == 21 ? '兑换' : '赠送'}其中一道高价菜品或者低价菜品。`}
+                                {`当${value == 21 ? '兑换' : '赠送'}${isZhouheiya(groupID) ? '商品' : '菜品'}包含多个${isZhouheiya(groupID) ? '商品' : '菜品'}时，可通过设置控制${value == 21 ? '兑换' : '赠送'}其中一道高价${isZhouheiya(groupID) ? '商品' : '菜品'}或者低价${isZhouheiya(groupID) ? '商品' : '菜品'}。`}
                             </p>
-                        }>
+                        }
+                        >
                             <Icon type="question-circle" />
                         </Tooltip>
                     </span>
@@ -3556,6 +3867,10 @@ class GiftAddModalStep extends React.PureComponent {
                 render: (decorator, form) => {
                     const applyScene = form.getFieldValue('applyScene');
                     let descTxt = applyScene != '1' ? '菜品' : '商品';
+
+                    if (isZhouheiya(groupID)) {
+                        descTxt = '商品'
+                    }
                     return decorator({})(
                         <RadioGroup>
                             <Radio value={0}>{`${value == 21 ? '兑换' : '赠送'}高价${descTxt}`}</Radio>
@@ -3636,11 +3951,12 @@ class GiftAddModalStep extends React.PureComponent {
                         折扣&nbsp;
                         <Tooltip title={
                             <p>
-                                指定菜品折扣可以对在适用范围内的菜品都参与打折；
-                                <br/>
-                                单品折扣仅对适用范围内菜品价格最高的一道菜参与打折
+                                {isZhouheiya(groupID) ? '指定商品折扣可以对在适用范围内的商品都参与打折' : '指定菜品折扣可以对在适用范围内的菜品都参与打折'}
+                                <br />
+                                {isZhouheiya(groupID) ? '单品折扣仅对适用范围内商品价格最高的一个商品参与打折' : '单品折扣仅对适用范围内菜品价格最高的一道菜参与打折'}
                             </p>
-                        }>
+                        }
+                        >
                             <Icon type="question-circle" />
                         </Tooltip>
                     </span>
@@ -3769,7 +4085,7 @@ class GiftAddModalStep extends React.PureComponent {
                 },
             },
             foodUnitType: {
-                label: '兑换菜品类型',
+                label: isZhouheiya(groupID) ? '兑换商品类型' : '兑换菜品类型',
                 type: 'custom',
                 defaultValue: 0,
                 render: (decorator, form) => {
@@ -3777,29 +4093,33 @@ class GiftAddModalStep extends React.PureComponent {
                     // let descTxt = applyScene != '1' ? '菜品' : '商品';
                     return decorator({})(
                         <RadioGroup>
-                            <Radio value={0}>普通菜品</Radio>
-                            <Radio value={1}>称重菜品</Radio>
+                            <Radio value={0}>{isZhouheiya(groupID) ? '普通商品' : '普通菜品'}</Radio>
+                            <Radio value={1}>{isZhouheiya(groupID) ? '称重商品' : '称重菜品'}</Radio>
                             <Tooltip title={
-                            <p>
-                                仅POS2.5支持；仅能”按菜品“选择活动范围且仅可以兑换”需要确认数量“的菜品；不支持商城券
-                            </p>
-                        }>
-                            <Icon type="question-circle" />
-                        </Tooltip>
+
+                                <p>
+                                    {isZhouheiya(groupID) ? '仅POS2.5支持；仅能”按菜品“选择活动范围且仅可以兑换”需要确认数量“的菜品；不支持商城券'
+                                        : '仅POS2.5支持；仅能”按商品“选择活动范围且仅可以兑换”需要确认数量“的商品；不支持商城券'}
+                                </p>
+                            }
+                            >
+                                <Icon type="question-circle" />
+                            </Tooltip>
                         </RadioGroup>
                     )
                 },
             },
             weight: {
                 label: <span>
-                <span>兑换菜品重量</span>
-                <Tooltip title={
-                    <p>
-                        兑换菜品的重量，以斤为单位
-                    </p>
-                }>
-                    <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
-                </Tooltip></span>,
+                    <span>{isZhouheiya(groupID) ? '兑换商品重量' : '兑换菜品重量'}</span>
+                    <Tooltip title={
+                        <p>
+                            {isZhouheiya(groupID) ? '兑换商品的重量，以斤为单位' : '兑换菜品的重量，以斤为单位'}
+                        </p>
+                    }
+                    >
+                        <Icon style={{ marginLeft: 5, marginRight: 5 }} type="question-circle" />
+                    </Tooltip></span>,
                 type: 'custom',
                 required: true,
                 defaultValue: '',
@@ -3809,8 +4129,8 @@ class GiftAddModalStep extends React.PureComponent {
                         if(!pattern.test(value)){
                             return callback('最大支持8位整数，2位小数');
                         }
-                        if (!+value>0) {
-                            return callback('兑换菜品重量要大于0');
+                        if (!+value > 0) {
+                            return callback(isZhouheiya(groupID) ? '兑换商品重量要大于0' : '兑换菜品重量要大于0');
                         }
                         return callback();
                     },
@@ -3823,14 +4143,15 @@ class GiftAddModalStep extends React.PureComponent {
             },
             weightOffset: {
                 label: <span>
-                <span>称重误差值</span>
-                <Tooltip title={
-                    <p>
-                        兑换菜品的重量误差，以斤为单位
-                    </p>
-                }>
-                    <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
-                </Tooltip></span>,
+                    <span>称重误差值</span>
+                    <Tooltip title={
+                        <p>
+                            {isZhouheiya(groupID) ? '兑换商品的重量误差，以斤为单位' : '兑换菜品的重量误差，以斤为单位'}
+                        </p>
+                    }
+                    >
+                        <Icon style={{ marginLeft: 5, marginRight: 5 }} type="question-circle" />
+                    </Tooltip></span>,
                 type: 'custom',
                 required: true,
                 defaultValue: '',
@@ -3959,6 +4280,88 @@ class GiftAddModalStep extends React.PureComponent {
             formData.excludeShops = formData.shopNames;
             formData.selectedShops = [];
         }
+
+
+        if (isZhouheiya(groupID)) {
+            const omitList = [
+                'applyScene', // 礼品属性
+                'supportOrderTypeLst', // 适用业务
+                'isOfflineCanUsing', // 使用场景
+                'isOnlineExchangeable', // 允许线上通过券码兑换
+                'aggregationChannels', // 投放场景
+                'TrdTemplate', // 是否关联第三方券配置项
+
+                'selectBrands', // 所属品牌
+                'excludeShops', // 排除店铺
+
+                'subRule', // 配菜计算
+                // 'mallScope', // 适用范围
+            ]
+
+            // value 10 代金券  20 优惠券   21菜品兑换券 111折扣券
+            // if (value === '20') {
+            //     omitList.splice(0, 1)
+            // }
+
+            formItems = _.omit(formItems, omitList)
+        }
+
+
+        // 在礼品名称下插入地区
+        if (isZhouheiya(groupID)) {
+            const index = displayFirstKeys[0] && displayFirstKeys[0].keys.findIndex(item => item === 'pushMessage')
+            index && displayFirstKeys[0].keys.splice(index, 0, 'area')
+
+            displaySecondKeys[0].keys.push('mutexRule')
+
+            if (this.state.display) {
+                displaySecondKeys[0].keys.push('mutexRuleSetting')
+            }
+        }
+
+        // 适用店铺，=> 包含区域新店铺组件
+        if (isZhouheiya(groupID)) {
+            // if ([10, 20, 21, 111].includes(+value)) {
+            delete formItems.selectedShops
+            formItems.selectedShops = {
+                type: 'custom',
+                label: '',
+                labelCol: { span: 8 },
+                wrapperCol: { span: 16 },
+                defaultValue: [],
+                render: decorator => this.zhouheiyaShopNames(decorator),
+            }
+
+            formItems = {
+                ...formItems,
+                mutexRule: {
+                    type: 'custom',
+                    label: '',
+                    labelCol: { span: 8 },
+                    wrapperCol: { span: 16 },
+                    defaultValue: [],
+                    render: decorator => this.renderAdvancedSettingButton(decorator),
+                },
+            }
+            if (this.state.display) {
+                formItems = {
+                    ...formItems,
+                    mutexRuleSetting: {
+                        type: 'custom',
+                        label: '',
+                        labelCol: { span: 0 },
+                        wrapperCol: { span: 24 },
+                        defaultValue: [],
+                        render: decorator => this.renderAdvancedPromotionDetailSettingNew(decorator),
+                    },
+                }
+            }
+            const omitList = [
+                'mallScope', // 适用范围
+            ]
+            formItems = _.omit(formItems, omitList)
+        }
+
         return (
             <div className={styles2.formContainer}>
                 <div

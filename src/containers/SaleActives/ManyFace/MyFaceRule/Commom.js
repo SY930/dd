@@ -2,7 +2,6 @@
 export const programList = [
     // { label: '无', value: '' },
     { label: '首页', value: '/home' },
-    { label: '分享好友', value: '/share' },
     { label: '我的', value: '/customer/center' },
     { label: '领券中心', value: '/coupon/getCenter' },
     { label: '我的优惠券', value: '/customer/couponList' },

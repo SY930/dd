@@ -21,6 +21,11 @@ const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 
+//周黑鸭需求
+import { isCheckApproval, isZhouheiya } from '../../../constants/WhiteList';
+import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
+
 @injectIntl()
 class BuyCutDetailInfo extends React.Component {
     constructor(props) {
@@ -190,6 +195,15 @@ class BuyCutDetailInfo extends React.Component {
             }
             return false;
         }
+         //周黑鸭需求
+	 if(isZhouheiya(this.props.user.groupID)){
+           this.props.setPromotionDetail({
+              approval: this.state.approvalInfo,
+           });
+           if (isCheckApproval && (!this.state.approvalInfo.activityCost || !this.state.approvalInfo.estimatedSales || !this.state.approvalInfo.auditRemark)) {
+              return
+          }
+	 }
         return false
     };
     // 优惠方式change
@@ -418,7 +432,15 @@ class BuyCutDetailInfo extends React.Component {
                     {this.renderCutWay()}
                     {this.renderGiveDishNumInput()}
                     {this.renderAdvancedSettingButton()}
-                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+                    {this.state.display && !isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+                    {this.state.display && isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSettingNew bizType={1}/> : null}
+                    {isZhouheiya(this.props.user.groupID) ? <Approval onApprovalInfoChange={(val) => {
+                        this.setState({
+                            approvalInfo: {
+                                ...val
+                            }
+                        })
+                    }} /> : null}
                 </Form>
             </div>
         )
@@ -430,6 +452,7 @@ function mapStateToProps(state) {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
 
+        user: state.user.get('accountInfo').toJS()
     }
 }
 

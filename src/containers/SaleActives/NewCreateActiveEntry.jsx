@@ -13,17 +13,29 @@ import { SALE_ACTIVE_NEW_PAGE } from "../../constants/entryCodes";
 import styles from "./CreateActive.less";
 import FaceFormWrapper from "./ManyFace"; //千人千面
 import OnlineRestaurantGiftGiving from "./OnlineRestaurantGiftGiving"; //线上餐厅弹窗送礼
+import NewScoreConvertGift from "./NewScoreConvertGift"; //积分换礼
+import SeckillInLimitedTime from "./SeckillInLimitedTime"; //限时秒杀活动
 const createActiveList = [
     {
         title: "千人千面",
         key: "85",
-        comp: FaceFormWrapper
+        comp: FaceFormWrapper,
     },
     {
         title: "线上餐厅弹窗送礼",
         key: "23",
         comp: OnlineRestaurantGiftGiving
     },
+    {
+        title: "积分换礼",
+        key: "89",
+        comp: NewScoreConvertGift
+    },
+    {
+        title: "限时秒杀",
+        key: "95",
+        comp: SeckillInLimitedTime
+    }
 ];
 
 @connect(({ loading, createActiveTwoCom }) => ({ loading, createActiveTwoCom }))
@@ -38,16 +50,18 @@ class NewCreateActiveEntry extends Component {
                 typeKey: "",
                 itemID: "",
                 isView: false,
-                isActive: false
+                isActive: false,
+                mode: 'add'
             }
         };
         this.saving = this.saving.bind(this);
         this.formRef = null;
         this.lockedSaving = throttle(this.saving, 500, { trailing: false });
+        this.handleSubmitFn = null;
     }
 
     componentDidMount() {
-        const { typeKey = "", itemID, isView, isActive } = decodeUrl();
+        const { typeKey = "", itemID, isView, isActive, mode } = decodeUrl();
         if (!decodeUrl().typeKey) {
             // 刷新页面后无参数，关闭页面
             closePage();
@@ -57,7 +71,8 @@ class NewCreateActiveEntry extends Component {
                 typeKey,
                 itemID,
                 isView,
-                isActive
+                isActive,
+                mode
             }
         });
     }
@@ -81,7 +96,7 @@ class NewCreateActiveEntry extends Component {
     handleCallback = () => {};
 
     render() {
-        const { typeKey = "", itemID, isView, isActive } = this.state.urlObj;
+        const { typeKey = "", itemID, isView, isActive, mode } = this.state.urlObj;
         const { loading, clientType } = this.state;
         const currentInfo = createActiveList.find(v => v.key === typeKey) || {};
         let Comp = currentInfo.comp;
@@ -89,7 +104,8 @@ class NewCreateActiveEntry extends Component {
             <div className={styles.createActiveTwo}>
                 <div className={styles.headers}>
                     <h1>
-                        {itemID ? (isView === "false" ? "编辑" : "查看") : "创建"}
+                        {mode && (itemID ? (mode === "edit" ? "编辑" : mode === "view" ? "查看" : "复制") : "创建")}
+                        {!mode && (itemID ? (isView === "false" ? "编辑" : "查看") : "创建")}
                         {`${currentInfo.title}`}
                     </h1>
                     <p>
@@ -127,9 +143,14 @@ class NewCreateActiveEntry extends Component {
                         }}
                         itemID={itemID}
                         isView={isView}
+                        mode={mode}
                         onChangDecorateType={this.onchageType}
                         onChangClientype={this.onchageClientType}
                         isActive={isActive}
+                    /**
+                     * @description: 
+                     * @return {*}
+                     */
                     />}
                 </div>
             </div>

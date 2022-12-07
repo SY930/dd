@@ -21,6 +21,8 @@ import { isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine, isHuaTian
 import styles from '../../SpecialPromotionNEW/MySpecialActivities/mySpecialActivities.less'
 import emptyPage from '../../../assets/empty_page.png'
 import shopsImg from '../../../assets/shops.png'
+import axios from 'axios';
+import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
 
 
 class CardSaleActive extends Component {
@@ -137,6 +139,40 @@ class CardSaleActive extends Component {
         }
     }
 
+    // 权限校验
+    permissionVerify = async (record) => {
+        const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'promotion/v2/', '/api/v1/universal?'];
+        const datas = {
+            groupID: this.props.accountInfo.groupID,
+            accountID: this.props.accountInfo.accountID,
+            promotionID: record.promotionIDStr
+        };
+        const method = `${api}checkDataAuth.ajax`;
+        const params = { service, type, data: datas, method };
+        try {
+            const { data = {}, code, message: msg } = await axios.post(url + method, params);
+            if(code == '000') {
+                if(data.hasOperateAuth == 1) {
+                    return true
+                } else {
+                    message.warning('没有操作权限');
+                    return false
+                }
+            } else {
+                message.warning('没有操作权限');
+                return false
+            }
+        } catch (error) {
+            message.warning('没有操作权限');
+            return false
+        }
+    }
+
+    //【活动过期后】或【审批中】编辑按钮禁用
+    editIsDisabled = (record) => {
+        return (new Date(moment(record.endDate, 'YYYY-MM-DD').format('YYYY-MM-DD')).getTime() < new Date(new Date(Date.now()).toLocaleDateString()).getTime()) || record.auditStatus == '1';
+    }
+
     render() {
         const { dataSource: data } = this.props;
         return (
@@ -159,9 +195,15 @@ class CardSaleActive extends Component {
                                                     checked={defaultChecked}
                                                     onChange={(e) => {
                                                         if (this.isToggleActiveDisabled(item)) return null
-                                                        this.props.handleSattusActive(item)(() => {
-                                                            this.props.handleDisableClickEvent(_, item, index, null, '使用状态修改成功')
-                                                        })
+                                                        if(isZhouheiya(this.props.accountInfo.groupID)){
+                                                            this.props.handleSattusActive(item)((isAudit) => {
+                                                                this.props.handleDisableClickEvent(_, item, index, null, isAudit === 'audit' ? '已成功发起审批，审批通过后自动启用' : '使用状态修改成功')
+                                                            })
+                                                        }else{
+                                                            this.props.handleSattusActive(item)(() => {
+                                                                this.props.handleDisableClickEvent(_, item, index, null, '使用状态修改成功')
+                                                            })
+                                                        }
                                                     }}
                                                     // disabled={this.isToggleActiveDisabled(item)}
                                                 />
@@ -207,10 +249,24 @@ class CardSaleActive extends Component {
                                                 !isHuaTian() && (
                                                     <Authority rightCode={BASIC_PROMOTION_UPDATE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                                         <span
+                                                            disabled={isZhouheiya(this.props.accountInfo.groupID)?this.editIsDisabled(item):false}
                                                             className={styles.operateEdit}
-                                                            onClick={(e) => {
+                                                            onClick={async (e) => {
+                                                                if(isZhouheiya(this.props.accountInfo.groupID)){
+                                                                    if(this.editIsDisabled(item)) {
+                                                                        return;
+                                                                    }
+                                                                    const isPass = await this.permissionVerify(item);
+                                                                    if(!isPass) {
+                                                                        return;
+                                                                    }
+                                                                }
+                                                                
                                                                 this.props.handleEditActive(item)(() => {
                                                                     this.props.toggleIsUpdate(true)
+                                                                    if(!isGeneral(this.props.accountInfo.roleType) && (item.auditStatus == 2 || item.auditStatus ==4) && isZhouheiya(this.props.accountInfo.groupID)) {
+                                                                        this.props.onlyModifyShop()
+                                                                    }
                                                                     this.props.handleUpdateOpe(_, item, index);
                                                                 })
                                                             }}
@@ -224,9 +280,15 @@ class CardSaleActive extends Component {
                                                 <span
                                                     className={styles.operateDelete}
                                                     disabled={!isMine(item)}
-                                                    onClick={() => {
+                                                    onClick={async () => {
                                                         if (!isMine(item)) {
                                                             return
+                                                        }
+                                                        if(isZhouheiya(this.props.accountInfo.groupID)){
+                                                        const isPass = await this.permissionVerify(item);
+                                                            if(!isPass) {
+                                                                return;
+                                                            }
                                                         }
                                                         this.props.handleDelActive(item)(() => this.props.confirmDelete(item));
                                                     }}
@@ -239,7 +301,13 @@ class CardSaleActive extends Component {
                                                     <a
                                                         href="#"
                                                         disabled={isHuaTian()}
-                                                        onClick={() => {
+                                                        onClick={async () => {
+                                                            if(isZhouheiya(this.props.accountInfo.groupID)){
+                                                                const isPass = await this.permissionVerify(item);
+                                                                if(!isPass) {
+                                                                    return;
+                                                                }
+                                                            }
                                                             this.props.toggleIsUpdate(true)
                                                             this.props.updateCopy()
                                                             this.props.handleUpdateOpe(_, item, index);
@@ -250,7 +318,13 @@ class CardSaleActive extends Component {
                                                         href="#"
                                                         disabled={!isGroupPro || isHuaTian()}
                                                         style={!isGroupPro || isHuaTian() ? { color: 'gray', opacity: '.5' } : {}}
-                                                        onClick={() => {
+                                                        onClick={async () => {
+                                                            if(isZhouheiya(this.props.accountInfo.groupID)){
+                                                                const isPass = await this.permissionVerify(item);
+                                                                if(!isPass) {
+                                                                    return;
+                                                                }
+                                                            }
                                                             this.props.toggleIsUpdate(true)
                                                             this.props.updateCopy()
                                                             this.props.handleUpdateOpe(_, item, index);

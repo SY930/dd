@@ -26,11 +26,12 @@ class DateRange extends Component {
     }
 
     render() {
-        const { value, type } = this.props;
+        const { value, type, disabled = false } = this.props;
         const days = this.countDays(value);
         return (
             <div className={css.mainBox}>
                 <RangePicker
+                    disabled={disabled}
                     value={value}
                     onChange={this.props.onChange}
                     disabledDate={(current) => {

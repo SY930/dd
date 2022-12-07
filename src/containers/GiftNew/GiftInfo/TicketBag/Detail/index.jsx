@@ -79,7 +79,7 @@ class Detail extends Component {
         const newParams = { ...queryParams3, ...params,  ...ids };
         // 把查询需要的参数缓存
         this.setState({ queryParams3: newParams, loading3: true });
-        getTotalList({ ...ids, ...newParams, getWay: '10' }).then((obj) => {
+        getTotalList({ ...ids, ...newParams, getWayList: [10, 19] }).then((obj) => {
             const { pageObj, list } = obj;
             this.setState({ pageObj3: pageObj, list3: list, loading3: false });
         });
@@ -204,7 +204,6 @@ class Detail extends Component {
         const { detail: { couponPackageInfo = [], couponPackageGiftConfigs = [] } } = this.props;
         const { couponPackageImage, couponPackageName, createTime, couponPackageID,
             couponPackageDesciption, remainStock = 0, sendCount = 0, limitStockForEvent, couponPackageType } = couponPackageInfo;
-            console.log("🚀 ~ file: index.jsx ~ line 207 ~ Detail ~ render ~ couponPackageInfo", couponPackageInfo)
         const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
         const resetStock = remainStock === -1 ? '不限制' : remainStock;
