@@ -35,7 +35,7 @@ import {
 import PriceInput from "../common/PriceInput";
 
 //周黑鸭需求
-import { isCheckApproval, isZhouheiya } from '../../../constants/WhiteList';
+import { isCheckApproval, isZhouheiya, priceRulsGroupID } from '../../../constants/WhiteList';
 import Approval from '../../../containers/SaleCenterNEW/common/Approval';
 import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
 
@@ -51,6 +51,7 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited,
             customerUseCountLimit,
             shortRule,
+            calType,
         } = this.getInitState()
         this.state = {
             display: !props.isNew,
@@ -67,6 +68,7 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited, // 特价菜每人每天享受特价数量是否限制 0 为不限制使用数量, 1为限制
             shortRule,
             bookID: '',
+            calType,
         };
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
@@ -87,6 +89,7 @@ class SpecialDetailInfo extends React.Component {
         const totalAmountLimit = _rule ? Number(_rule.totalFoodMax) : 0;
         const customerUseCountLimit = _rule ? Number(_rule.customerUseCountLimit) : 0;
         const shortRule = _rule ? Number(_rule.shortRule) : 0;
+        const calType = (_rule && _rule.calType) ? _rule.calType : '0';
         return {
             isLimited: Number(!!amountLimit),
             amountLimit: amountLimit || 1,
@@ -95,6 +98,7 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited: Number(!!customerUseCountLimit),
             customerUseCountLimit: customerUseCountLimit || 1,
             shortRule: shortRule || 0,
+            calType,
         };
     }
 
@@ -122,7 +126,8 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited,
             customerUseCountLimit,
             shortRule,
-            bookID
+            bookID,
+            calType,
         } = this.state;
 
         let priceLst = []
@@ -130,6 +135,7 @@ class SpecialDetailInfo extends React.Component {
         if (isZhouheiya(this.props.user.groupID)) {
             priceLst = data
         } else {
+            console.log("🚀 ~ file: specialDetailInfo.jsx ~ line 149 ~ SpecialDetailInfo ~ priceLst=data.map ~ data", data)
             priceLst = data.map((item) => {
                 return {
                     foodUnitID: item.itemID,
@@ -138,6 +144,7 @@ class SpecialDetailInfo extends React.Component {
                     foodUnitName: item.unit,
                     brandID: item.brandID || 0,
                     price: parseFloat(item.newPrice) < 0 ? item.price : parseFloat(item.newPrice),
+                    discount: item.salePercent,
                 }
             });
         }
@@ -185,6 +192,7 @@ class SpecialDetailInfo extends React.Component {
         if (bookID) {
             rule.bookID = bookID
         }
+        rule.calType = calType;
         this.props.setPromotionDetail({
             priceLst,
             rule, // 为黑白名单而设
@@ -319,10 +327,11 @@ class SpecialDetailInfo extends React.Component {
         })
     }
     renderLimitRules() {
-        const { intl } = this.props;
+        const { intl, user } = this.props;
         const k6hdpuyl = intl.formatMessage(SALE_STRING.k6hdpuyl);
         const k5kp4vhr = intl.formatMessage(SALE_STRING.k5kp4vhr);
         const k5f4b1b9 = intl.formatMessage(SALE_STRING.k5f4b1b9);
+        const { groupID } = user
         return (
             <div>
                 <div style={{ color: 'rgba(0,0,0,0.85)'}} className={styles.coloredBorderedLabel}>
@@ -436,6 +445,23 @@ class SpecialDetailInfo extends React.Component {
                                     </FormItem>
                                 </Col> : null
                         }
+                    </div>
+                </div>
+                }
+                {
+                  priceRulsGroupID.includes(`${groupID}`) && <div style={{ height: '40px', paddingLeft: 35, marginTop: '8px' }} className={styles.flexContainer}>
+                    <div style={{ lineHeight: '28px', marginRight: '14px' }}>价格计算规则</div>
+                    <div style={{ width: '400px' }}>
+                        <Col span={24}>
+                            <Select
+                                onChange={(value) => { this.setState({ calType: value }) }}
+                                value={String(this.state.calType)}
+                                getPopupContainer={(node) => node.parentNode}
+                            >
+                                <Option key="0" value={'0'}>按特价计算</Option>
+                                <Option key="1" value={'1'}>按折扣计算</Option>
+                            </Select>
+                        </Col>
                     </div>
                 </div>
                 }
