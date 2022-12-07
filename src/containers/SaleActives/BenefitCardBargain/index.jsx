@@ -9,6 +9,7 @@ import { Spin } from 'antd';
 import BaseInfo from './BaseInfo';
 import ActiveRules from './ActiveRules'
 import HelpRules from './HelpRules'
+import { putEvent, postEvent, getEvent } from './AxiosFactory';
 import { asyncParseForm } from "../../../helpers/util";
 import styles from './styles.less'
 
@@ -61,11 +62,32 @@ class BenefitCardBargain extends Component {
 
   handleSubmit = () => {
     // const { this.baseForm , form2 } = this.state
-        const forms = [this.baseForm , this.activeForm, this.helpForm];
-        asyncParseForm(forms).then(({ values, error }) => {
-          if (error) return;
-          console.log(values, 'values')
-        })
+    const { itemID } = this.props
+    const forms = [this.baseForm, this.activeForm, this.helpForm];
+    asyncParseForm(forms).then(({ values, error }) => {
+      if (error) return;
+      console.log(values, 'values')
+
+      const allData = { event: { ...values } }
+
+      // if (itemID) {
+      //   const allData = { event: { ...values, itemID, isActive: this.props.isActive == '0' ? 0 : 1 } };
+      //   postEvent(allData).then((res) => {
+      //     if (res) {
+      //       closePage()
+      //       jumpPage({ pageID: '1000076003' })
+      //     }
+      //   })
+      //   return
+      // }
+
+      // putEvent({ ...allData }).then((res) => {
+      //   if (res.code === '000') {
+      //     closePage()
+      //     jumpPage({ pageID: '1000076003' })
+      //   }
+      // })
+    })
   }
 
   render() {
