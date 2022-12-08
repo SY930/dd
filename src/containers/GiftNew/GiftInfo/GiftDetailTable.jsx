@@ -534,7 +534,7 @@ class GiftDetailTable extends Component {
             if (data.code === '000') {
                 this.handleOkDelete(rec);
             }
-        }, ({ code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = [] }) => {
+        }, ({ code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = [], yuYingEventReference = [] }) => {
             if (code === '1211105076') {// 券被占用
                 Modal.warning({
                     title: '礼品被占用，不可停用',
@@ -605,6 +605,22 @@ class GiftDetailTable extends Component {
                                                 padding: 5
                                             }}
                                         >   {couponPackageReference.map(name => `【${name}】`).join('')} </div>
+                                    </div>
+                                )
+                            }
+                            {
+                                !!couponPackageReference.length && (
+                                    <div>
+                                        <div style={{ marginTop: 8 }}>
+                                            该礼品被以下企微（语鹦）活动使用，如需停用，请取消引用
+                                        </div>
+                                        <div
+                                            style={{
+                                                marginTop: 8,
+                                                background: '#fef4ed',
+                                                padding: 5
+                                            }}
+                                        >   {yuYingEventReference.map(name => `【${name}】`).join('')} </div>
                                     </div>
                                 )
                             }
