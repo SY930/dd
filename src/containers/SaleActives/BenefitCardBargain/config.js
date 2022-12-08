@@ -51,7 +51,7 @@ const formItems1 = {
 };
 
 const formItems2 = {
-  benefitCard: {
+  cardTypeID: {
     type: 'custom',
     label: '选择权益卡',
     required: true,
@@ -64,12 +64,12 @@ const formItems2 = {
     required: true,
     render: () => { },
   },
-  bargainType: {
+  giftGetRule: {
     type: 'radio',
     label: '砍价方式',
-    defaultValue: '1',
+    defaultValue: 6,
     options: [
-      { label: '砍至指定价格', value: '1' },
+      { label: '砍至指定价格', value: 6 },
     ],
   },
   bargainTip: {
@@ -78,7 +78,7 @@ const formItems2 = {
     wrapperCol,
     render: () => (<p className={styles.tips}>“砍至指定价格”砍价到指定的价格才可以购</p>)
   },
-  giftCount: {
+  giftGetRuleValue: {
     type: 'text',
     label: '礼品底价',
     surfix: '元',
@@ -101,7 +101,7 @@ const formItems2 = {
     wrapperCol,
     render: () => (<p className={styles.tips}>用户将权益卡砍至此价格才完成购买，底价需</p>)
   },
-  bargainCount: {
+  needCount: {
     type: 'text',
     label: '帮砍人数',
     rules: [{
@@ -138,7 +138,7 @@ const formItems2 = {
     wrapperCol,
     render: () => (<p className={styles.tips}>用户自己的首刀比例会在设置的区间范围内随</p>)
   },
-  bargainValidity: {
+  eventDuration: {
     type: 'text',
     label: '砍价有效期',
     surfix: '小时',
@@ -158,7 +158,7 @@ const formItems2 = {
     wrapperCol,
     render: () => (<p className={styles.tips}>用户发起砍价，邀请好友有效时间</p>)
   },
-  countLimit: {
+  buyLimit: {
     type: 'text',
     label: '发起次数限制',
     surfix: '次',

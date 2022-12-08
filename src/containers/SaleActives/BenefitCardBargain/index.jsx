@@ -6,11 +6,13 @@
  */
 import React, { Component } from 'react'
 import { Spin } from 'antd';
+import moment from 'moment'
+import { jumpPage, closePage } from '@hualala/platform-base';
 import BaseInfo from './BaseInfo';
 import ActiveRules from './ActiveRules'
 import HelpRules from './HelpRules'
 import { putEvent, postEvent, getEvent } from './AxiosFactory';
-import { asyncParseForm } from "../../../helpers/util";
+import { asyncParseForm, formatEventRange } from "../../../helpers/util";
 import styles from './styles.less'
 
 class BenefitCardBargain extends Component {
@@ -30,69 +32,73 @@ class BenefitCardBargain extends Component {
 
   componentDidMount() {
     const { itemID } = this.props
-    // this.getResourceData();
     this.props.getSubmitFn(this.handleSubmit);
     if (!itemID) {
       this.setState({
         loading: false,
       })
     }
-  }
-
-  getResourceData = () => {
-    // getBenefitCards().then((list) => {
-    //   this.setState({
-    //     benefitCardLst: list,
-    //   })
-    // })
+    this.getEventDetail()
   }
 
 
   getEventDetail() {
     const { itemID } = this.props;
-    // if (itemID) {
-    //     getEvent({ itemID }).then((obj) => {
-    //         const { data, eventConditionInfos = [], timeList, triggerSceneList } = obj;
-    //         const { step1Data, setp2Data } = this.setData4Step1(data, eventConditionInfos, timeList, triggerSceneList);
-    //         const formData2 = this.setData4Step2(eventConditionInfos, step1Data.sceneList);
-    //         this.setState({ formData1: { ...step1Data, triggerSceneList }, formData2: { faceRule: formData2, ...setp2Data }, loading: false });
-    //     });
-    // }
+    if (itemID) {
+        getEvent({ itemID }).then((obj) => {
+            const { data, gifts = [{}] } = obj;
+            const { eventStartDate: sd, eventEndDate: ed} = data
+           const eventRange = [moment(sd), moment(ed)];
+            this.setState({ formData: { ...data, eventRange, ...gifts[0] }, loading: false});
+        });
+    }
+  }
+
+  onChangeGears = ({ giftID, presentValue }) => {
+    this.setState({
+      giftID,
+      presentValue,
+    })
   }
 
   handleSubmit = () => {
     // const { this.baseForm , form2 } = this.state
     const { itemID } = this.props
     const forms = [this.baseForm, this.activeForm, this.helpForm];
+    const {giftID, presentValue} = this.state
     asyncParseForm(forms).then(({ values, error }) => {
       if (error) return;
       console.log(values, 'values')
+      const { eventName, eventCode, eventRange, eventRemark, defaultCardType  } = values;
+      const newEventRange = formatEventRange(eventRange);
+      const allData = { event: { eventWay: 91, eventName, eventCode, eventRemark, ...newEventRange, defaultCardType },
+      gifts: [{ eventDurationType: 3, presentType: 15, presentValue, ..._.omit(values, ['eventName', 'eventCode', 'eventRange', 'eventRemark', 'defaultCardType', 'defaultCardType']), giftID }] }
+      console.log("🚀 ~ file: index.jsx:71 ~ BenefitCardBargain ~ asyncParseForm ~ allData", allData)
+      if (itemID) {
+        postEvent({ event: { ...allData.event, itemID, isActive: this.props.isActive == '0' ? 0 : 1 },
+      gifts: allData.gifts }).then((res) => {
+          console.log("🚀 ~ file: index.jsx:79 ~ BenefitCardBargain ~ asyncParseForm ~ res", res)
+          if (res) {
+            closePage()
+            jumpPage({ pageID: '1000076003' })
+          }
+        })
+        return
+      }
 
-      const allData = { event: { ...values } }
-
-      // if (itemID) {
-      //   const allData = { event: { ...values, itemID, isActive: this.props.isActive == '0' ? 0 : 1 } };
-      //   postEvent(allData).then((res) => {
-      //     if (res) {
-      //       closePage()
-      //       jumpPage({ pageID: '1000076003' })
-      //     }
-      //   })
-      //   return
-      // }
-
-      // putEvent({ ...allData }).then((res) => {
-      //   if (res.code === '000') {
-      //     closePage()
-      //     jumpPage({ pageID: '1000076003' })
-      //   }
-      // })
+      putEvent({ ...allData }).then((res) => {
+        console.log("🚀 ~ file: index.jsx:88 ~ BenefitCardBargain ~ putEvent ~ res", res)
+        if (res.code === '000') {
+          closePage()
+          jumpPage({ pageID: '1000076003' })
+        }
+      })
     })
   }
 
   render() {
     const { loading, formData } = this.state;
-    const { isView } = this.props
+    const { isView, itemID } = this.props
 
     return (
       <div className={styles.formContainer}>
@@ -108,6 +114,7 @@ class BenefitCardBargain extends Component {
                 formData={formData}
                 getForm={(form) => { this.baseForm = form}}
                 isView={isView}
+                key="BaseInfo_1"
              />
 
               <div
@@ -120,6 +127,9 @@ class BenefitCardBargain extends Component {
                 formData={formData}
                 getForm={(form) => { this.activeForm = form}}
                 isView={isView}
+                onChangeGears={this.onChangeGears}
+                key="ActiveRules_1"
+                itemID={itemID}
              />
               <div
                   style={{
@@ -131,6 +141,7 @@ class BenefitCardBargain extends Component {
                 formData={formData}
                 getForm={(form) => { this.helpForm = form }}
                 isView={isView}
+                key="HelpRules_1"
               />
           </Spin>
       </div>

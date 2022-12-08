@@ -5,10 +5,14 @@ import { Modal } from 'antd';
 import _ from 'lodash';
 import $ from 'jquery';
 import uuid from 'uuid/v4'
+import moment from 'moment'
 import { getStore } from '@hualala/platform-base'
 
 import getApiConfig from './callserver';
 
+
+const DF = 'YYYYMMDD';
+const TF = 'HHmm';
 /* eslint-disable */
 /**
  * 将fetch函数的response转化为json格式
@@ -841,4 +845,11 @@ export const formatGoodsData = (goods, category) => {
         _goods,
         _category,
     }
+}
+
+export const formatEventRange = (eventRange) => {
+    const [sd, ed] = eventRange;
+    const eventStartDate = moment(sd).format(DF);
+    const eventEndDate = moment(ed).format(DF);
+    return { eventStartDate, eventEndDate };
 }

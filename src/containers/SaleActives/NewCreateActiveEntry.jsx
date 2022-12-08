@@ -38,11 +38,11 @@ const createActiveList = [
         key: "95",
         comp: SeckillInLimitedTime,
     },
-    {
-        title: '权益卡砍价',
-        key: '91',
-        comp: BenefitCardBargain,
-    },
+    // {
+    //     title: '权益卡砍价',
+    //     key: '91',
+    //     comp: BenefitCardBargain,
+    // },
 ];
 
 @connect(({ loading, createActiveTwoCom }) => ({ loading, createActiveTwoCom }))
@@ -104,6 +104,7 @@ class NewCreateActiveEntry extends Component {
 
     render() {
         const { typeKey = "", itemID, isView, isActive, mode } = this.state.urlObj;
+        console.log("🚀 ~ file: NewCreateActiveEntry.jsx:107 ~ NewCreateActiveEntry ~ render ~ typeKey", typeKey)
         const { loading, clientType } = this.state;
         const currentInfo = createActiveList.find(v => v.key === typeKey) || {};
         let Comp = currentInfo.comp;
@@ -151,6 +152,7 @@ class NewCreateActiveEntry extends Component {
                         itemID={itemID}
                         isView={isView}
                         mode={mode}
+                        key={currentInfo.key}
                         onChangDecorateType={this.onchageType}
                         onChangClientype={this.onchageClientType}
                         isActive={isActive}

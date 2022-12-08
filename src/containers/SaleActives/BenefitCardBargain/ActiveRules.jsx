@@ -9,14 +9,15 @@ import { Select, Table, Input, Row, Col, Form } from 'antd'
 import BaseForm from 'components/common/BaseForm';
 import { formItems2, formItemLayout, columns } from './config'
 import { getBenefitCards, queryCardDetail } from './AxiosFactory'
+import styles from './styles.less'
 
-const formKeys = ['benefitCard', 'gears', 'bargainType','bargainTip', 'giftCount', 'giftCountTip', 'bargainCount', 'bargainCountTip', 'ratio', 'ratioTip', 'bargainValidity', 'bargainValidityTip', 'countLimit', 'countLimitTip'];
+const formKeys = ['cardTypeID', 'gears', 'giftGetRule', 'bargainTip', 'giftGetRuleValue', 'giftCountTip', 'needCount', 'bargainCountTip', 'ratio', 'ratioTip', 'eventDuration', 'bargainValidityTip', 'buyLimit', 'countLimitTip'];
 
 const Option = Select.Option
 const InputGroup = Input.Group;
 const FormItem = Form.Item;
 
-class BaseInfo extends Component {
+class ActiveRules extends Component {
 
   state = {
     newFormKeys: formKeys,
@@ -25,7 +26,19 @@ class BaseInfo extends Component {
   };
 
   componentDidMount() {
+    const { itemID, formData } = this.props
+    console.log("🚀 ~ file: ActiveRules.jsx:29 ~ ActiveRules ~ componentDidMount ~ itemID", itemID)
     this.getResourceData()
+  }
+
+  componentWillReceiveProps(np) {
+    console.log("🚀 ~ file: ActiveRules.jsx:33 ~ ActiveRules ~ componentWillReceiveProps ~ np", formData !== np.formData, np.itemID)
+    const { itemID, formData } = this.props
+    if ((formData !== np.formData) && np.itemID) {
+      console.log("🚀 ~ file: ActiveRules.jsx:37 ~ ActiveRules ~ componentWillReceiveProps ~  np.itemID", np.itemID)
+      debugger
+      this.onBenefitCardSelectChange(np.formData.cardTypeID, np.formData)
+    }
   }
 
   getResourceData = () => {
@@ -37,17 +50,23 @@ class BaseInfo extends Component {
   }
 
   handleSelected = (selectedRowKeys, selectedRows) => {
-    console.log("🚀 ~ file: ActiveRules.jsx ~ line 83 ~ BaseInfo ~ selectedRowKeys, selectedRows", selectedRowKeys, selectedRows)
-
+    const { paymentStageID, realPrice } = selectedRows[0] || {};
+    this.props.onChangeGears({ giftID: paymentStageID, presentValue: realPrice })
   }
 
-  onBenefitCardSelectChange = (value) => {
+  onBenefitCardSelectChange = (value, formData) => {
     // paymentStageList
     if (value) {
+      const { itemID } = this.props
       queryCardDetail(value).then((data) => {
         this.setState({
           dataSource: data.map((item, index) => {
-            if (index === 0) {
+            if (index === 0 && !itemID) {
+              this.props.onChangeGears({ giftID: item.paymentStageID, presentValue: item.realPrice })
+              return { ...item, isBind: true }
+            }
+            if (itemID && formData.giftID === item.paymentStageID) {
+              this.props.onChangeGears({ giftID: item.paymentStageID, presentValue: item.realPrice })
               return { ...item, isBind: true }
             }
             return { ...item }
@@ -86,7 +105,9 @@ class BaseInfo extends Component {
     const { dataSource } = this.state
     return (
       <div>
-        {d({})(
+        {d({
+          key: 'giftID'
+        })(
           <Table
             bordered={true}
             pagination={false}
@@ -106,37 +127,15 @@ class BaseInfo extends Component {
   }
 
   renderRatio = (d, form) => {
-  return (
-    <Row>
-      <InputGroup size="large">
-        <Col span={12}>
-          {d({
-            key: 'a',
-            rules: [{
-              required: true, message: '请设置首刀砍价比例',
-              validator: (rule, value, callback) => {
-                if (!/^\d+$/.test(value)) {
-                  return callback('请输入数字');
-                }
-                if (+value < 1 || +value > 99) {
-                  return callback('请输入1～99正整数之间');
-                }
-                return callback();
-              },
-            }],
-          })(<Input addonAfter={'%'} />)}
-        </Col>
-        <Col span={1}>至</Col>
-        <Col span={11}>
-          <FormItem required style={{ padding: 0 }}>
+    return (
+      <Row>
+        <InputGroup size="large">
+          <Col span={12}>
             {d({
-              key: 'bbb',
+              key: 'leftIntervalValue',
               rules: [{
-                required: true,
+                required: true, message: '请设置首刀砍价比例',
                 validator: (rule, value, callback) => {
-                  if (!value) {
-                    return callback('请设置首刀砍价比例')
-                  }
                   if (!/^\d+$/.test(value)) {
                     return callback('请输入数字');
                   }
@@ -147,19 +146,41 @@ class BaseInfo extends Component {
                 },
               }],
             })(<Input addonAfter={'%'} />)}
-          </FormItem>
-        </Col>
-      </InputGroup>
-  </Row>
-  )
+          </Col>
+          <Col span={1}>至</Col>
+          <Col span={11}>
+            <FormItem required style={{ padding: 0 }}>
+              {d({
+                key: 'rightIntervalValue',
+                rules: [{
+                  required: true,
+                  validator: (rule, value, callback) => {
+                    if (!value) {
+                      return callback('请设置首刀砍价比例')
+                    }
+                    if (!/^\d+$/.test(value)) {
+                      return callback('请输入数字');
+                    }
+                    if (+value < 1 || +value > 99) {
+                      return callback('请输入1～99正整数之间');
+                    }
+                    return callback();
+                  },
+                }],
+              })(<Input addonAfter={'%'} />)}
+            </FormItem>
+          </Col>
+        </InputGroup>
+      </Row>
+    )
   }
 
   /** formItems 重新设置 */
   resetFormItems() {
-    const { benefitCard, gears, ratio, ...other } = formItems2;
+    const { cardTypeID, gears, ratio, ...other } = formItems2;
     return {
-      benefitCard: {
-        ...benefitCard,
+      cardTypeID: {
+        ...cardTypeID,
         render: (d, form) => {
           return this.renderBenefitSelect(d, form)
         }
@@ -167,8 +188,8 @@ class BaseInfo extends Component {
       gears: {
         ...gears,
         render: (d, form) => {
-          const { benefitCard } = form.getFieldsValue()
-          if (!benefitCard) return null
+          const { cardTypeID } = form.getFieldsValue()
+          if (!cardTypeID) return null
           return this.renderGears(d, form)
         }
       },
@@ -184,20 +205,26 @@ class BaseInfo extends Component {
 
   render() {
     const { newFormKeys } = this.state;
-    let { formData = {}, isView, getForm } = this.props;
+    let { formData = {}, isView, getForm, itemID } = this.props;
 
     const newFormItems = this.resetFormItems();
     return (
-      <BaseForm
-        getForm={getForm}
-        formItems={newFormItems}
-        formKeys={newFormKeys}
-        // onChange={this.onChange}
-        formData={formData || {}}
-        formItemLayout={formItemLayout}
-      />
+      <div className={styles.ActiveRulesBox}>
+        <BaseForm
+          getForm={getForm}
+          formItems={newFormItems}
+          formKeys={newFormKeys}
+          // onChange={this.onChange}
+          formData={formData || {}}
+          formItemLayout={formItemLayout}
+        />
+        {
+          itemID && <Col className={styles.conditionListBoxPop}></Col>
+        }
+      </div>
+
     )
   }
 }
 
-export default BaseInfo
+export default ActiveRules
