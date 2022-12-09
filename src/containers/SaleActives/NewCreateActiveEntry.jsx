@@ -38,11 +38,11 @@ const createActiveList = [
         key: "95",
         comp: SeckillInLimitedTime,
     },
-    // {
-    //     title: '权益卡砍价',
-    //     key: '91',
-    //     comp: BenefitCardBargain,
-    // },
+    {
+        title: '权益卡砍价',
+        key: '91',
+        comp: BenefitCardBargain,
+    },
 ];
 
 @connect(({ loading, createActiveTwoCom }) => ({ loading, createActiveTwoCom }))
