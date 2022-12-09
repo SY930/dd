@@ -76,6 +76,8 @@ const defaultData = {
         msg: null,
     },
     effectType: '1',
+    /** 周期类型  _TODO */
+    weekEffectType: '1', 
     // 礼品生效时间
     giftEffectiveTime: {
         value: '0',
@@ -143,10 +145,20 @@ class AddGifts extends React.Component {
         this.renderValidOptions = this.renderValidOptions.bind(this);
         this.handleRangePickerChange = this.handleRangePickerChange.bind(this);
         this.proGiftTreeData = this.proGiftTreeData.bind(this);
-        this.VALIDATE_TYPE = Object.freeze([{
-            key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}`,
-        },
-        { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` }])
+        this.VALIDATE_TYPE = Object.freeze(
+            this.props.type == '53' ? 
+            [
+                { key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}` },
+                { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` },
+                { key: 2, value: '3', name: '周期有效期' }
+            ]
+            : 
+            [
+                { key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}` },
+                { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` }
+            ]
+        );
+
         this.GIFT_BELONGING_TYPE = Object.freeze([{
             key: 0, value: '1', name: `餐饮券`,
         },
@@ -562,7 +574,8 @@ class AddGifts extends React.Component {
                                 <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.du389nqve18246)}</span>
                                 <RadioGroup
                                     className={styles.radioMargin}
-                                    value={info.effectType == '2' ? '2' : '1'}
+                                    // _TODO
+                                    value={info.effectType}
                                     onChange={val => this.handleValidateTypeChange(val, index)}
                                     disabled={info.effectTypeIsDisabled}
                                 >
@@ -776,9 +789,9 @@ class AddGifts extends React.Component {
         });
     }
     // form的label样式，三种实现，哎，
-    // 相对有效期 OR 固定有效期
+    // 相对有效期 OR 固定有效期 OR 周期有效期
     renderValidOptions(info, index) {
-        if (info.effectType != '2') {
+        if (info.effectType == '1') {
             return (
                 <div>
                     <FormItem
@@ -854,6 +867,32 @@ class AddGifts extends React.Component {
                         />
                     </FormItem>
                 </div>
+            );
+        }
+        if(info.effectType == '3'){
+            // _TODO
+            return (
+                <FormItem
+                    className={[styles.FormItemStyle].join(' ')}
+                >
+                    <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>周期类型</span>
+                    <RadioGroup
+                        value={info.weekEffectType || '1'}
+                        className={styles.radioMargin}
+                        onChange={e => {
+                            const infos = this.state.infos;
+                            infos[index].weekEffectType = e.target.value
+                            this.setState({
+                                infos,
+                            }, () => {
+                                this.props.onChange && this.props.onChange(this.state.infos);
+                            })
+                        }}
+                    >
+                       <Radio value='1' key={1}>当周有效</Radio>
+                       <Radio value='2' key={2}>当月有效</Radio>
+                    </RadioGroup>
+                </FormItem>
             );
         }
         const pickerProps = {
@@ -1003,6 +1042,9 @@ class AddGifts extends React.Component {
         _infos[index].giftEffectiveTime.msg = null;
         _infos[index].giftValidDays.msg = null;
 
+        console.log(333333, _infos);
+        console.log(555555, e.target.value);
+        
         this.setState({
             infos: _infos,
         }, () => {
