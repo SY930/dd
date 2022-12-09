@@ -945,6 +945,9 @@ class SpecialDetailInfo extends Component {
                 if (this.props.type == "30" && gift.presentType === 4) {
                     data[index].giftInfo.giftName = "";
                 }
+                if (this.props.type == '30') {
+                    data[index].giftConfImagePath = gift.giftConfImagePath;
+                }
                 data[index].needCount.value = gift.needCount || 0;
                 data[index].giftInfo.giftItemID = gift.giftID;
                 data[index].giftInfo.itemID = gift.itemID;
@@ -959,9 +962,7 @@ class SpecialDetailInfo extends Component {
                 } else {
                     data[index].giftTotalCount.value = gift.giftTotalCount;
                 }
-                data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(
-                    2
-                );
+                data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
                 data[
                     index
                 ].lastConsumeIntervalDays = gift.lastConsumeIntervalDays
@@ -1520,7 +1521,7 @@ class SpecialDetailInfo extends Component {
                 return true;
             }
         }
-        const { sendTypeValue, giftTotalCountBag } = this.state;
+        const { sendTypeValue, giftTotalCountBag, giftConfImagePath } = this.state;
         if (type === "30" && sendTypeValue === "1") {
             if (!Number(giftTotalCountBag)) { message.warning('请填写礼品总数'); return false }
             const { bag } = this.state;
@@ -1532,6 +1533,7 @@ class SpecialDetailInfo extends Component {
                     presentType: 4,
                     giftOdds: "3",
                     giftTotalCount: giftTotalCountBag,
+                    giftConfImagePath,
                 };
                 this.props.setSpecialGiftInfo([params]);
                 const { shareTitle, shareImagePath } = this.state;
@@ -1764,6 +1766,7 @@ class SpecialDetailInfo extends Component {
                 }
                 if (sendTypeValue == '0') {
                      giftInfo[0].presentType = 1;
+                     giftInfo[0].giftConfImagePath = giftConfImagePath
                 }
                 const { shareTitle, shareImagePath } = this.state;
                 const shareInfo = { shareTitle, shareImagePath };
@@ -2396,6 +2399,8 @@ class SpecialDetailInfo extends Component {
     };
 
     renderScoreConvertImage = (title, { key, image }, index) => {
+        const { data = []} = this.state;
+        const { giftConfImagePath } = data[0] || {}
         return (
             <FormItem
                     label={title}
@@ -2413,7 +2418,7 @@ class SpecialDetailInfo extends Component {
                                 cropperRatio={200 / 200}
                                 limit={2048}
                                 allowedType={["image/png", "image/jpeg"]}
-                                value={image}
+                                value={image || giftConfImagePath}
                                 uploadTest="上传图片"
                                 onChange={(value) =>
                                     this.onRestImg({
@@ -2450,7 +2455,7 @@ class SpecialDetailInfo extends Component {
                         onChange: this.handleShareTitleChange,
                     })(<Input placeholder={shareTitlePL} />)}
                 </FormItem>
-                {this.renderScoreConvertImage('分享图片', { key: 'shareImagePath', value: shareImagePath }, '0')}
+                {this.renderScoreConvertImage('分享图片', { key: 'shareImagePath', image: shareImagePath }, '0')}
             </div>
         );
     };
@@ -4594,7 +4599,8 @@ class SpecialDetailInfo extends Component {
     }
 
     render() {
-        const { giveCoupon, couponValue } = this.state;
+        const { giveCoupon, couponValue, giftConfImagePath = '' } = this.state;
+        console.log("🚀 ~ file: SpecialPromotionDetailInfo.jsx:4603 ~ SpecialDetailInfo ~ render ~ giftConfImagePath", giftConfImagePath)
         const { type, isBenefitJumpSendGift = false } = this.props;
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
@@ -4695,7 +4701,7 @@ class SpecialDetailInfo extends Component {
                     </Row>
                 )}
                 {type === "30" && this.renderPointDuihuan()}
-                {type === '30' && this.renderScoreConvertImage('礼品图片', { key: '', value: '' }, 1)} 
+                {type === '30' && this.renderScoreConvertImage('礼品图片', { key: 'giftConfImagePath', iamge: giftConfImagePath }, 1)} 
                 {type === "60" && renderThree.call(this, type)}
                 {type === "53" &&
                     renderThree.call(this, type, isBenefitJumpSendGift)}
@@ -4748,6 +4754,7 @@ class SpecialDetailInfo extends Component {
         );
     }
 }
+    console.log("🚀 ~ file: SpecialPromotionDetailInfo.jsx:4757 ~ SpecialDetailInfo ~ image", image)
 
 function mapStateToProps(state) {
     return {
