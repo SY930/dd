@@ -609,7 +609,7 @@ class GiftDetailTable extends Component {
                                 )
                             }
                             {
-                                !!couponPackageReference.length && (
+                                !!yuYingEventReference.length && (
                                     <div>
                                         <div style={{ marginTop: 8 }}>
                                             该礼品被以下企微（语鹦）活动使用，如需停用，请取消引用
