@@ -347,7 +347,7 @@ export const renderThree = function (type, isBenefitJumpSendGift) {
             })}
             {perfectReturnGiftCoupon && (
                 <Row>
-                    <Col span={type == '53' ? 20 : 17} offset={1}>
+                    <Col span={type == '53' ? 21 : 17} offset={1}>
                         <AddGifts
                             maxCount={10}
                             type={this.props.type}
