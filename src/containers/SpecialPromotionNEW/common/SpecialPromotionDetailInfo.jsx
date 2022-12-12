@@ -367,7 +367,8 @@ class SpecialDetailInfo extends Component {
                     category: [],
                     goods: []
                 }
-            }
+            },
+            giftConfImagePath: data[0] ? data[0].giftConfImagePath : '',
         };
 
         this.rightControl = Permission(props.user.accountInfo.groupID).find(item => props.type === item.key);
@@ -783,7 +784,6 @@ class SpecialDetailInfo extends Component {
                     giftTotalCountBag: giftTotalCount == '0' ? '不限制' : giftTotalCount
                 });
             }
-
             if (
                 this.props.type == "21" &&
                 giftTotalCount &&
@@ -2399,8 +2399,6 @@ class SpecialDetailInfo extends Component {
     };
 
     renderScoreConvertImage = (title, { key, image }, index) => {
-        const { data = []} = this.state;
-        const { giftConfImagePath } = data[0] || {}
         return (
             <FormItem
                     label={title}
@@ -2418,7 +2416,7 @@ class SpecialDetailInfo extends Component {
                                 cropperRatio={200 / 200}
                                 limit={2048}
                                 allowedType={["image/png", "image/jpeg"]}
-                                value={image || giftConfImagePath}
+                                value={image}
                                 uploadTest="上传图片"
                                 onChange={(value) =>
                                     this.onRestImg({
@@ -4701,7 +4699,7 @@ class SpecialDetailInfo extends Component {
                     </Row>
                 )}
                 {type === "30" && this.renderPointDuihuan()}
-                {type === '30' && this.renderScoreConvertImage('礼品图片', { key: 'giftConfImagePath', iamge: giftConfImagePath }, 1)} 
+                {type === '30' && this.renderScoreConvertImage('礼品图片', { key: 'giftConfImagePath', image: giftConfImagePath }, 1)} 
                 {type === "60" && renderThree.call(this, type)}
                 {type === "53" &&
                     renderThree.call(this, type, isBenefitJumpSendGift)}
@@ -4754,7 +4752,6 @@ class SpecialDetailInfo extends Component {
         );
     }
 }
-    console.log("🚀 ~ file: SpecialPromotionDetailInfo.jsx:4757 ~ SpecialDetailInfo ~ image", image)
 
 function mapStateToProps(state) {
     return {
