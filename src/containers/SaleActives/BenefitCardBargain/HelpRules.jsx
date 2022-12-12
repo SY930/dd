@@ -26,7 +26,6 @@ class HelpRules extends Component {
   }
   getResourceData = () => {
     getGroupCardTypeList().then((list) => {
-      console.log("🚀 ~ file: HelpRules.jsx ~ line 29 ~ HelpRules ~ getGroupCardTypeList ~ list", list)
       this.setState({
         cardOptions: list,
       })

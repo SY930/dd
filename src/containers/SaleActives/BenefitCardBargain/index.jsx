@@ -73,11 +73,9 @@ class BenefitCardBargain extends Component {
       const newEventRange = formatEventRange(eventRange);
       const allData = { event: { eventWay: 91, eventName, eventCode, eventRemark, ...newEventRange, defaultCardType },
       gifts: [{ eventDurationType: 3, presentType: 15, presentValue, ..._.omit(values, ['eventName', 'eventCode', 'eventRange', 'eventRemark', 'defaultCardType', 'defaultCardType']), giftID }] }
-      console.log("🚀 ~ file: index.jsx:71 ~ BenefitCardBargain ~ asyncParseForm ~ allData", allData)
       if (itemID) {
         postEvent({ event: { ...allData.event, itemID, isActive: this.props.isActive == '0' ? 0 : 1 },
       gifts: allData.gifts }).then((res) => {
-          console.log("🚀 ~ file: index.jsx:79 ~ BenefitCardBargain ~ asyncParseForm ~ res", res)
           if (res) {
             closePage()
             jumpPage({ pageID: '1000076003' })
@@ -87,7 +85,6 @@ class BenefitCardBargain extends Component {
       }
 
       putEvent({ ...allData }).then((res) => {
-        console.log("🚀 ~ file: index.jsx:88 ~ BenefitCardBargain ~ putEvent ~ res", res)
         if (res.code === '000') {
           closePage()
           jumpPage({ pageID: '1000076003' })

@@ -33,7 +33,6 @@
          _groupLoginName: groupLoginName
      }, null, {path: '',});
      const { code, message: msg, data } = response;
-     console.log("🚀 ~ file: AxiosFactory.jsx ~ line 36 ~ getGroupCardTypeList ~ response", response)
      if (code === '000') {
          let {groupCardTypeList} = data
          return groupCardTypeList;

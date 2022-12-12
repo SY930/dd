@@ -27,16 +27,12 @@ class ActiveRules extends Component {
 
   componentDidMount() {
     const { itemID, formData } = this.props
-    console.log("🚀 ~ file: ActiveRules.jsx:29 ~ ActiveRules ~ componentDidMount ~ itemID", itemID)
     this.getResourceData()
   }
 
   componentWillReceiveProps(np) {
-    console.log("🚀 ~ file: ActiveRules.jsx:33 ~ ActiveRules ~ componentWillReceiveProps ~ np", formData !== np.formData, np.itemID)
     const { itemID, formData } = this.props
     if ((formData !== np.formData) && np.itemID) {
-      console.log("🚀 ~ file: ActiveRules.jsx:37 ~ ActiveRules ~ componentWillReceiveProps ~  np.itemID", np.itemID)
-      debugger
       this.onBenefitCardSelectChange(np.formData.cardTypeID, np.formData)
     }
   }
