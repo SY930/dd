@@ -118,7 +118,7 @@ class StepTwo extends React.Component {
             isRequire: true,
             foodPriceType: props.specialPromotionInfo.getIn(['$eventInfo', 'foodPriceType']) || '0',
             isBenifitActive: false,
-            eventMutexDependRuleInfos: props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])) ? props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])).toJS() : [],
+            eventMutexDependRuleInfos: !props.isNew && props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])) ? props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])).toJS() : [],
             benifitType: '1',
             benefitArr: [],
             isPromotionActive: false,//与促销活动不共享
