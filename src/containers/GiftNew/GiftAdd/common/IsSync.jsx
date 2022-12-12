@@ -27,7 +27,7 @@ class IsSync extends Component {
     }
 
     renderIsAync = () => {
-        if (this.props.value) {
+        if (!this.props.value) {
             return (
                 <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 24 }} >
                     <span className={styles.gTip}>更多礼品限制请使用</span>
