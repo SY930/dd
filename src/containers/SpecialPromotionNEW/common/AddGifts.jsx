@@ -76,8 +76,8 @@ const defaultData = {
         msg: null,
     },
     effectType: '1',
-    /** 周期类型  _TODO */
-    weekEffectType: '1', 
+    /** 周期类型  */
+    weekEffectType: '4', 
     // 礼品生效时间
     giftEffectiveTime: {
         value: '0',
@@ -150,7 +150,7 @@ class AddGifts extends React.Component {
             [
                 { key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}` },
                 { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` },
-                { key: 2, value: '3', name: '周期有效期' }
+                { key: 2, value: '99', name: '周期有效期' }
             ]
             : 
             [
@@ -574,8 +574,11 @@ class AddGifts extends React.Component {
                                 <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.du389nqve18246)}</span>
                                 <RadioGroup
                                     className={styles.radioMargin}
-                                    // _TODO
-                                    value={info.effectType}
+                                    // value={info.effectType == '2' ? '2' : info.effectType == '99' ? '99' : '1'}
+                                    value={
+                                        info.effectType == '2' ? '2' 
+                                        : (info.effectType == '99' || info.effectType == '4' || info.effectType == '5') ? '99' : '1'
+                                    }
                                     onChange={val => this.handleValidateTypeChange(val, index)}
                                     disabled={info.effectTypeIsDisabled}
                                 >
@@ -791,7 +794,32 @@ class AddGifts extends React.Component {
     // form的label样式，三种实现，哎，
     // 相对有效期 OR 固定有效期 OR 周期有效期
     renderValidOptions(info, index) {
-        if (info.effectType == '1') {
+        if(info.effectType == '99' || info.effectType == '4' || info.effectType == '5'){
+            return (
+                <FormItem
+                    className={[styles.FormItemStyle].join(' ')}
+                >
+                    <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>周期类型</span>
+                    <RadioGroup
+                        value={info.weekEffectType || (info.effectType == '99' ? '4' : info.effectType)}
+                        className={styles.radioMargin}
+                        onChange={e => {
+                            const infos = this.state.infos;
+                            infos[index].weekEffectType = e.target.value
+                            this.setState({
+                                infos,
+                            }, () => {
+                                this.props.onChange && this.props.onChange(this.state.infos);
+                            })
+                        }}
+                    >
+                       <Radio value='4' key={4}>当周有效</Radio>
+                       <Radio value='5' key={5}>当月有效</Radio>
+                    </RadioGroup>
+                </FormItem>
+            );
+        }
+        if (info.effectType != '2') {
             return (
                 <div>
                     <FormItem
@@ -867,32 +895,6 @@ class AddGifts extends React.Component {
                         />
                     </FormItem>
                 </div>
-            );
-        }
-        if(info.effectType == '3'){
-            // _TODO
-            return (
-                <FormItem
-                    className={[styles.FormItemStyle].join(' ')}
-                >
-                    <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>周期类型</span>
-                    <RadioGroup
-                        value={info.weekEffectType || '1'}
-                        className={styles.radioMargin}
-                        onChange={e => {
-                            const infos = this.state.infos;
-                            infos[index].weekEffectType = e.target.value
-                            this.setState({
-                                infos,
-                            }, () => {
-                                this.props.onChange && this.props.onChange(this.state.infos);
-                            })
-                        }}
-                    >
-                       <Radio value='1' key={1}>当周有效</Radio>
-                       <Radio value='2' key={2}>当月有效</Radio>
-                    </RadioGroup>
-                </FormItem>
             );
         }
         const pickerProps = {

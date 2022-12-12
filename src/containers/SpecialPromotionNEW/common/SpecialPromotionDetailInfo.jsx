@@ -1363,10 +1363,17 @@ class SpecialDetailInfo extends Component {
 
     // 拼出礼品信息
     getGiftInfo = (data) => {
-        console.log('拼出礼品信息', data);
         const giftArr = data.map((giftInfo, index) => {
             let gifts;
-            if(giftInfo.effectType == '1'){
+            if(giftInfo.effectType == '99' || giftInfo.effectType == '4' || giftInfo.effectType == '5'){
+                gifts = {
+                    effectType: giftInfo.weekEffectType || '4',
+                    giftID: giftInfo.giftInfo.giftItemID,
+                    itemID: giftInfo.giftInfo.itemID,
+                    giftName: giftInfo.giftInfo.giftName,
+                    giftType: giftInfo.giftInfo.parentId,
+                };
+            }else if(giftInfo.effectType != "2"){
                 // 相对期限
                 gifts = {
                     effectType: giftInfo.effectType,
@@ -1377,7 +1384,7 @@ class SpecialDetailInfo extends Component {
                     giftName: giftInfo.giftInfo.giftName,
                     giftType: giftInfo.giftInfo.parentId,
                 };
-            }else if(giftInfo.effectType == '2'){
+            }else {
                 // 固定期限
                 gifts = {
                     effectType: "2",
@@ -1403,15 +1410,6 @@ class SpecialDetailInfo extends Component {
                     giftName: giftInfo.giftInfo.giftName,
                     itemID: giftInfo.giftInfo.itemID,
                     giftType: giftInfo.giftInfo.parentId,
-                };
-            }else if(giftInfo.effectType == '3'){
-                gifts = {
-                    effectType: giftInfo.effectType,
-                    giftID: giftInfo.giftInfo.giftItemID,
-                    itemID: giftInfo.giftInfo.itemID,
-                    giftName: giftInfo.giftInfo.giftName,
-                    giftType: giftInfo.giftInfo.parentId,
-                    weekEffectType: giftInfo.weekEffectType,
                 };
             }
 
@@ -1664,7 +1662,6 @@ class SpecialDetailInfo extends Component {
             }, []);
         }
         const validatedRuleData = data.map((ruleInfo, index) => {
-            console.log(999999, ruleInfo);
             const giftValidDaysOrEffect =
                 ruleInfo.effectType != "2"
                     ? "giftValidDays"
@@ -1672,7 +1669,7 @@ class SpecialDetailInfo extends Component {
 
             let giftValidDaysOrEffectObj = {};
 
-            if(ruleInfo.effectType == '3'){
+            if(ruleInfo.effectType == '99' || ruleInfo.effectType == '4' || ruleInfo.effectType == '5'){
                 giftValidDaysOrEffectObj = {
                     weekEffectType: ruleInfo.weekEffectType,
                 }
@@ -1997,7 +1994,6 @@ class SpecialDetailInfo extends Component {
 
     // 有效天数
     checkGiftValidDays = (giftValidDays, index) => {
-        console.log('_TODO giftValidDays', giftValidDays);
         const _value =
             giftValidDays.value instanceof Array
                 ? giftValidDays.value
@@ -2085,7 +2081,7 @@ class SpecialDetailInfo extends Component {
         };
     };
     gradeChange = (gifts, typeValue) => {
-        console.log('_TODO 555555', gifts);
+        console.log(111111, gifts, typeValue);
         // 赠送优惠券
         const typePropertyName =
             this.props.type == "68" ? "recommendType" : "sendType";
