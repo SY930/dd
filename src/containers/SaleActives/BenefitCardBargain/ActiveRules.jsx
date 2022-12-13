@@ -46,8 +46,8 @@ class ActiveRules extends Component {
   }
 
   handleSelected = (selectedRowKeys, selectedRows) => {
-    const { paymentStageID, realPrice } = selectedRows[0] || {};
-    this.props.onChangeGears({ giftID: paymentStageID, presentValue: realPrice })
+    const { paymentStageID, realPrice, indexName } = selectedRows[0] || {};
+    this.props.onChangeGears({ giftID: paymentStageID, presentValue: realPrice, giftName: indexName })
   }
 
   onBenefitCardSelectChange = (value, formData) => {
@@ -58,11 +58,11 @@ class ActiveRules extends Component {
         this.setState({
           dataSource: data.map((item, index) => {
             if (index === 0 && !itemID) {
-              this.props.onChangeGears({ giftID: item.paymentStageID, presentValue: item.realPrice })
+              this.props.onChangeGears({ giftID: item.paymentStageID, presentValue: item.realPrice, giftName: item.indexName })
               return { ...item, isBind: true }
             }
             if (itemID && formData.giftID === item.paymentStageID) {
-              this.props.onChangeGears({ giftID: item.paymentStageID, presentValue: item.realPrice })
+              this.props.onChangeGears({ giftID: item.paymentStageID, presentValue: item.realPrice, giftName: item.indexName })
               return { ...item, isBind: true }
             }
             return { ...item }

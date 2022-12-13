@@ -7,6 +7,7 @@
 import React, { Component } from 'react'
 import { Spin } from 'antd';
 import moment from 'moment'
+import _ from 'loadsh';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import BaseInfo from './BaseInfo';
 import ActiveRules from './ActiveRules'
@@ -20,7 +21,7 @@ class BenefitCardBargain extends Component {
   constructor() {
     super()
     this.state = {
-        formData: {}, // 
+        formData: {}, //
         flag: false,
         loading: true,
         benefitCardLst: [],
@@ -42,40 +43,52 @@ class BenefitCardBargain extends Component {
   }
 
 
+  onChangeGears = ({ giftID, presentValue, giftName }) => {
+    this.setState({
+      giftID,
+      presentValue,
+      giftName,
+    })
+  }
+
+
   getEventDetail() {
     const { itemID } = this.props;
     if (itemID) {
         getEvent({ itemID }).then((obj) => {
             const { data, gifts = [{}] } = obj;
-            const { eventStartDate: sd, eventEndDate: ed} = data
+            const { eventStartDate: sd, eventEndDate: ed } = data
            const eventRange = [moment(sd), moment(ed)];
-            this.setState({ formData: { ...data, eventRange, ...gifts[0] }, loading: false});
+            this.setState({ formData: { ...data, eventRange, ...gifts[0] }, loading: false });
         });
     }
-  }
-
-  onChangeGears = ({ giftID, presentValue }) => {
-    this.setState({
-      giftID,
-      presentValue,
-    })
   }
 
   handleSubmit = () => {
     // const { this.baseForm , form2 } = this.state
     const { itemID } = this.props
     const forms = [this.baseForm, this.activeForm, this.helpForm];
-    const {giftID, presentValue} = this.state
+    const { giftID, presentValue, giftName } = this.state
     asyncParseForm(forms).then(({ values, error }) => {
       if (error) return;
-      console.log(values, 'values')
-      const { eventName, eventCode, eventRange, eventRemark, defaultCardType  } = values;
+      // console.log(values, 'values')
+      const { eventName, eventCode, eventRange, eventRemark, defaultCardType } = values;
       const newEventRange = formatEventRange(eventRange);
-      const allData = { event: { eventWay: 91, eventName, eventCode, eventRemark, ...newEventRange, defaultCardType },
-      gifts: [{ eventDurationType: 3, presentType: 15, presentValue, ..._.omit(values, ['eventName', 'eventCode', 'eventRange', 'eventRemark', 'defaultCardType', 'defaultCardType']), giftID }] }
+      const allData = {
+        event: { eventWay: 91, eventName, eventCode, eventRemark, ...newEventRange, defaultCardType },
+        gifts: [{ eventDurationType: 3,
+          presentType: 15,
+          presentValue,
+          giftCount: 1,
+          giftName,
+          ..._.omit(values, ['eventName', 'eventCode', 'eventRange', 'eventRemark', 'defaultCardType', 'defaultCardType']),
+          giftID }],
+      }
       if (itemID) {
-        postEvent({ event: { ...allData.event, itemID, isActive: this.props.isActive == '0' ? 0 : 1 },
-      gifts: allData.gifts }).then((res) => {
+        postEvent({
+          event: { ...allData.event, itemID, isActive: this.props.isActive == '0' ? 0 : 1 },
+          gifts: allData.gifts,
+        }).then((res) => {
           if (res) {
             closePage()
             jumpPage({ pageID: '1000076003' })
