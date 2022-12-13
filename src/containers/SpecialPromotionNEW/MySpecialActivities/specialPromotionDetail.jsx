@@ -1917,7 +1917,7 @@ class SpecialPromotionDetail extends React.Component {
         if (eventWay == 66) {
             len = 700
         }
-        if (eventWay == 75) {
+        if (eventWay == 75 || eventWay == 95) {
             len = 900
         }
         return (
@@ -1925,7 +1925,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataSource={dataSource}
                 columns={columns.filter(Boolean)}
                 bordered={true}
-                scroll={[66, 68, 75].includes(eventWay) ? { x: len } : {}}
+                scroll={[66, 68, 75, 95].includes(eventWay) ? { x: len } : {}}
                 pagination={{
                     current: this.state.pageNo,
                     total: this.state.total,
