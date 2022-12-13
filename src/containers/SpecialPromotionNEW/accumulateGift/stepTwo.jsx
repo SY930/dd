@@ -17,6 +17,7 @@ import {
     fetchFoodMenuInfoAC,
     saleCenterSetPromotionDetailAC
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { SALE_LABEL } from 'i18n/common/salecenter';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput'; // 编辑
@@ -163,16 +164,18 @@ class StepTwo extends React.Component {
                     assetArr,
                 })
             }
-            if (benefitArr[0].targetID != 0) {
-                this.props.setPromotionDetail({
-                    mutexPromotions: benefitArr.map((promotion) => {
-                        return {
-                            promotionIDStr: promotion.targetID || '',
-                            // sharedType: '10',
-                            finalShowName: promotion.targetName || SALE_LABEL.k5m3onpk,
-                        }
-                    }),
-                });
+            if(benefitArr && benefitArr.length) {
+                if (benefitArr[0].targetID != 0) {
+                    this.props.setPromotionDetail({
+                        mutexPromotions: benefitArr.map((promotion) => {
+                            return {
+                                promotionIDStr: promotion.targetID || '',
+                                // sharedType: '10',
+                                finalShowName: promotion.targetName || SALE_LABEL.k5m3onpk,
+                            }
+                        }),
+                    });
+                }
             }
         } else {
             this.setState({
