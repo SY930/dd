@@ -3,7 +3,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-12-12 14:36:16
+ * @LastEditTime: 2022-12-14 15:40:35
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/index.jsx
  */
 
@@ -101,14 +101,12 @@ class SeckillInLimitedTime extends Component {
 
     //时间段格式化
     formatTimeList = list => {
-        console.log(list,'list>>>>>>>>>>>>>>>>>>>')
         if (!list) {
             return [];
         }
         const times = [];
         const st = moment(list[0]).format("HHmm");
         const et = moment(list[1]).format("HHmm");
-        console.log(st,et,'st-----------')
         times.push({ startTime: st.substr(0,2) + '00', endTime: et.substr(0,2) + '00' });
         return times;
     };
