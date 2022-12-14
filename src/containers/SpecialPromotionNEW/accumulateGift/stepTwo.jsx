@@ -6,7 +6,8 @@ import {
     Select,
     Radio,
     message,
-    Switch
+    Switch,
+    Checkbox
 } from 'antd';
 import {
     fetchPromotionScopeInfo,
@@ -16,6 +17,7 @@ import {
     fetchFoodMenuInfoAC,
     saleCenterSetPromotionDetailAC
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { SALE_LABEL } from 'i18n/common/salecenter';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput'; // 编辑
@@ -24,6 +26,8 @@ import ShopSelector from '../../../components/ShopSelector';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import { axios } from '@hualala/platform-base';
 import NoShareBenifit from 'containers/SaleCenterNEW/common/NoShareBenifit.jsx';
+import OnSaleNoShareBenifit from 'containers/SaleActives/NewPromotionCardPages/components/OnSaleNoShareBenifit.jsx';
+import { BASIC_PROMOTION_MAP } from "../../../constants/promotionType";
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -68,6 +72,35 @@ const CONSUME_TIMES_OPTIONS = [
         showFood: true,
     },
 ];
+const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
+//请求获取所有基础营销活动
+async function fetchAllPromotionList(data) {
+    const method = '/promotion/docPromotionService_query.ajax';
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type: 'post',
+        data,
+        method,
+    };
+    const response = await axios.post('/api/v1/universal?' + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        if(obj && obj.promotionLst && obj.promotionLst.length > 0){
+            return obj.promotionLst.map(promotion => ({
+                value: promotion.promotionIDStr,
+                label: `${promotion.promotionName}`,
+                type: `${promotion.promotionType}`,
+                activityType: '10',
+                activitySource: '1',
+                basicType: `${promotion.promotionType}`,
+              })).filter(item => AVAILABLE_PROMOTIONS.includes(item.type))
+        } else{
+            return []
+        }
+    }
+    message.error(msg);
+    return [];
+}
 
 class StepTwo extends React.Component {
     constructor(props) {
@@ -86,8 +119,14 @@ class StepTwo extends React.Component {
             isRequire: true,
             foodPriceType: props.specialPromotionInfo.getIn(['$eventInfo', 'foodPriceType']) || '0',
             isBenifitActive: false,
-            eventMutexDependRuleInfos: props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])) ? props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])).toJS() : [],
+            eventMutexDependRuleInfos: !props.isNew && props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])) ? props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])).toJS() : [],
             benifitType: '1',
+            benefitArr: [],
+            isPromotionActive: false,//与促销活动不共享
+            promotionType: '1',
+            isRightActive: false,//与会员权益不共享
+            isAssetActive: false,//与会员资产不共享
+            promotionLst: [],
         }
         this.selectNoShareBenifit = this.selectNoShareBenifit.bind(this);
     }
@@ -95,24 +134,55 @@ class StepTwo extends React.Component {
     componentDidMount() {
         const { eventMutexDependRuleInfos, groupID } = this.state;
         if (eventMutexDependRuleInfos && eventMutexDependRuleInfos.length > 0) {
-            this.setState({
-                isBenifitActive: true,
-                benifitType: eventMutexDependRuleInfos[0].targetID == 0 ? '1' : '2'
-            })
-            if (eventMutexDependRuleInfos[0].targetID != 0) {
-                this.props.setPromotionDetail({
-                    mutexPromotions: eventMutexDependRuleInfos.map((promotion) => {
-                        return {
-                            promotionIDStr: promotion.targetID || '',
-                            // sharedType: '10',
-                            finalShowName: promotion.targetName || SALE_LABEL.k5m3onpk,
-                        }
-                    }),
-                });
+            const benefitArr = eventMutexDependRuleInfos.filter(item => item.ruleType == 10)
+            const promotionArr = eventMutexDependRuleInfos.filter(item => item.ruleType == 20).map(item => item.targetID)
+            const rightArr = eventMutexDependRuleInfos.filter(item => item.ruleType == 31 || item.ruleType == 32).map(item => item.ruleType)
+            const assetArr = eventMutexDependRuleInfos.filter(item => item.ruleType == 33 || item.ruleType == 34).map(item => item.ruleType)
+            if(benefitArr && benefitArr.length) {
+                this.setState({
+                    isBenifitActive: true,
+                    benifitType: benefitArr[0].targetID == 0 ? '1' : '2',
+                    benefitArr,
+                })
+            }
+            if(promotionArr && promotionArr.length) {
+                this.setState({
+                    isPromotionActive: true,
+                    promotionType: promotionArr[0] == 0 ? '1' : '2',
+                    onSaleNoShareBenifit: promotionArr
+                })
+            }
+            if(rightArr && rightArr.length) {
+                this.setState({
+                    isRightActive: true,
+                    rightArr,
+                })
+            }
+            if(assetArr && assetArr.length) {
+                this.setState({
+                    isAssetActive: true,
+                    assetArr,
+                })
+            }
+            if(benefitArr && benefitArr.length) {
+                if (benefitArr[0].targetID != 0) {
+                    this.props.setPromotionDetail({
+                        mutexPromotions: benefitArr.map((promotion) => {
+                            return {
+                                promotionIDStr: promotion.targetID || '',
+                                // sharedType: '10',
+                                finalShowName: promotion.targetName || SALE_LABEL.k5m3onpk,
+                            }
+                        }),
+                    });
+                }
             }
         } else {
             this.setState({
                 isBenifitActive: false,
+                isPromotionActive: false,
+                isRightActive: false,
+                isAssetActive: false,
             })
         }
         this.props.getSubmitFn({
@@ -125,6 +195,20 @@ class StepTwo extends React.Component {
         this.props.fetchFoodCategoryInfo();
         this.props.fetchFoodMenuInfo();
         this.loadShopSchema();
+        this.fetchAllPromotionListAC()
+    }
+    fetchAllPromotionListAC = () => {
+        fetchAllPromotionList({
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
+            isActive: -1,
+            pageNo: 1,
+            pageSize: 20000,
+        }).then((res) => {
+            this.setState({
+                promotionLst: res,
+              })
+        })
     }
     isShowFoodSelector() {
         const {
@@ -137,12 +221,15 @@ class StepTwo extends React.Component {
 
     handleSubmit = () => {
         let flag = true;
+        let values = {}
         this.props.form.validateFieldsAndScroll((error, basicValues) => {
             if (error) {
                 flag = false;
             }
+            values = basicValues
         });
-        const { foodScopeList, eventMutexDependRuleInfos } = this.state;
+        let { foodScopeList } = this.state;
+        const eventMutexDependRuleInfos = this.dealWithOtherRuleInfos(values)
         if (this.isShowFoodSelector() && !foodScopeList.length) {
             flag = false;
             message.warning('请设置适用菜品')
@@ -151,9 +238,38 @@ class StepTwo extends React.Component {
             this.props.setSpecialBasicInfo({
                 ...this.state,
                 foodScopeList: this.isShowFoodSelector() ? foodScopeList : [],
+                eventMutexDependRuleInfos,
             });
         }
         return flag;
+    }
+
+    dealWithOtherRuleInfos = (values) => {
+        const { rightType, assetType, onSaleNoShareBenifit } = values
+        const { benefitArr, isPromotionActive, promotionType, isRightActive, isAssetActive, promotionLst } = this.state;
+        let newEventMutexDependRuleInfos = [].concat(benefitArr);
+        if (isPromotionActive && promotionType == 1) { // 与所有促销活动不共享
+            newEventMutexDependRuleInfos.push({ mutexDependType:1,ruleType: 20, targetID: 0 })
+        }
+        if (isPromotionActive && promotionType == 2) { // 与部分促销活动不共享
+            newEventMutexDependRuleInfos =  onSaleNoShareBenifit.reduce((ret, shopID) => {
+                const shopInfo = promotionLst.find(shop => shop.value === shopID);
+                if (!shopInfo) return ret;
+                return ret.concat({mutexDependType:1,  targetID: shopInfo.value, targetName: shopInfo.label, ruleType: 20,  });
+            }, newEventMutexDependRuleInfos);
+        }
+        if (isRightActive) { // 与会员权益不共享
+            newEventMutexDependRuleInfos =  rightType.reduce((ret, ruleType) => {
+                return ret.concat({ mutexDependType:1, targetID: 0, ruleType });
+            }, newEventMutexDependRuleInfos);
+        }
+        if (isAssetActive) { // 与会员权益不共享
+            newEventMutexDependRuleInfos =  assetType.reduce((ret, ruleType) => {
+                return ret.concat({  mutexDependType:1, targetID: 0, ruleType });
+            }, newEventMutexDependRuleInfos);
+        }
+
+        return newEventMutexDependRuleInfos
     }
 
     handleDefaultCardTypeChange = (defaultCardType) => {
@@ -208,7 +324,7 @@ class StepTwo extends React.Component {
                 mutexPromotions: []
             });
             this.setState({
-                eventMutexDependRuleInfos: allArr
+                benefitArr: allArr
             })
         }
         this.setState({
@@ -253,7 +369,7 @@ class StepTwo extends React.Component {
     handleBenifitSwitchChange = (value) => {
         if (value) {
             this.setState({
-                eventMutexDependRuleInfos: [{
+                benefitArr: [{
                     mutexDependType: 1,
                     ruleType: 10,
                     targetID: 0,
@@ -263,7 +379,7 @@ class StepTwo extends React.Component {
             })
         } else {
             this.setState({
-                eventMutexDependRuleInfos: []
+                benefitArr: []
             })
         }
         this.props.setPromotionDetail({
@@ -286,7 +402,7 @@ class StepTwo extends React.Component {
                 })
             })
             this.setState({
-                eventMutexDependRuleInfos: insertArr,
+                benefitArr: insertArr,
             });
             this.props.setPromotionDetail({
                 blackList: this.state.blackListRadio != '0',
@@ -510,59 +626,179 @@ class StepTwo extends React.Component {
                     // schemaData={this.props.shopSchema.toJS()}
                     />
                 </FormItem>
-                {
-                    allowGroup.includes(groupID) ?
-                        <div>
+                <div>
+                    <FormItem
+                        label={'与优惠券不共享'}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                        style={{ marginTop: '15' }}
+                    >
+                        <div className={styles.couponSwitch}>
+                            <Switch checked={this.state.isBenifitActive} checkedChildren="开" unCheckedChildren="关" onChange={this.handleBenifitSwitchChange} />
+                            {/* <span style={{marginLeft:12}}>仅小程序订单执行优惠不共享,其他渠道的订单,用券后仍可正常集点</span> */}
+                        </div>
+                    </FormItem>
+                    {
+                        this.state.isBenifitActive ?
                             <FormItem
-                                label={'与优惠券不共享'}
+                                label={' '}
                                 className={styles.FormItemStyle}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
-                                style={{ marginTop: '15' }}
                             >
-                                <div className={styles.couponSwitch}>
-                                    <Switch checked={this.state.isBenifitActive} checkedChildren="开" unCheckedChildren="关" onChange={this.handleBenifitSwitchChange} />
-                                    {/* <span style={{marginLeft:12}}>仅小程序订单执行优惠不共享,其他渠道的订单,用券后仍可正常集点</span> */}
-                                </div>
-
+                                <RadioGroup onChange={this.handleBenifitTypeChange} value={this.state.benifitType}>
+                                    <Radio value={'1'}>与所有优惠券不共享</Radio>
+                                    <Radio value={'2'}>与部分优惠券不共享</Radio>
+                                </RadioGroup>
                             </FormItem>
-                            {
-                                this.state.isBenifitActive ?
-                                    <FormItem
-                                        label={' '}
-                                        className={styles.FormItemStyle}
-                                        labelCol={{ span: 4 }}
-                                        wrapperCol={{ span: 17 }}
-                                    >
-                                        <RadioGroup onChange={this.handleBenifitTypeChange} value={this.state.benifitType}>
-                                            <Radio value={'1'}>与所有优惠券不共享</Radio>
-                                            <Radio value={'2'}>与部分优惠券不共享</Radio>
-                                        </RadioGroup>
-                                    </FormItem>
-                                    : null
-                            }
-                            {
-                                this.state.isBenifitActive ?
-                                    <FormItem
-                                        label="不共享优惠"
-                                        className={styles.FormItemStyle}
-                                        labelCol={{ span: 4 }}
-                                        wrapperCol={{ span: 17 }}
-                                        required={isRequire}
-                                        validateStatus={shopStatus ? 'success' : 'error'}
-                                        help={shopStatus ? null : '至少选择一项优惠'}
-                                        style={{ display: this.state.benifitType == '2' ? 'block' : 'none' }}
-                                    >
-                                        <NoShareBenifit onChange={(val) => {
-                                            this.selectNoShareBenifit(val)
-                                        }}
-                                        />
-                                    </FormItem> : null
-                            }
-
+                            : null
+                    }
+                    {
+                        this.state.isBenifitActive ?
+                            <FormItem
+                                label="不共享优惠"
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                                required={isRequire}
+                                validateStatus={shopStatus ? 'success' : 'error'}
+                                help={shopStatus ? null : '至少选择一项优惠'}
+                                style={{ display: this.state.benifitType == '2' ? 'block' : 'none' }}
+                            >
+                                <NoShareBenifit onChange={(val) => {
+                                    this.selectNoShareBenifit(val)
+                                }}
+                                />
+                            </FormItem> : null
+                    }
+                </div>
+                <div>
+                    <FormItem
+                        label={'与促销活动不共享'}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        <div className={styles.couponSwitch}>
+                            <Switch
+                                checked={this.state.isPromotionActive}
+                                checkedChildren="开"
+                                unCheckedChildren="关"
+                                onChange={(e) => this.setState({ isPromotionActive: e })}
+                            />
                         </div>
+                    </FormItem>
+                    {
+                        this.state.isPromotionActive ?
+                            <FormItem
+                                label={' '}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                <RadioGroup
+                                    onChange={({ target: { value }}) => {
+                                        this.setState({ promotionType: value, onSaleNoShareBenifit: [] })
+                                        this.props.form.setFieldsValue({ onSaleNoShareBenifit: [] })
+                                    }} 
+                                    value={this.state.promotionType}
+                                >
+                                    <Radio value={'1'}>与所有促销活动不共享</Radio>
+                                    <Radio value={'2'}>与部分促销活动不共享</Radio>
+                                </RadioGroup>
+                            </FormItem>
                         : null
-                }
+                    }
+                    {
+                        this.state.isPromotionActive && this.state.promotionType == '2' ? 
+                            <Form.Item
+                                label={' '}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                {this.props.form.getFieldDecorator('onSaleNoShareBenifit', {
+                                    rules: [
+                                        { required: true, message: '至少选择一项活动' }
+                                    ],
+                                    initialValue: this.state.onSaleNoShareBenifit,
+                                    onChange: (val) => this.setState({ onSaleNoShareBenifit: val }),
+                                })(
+                                    <OnSaleNoShareBenifit />
+                                )}
+                            </Form.Item>
+                        : null
+                    }
+                </div>
+                <div>
+                    <FormItem
+                        label={'与会员权益不共享'}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        <div className={styles.couponSwitch}>
+                            <Switch checked={this.state.isRightActive} onChange={(e) => { this.setState({ isRightActive: e }) }} checkedChildren="开" unCheckedChildren="关" />
+                        </div>
+                    </FormItem>
+                    {
+                        this.state.isRightActive ?
+                            <FormItem
+                                label={' '}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                {this.props.form.getFieldDecorator('rightType', {
+                                    rules: [
+                                        { required: true, message: '至少选择一项会员权益' }
+                                    ],
+                                    initialValue: this.state.rightArr || [31,32],
+                                    onChange: (val) => this.setState({ rightArr: val }),
+                                })(
+                                    <Checkbox.Group
+                                        options={[{ label: '会员价', value: 31 }, { label: '会员折扣', value: 32 }]}
+                                    />
+                                )}
+                            </FormItem>
+                        : null
+                    }
+                </div>
+                <div>
+                    <FormItem
+                        label={'与会员资产不共享'}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        <div className={styles.couponSwitch}>
+                            <Switch checked={this.state.isAssetActive} onChange={(e) => { this.setState({ isAssetActive: e }) }} checkedChildren="开" unCheckedChildren="关" />
+                        </div>
+                    </FormItem>
+                    {
+                        this.state.isAssetActive ?
+                            <FormItem
+                                label={' '}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                 {this.props.form.getFieldDecorator('assetType', {
+                                    rules: [
+                                        { required: true, message: '至少选择一项会员资产' }
+                                    ],
+                                    initialValue: this.state.assetArr || [33,34],
+                                    onChange: (val) => this.setState({ assetArr: val }),
+                                })(
+                                    <Checkbox.Group
+                                        options={[{ label: '会员储值', value: 33 }, { label: '会员积分', value: 34 }]}
+                                    />
+                                )}
+                            </FormItem>
+                        : null
+                    }
+                </div>
             </Form>
         );
     }
@@ -574,6 +810,7 @@ const mapStateToProps = (state) => {
         crmCardTypeNew: state.sale_crmCardTypeNew,
         shopSchema: state.sale_shopSchema_New.getIn(['shopSchema']),
         mySpecialActivities: state.sale_mySpecialActivities_NEW,
+        user: state.user.toJS(),
     };
 };
 
