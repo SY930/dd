@@ -4061,7 +4061,7 @@ shopAreaSelectorChange = (value) => {
             isSynch: {
                 label: ` `,
                 type: 'custom',
-                defaultValue: false,
+                defaultValue: true,
                 render: type === 'copy' ? decorator => decorator({})(<div></div>) : decorator => decorator({})(<IsSync/>),
             },
             amountType: {
