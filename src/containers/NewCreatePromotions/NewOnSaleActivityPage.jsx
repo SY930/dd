@@ -66,7 +66,7 @@ import {
 
 
 const CONTAIN_GROUPID_SHOW = ['317964', '189702']; // 拼团秒杀只针对茶百道显示
-const REDUCE_SHIPPING_GROUPID = ['11157', '189702'] // 配送费减免仅针对白名单集团开发
+const REDUCE_SHIPPING_GROUPID = ['11157', '189702', '89447'] // 配送费减免仅针对白名单集团开发
 
 
 //周黑鸭需求
