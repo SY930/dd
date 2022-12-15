@@ -33,7 +33,8 @@ import BirthdayCardLevelSelector from './BirthdayCardLevelSelector';
 import ExcludeCardTable from '../common/ExcludeCardTable';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
-
+import { setSensorsData } from "../../../helpers/util";
+import SensorsCodes from "../../../constants/SensorsCodes";
 
 
 
@@ -53,11 +54,11 @@ class StepTwo extends React.Component {
         }
         this.state = {
             getExcludeCardLevelIds: [],
-            message: '',
-            settleUnitID: '',
-            accountNo: '',
+            message: "",
+            settleUnitID: "",
+            accountNo: "",
             cardLevelIDList: Immutable.List.isList(cardLevelIDList) ? cardLevelIDList.toJS() : [],
-            groupMembersID: this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']),
+            groupMembersID: this.props.specialPromotion.getIn(["$eventInfo", "cardGroupID"]),
             groupMembersList: [],
             cardLevelRangeType: cardLevelRangeType,
             shopSchema,
@@ -65,11 +66,12 @@ class StepTwo extends React.Component {
             canUseShopIDs: [],
             canUseShopIDsAll: [],
             occupiedShops: [], // 已经被占用的卡类适用店铺id
-            shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
+            shopIDList: this.props.specialPromotion.getIn(["$eventInfo", "shopIDList"], Immutable.fromJS([])).toJS() || [],
             excludeCardTypeShops: [],
             filters: [],
             selectedTags: [],
             tagIncludes: [],
+            sourceWayLimit: "0"
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -309,22 +311,22 @@ class StepTwo extends React.Component {
     handleSubmit() {
         let flag = true;
         const smsGate = this.props.specialPromotion.toJS().$eventInfo.smsGate;
-        this.props.form.validateFieldsAndScroll((err1) => {
+        this.props.form.validateFieldsAndScroll(err1 => {
             if (err1) {
                 flag = false;
             }
         });
         const opts = {
-            smsTemplate: smsGate == '1' || smsGate == '3' || smsGate == '4' ? this.state.message : '',
+            smsTemplate: smsGate == "1" || smsGate == "3" || smsGate == "4" ? this.state.message : "",
             cardLevelIDList: this.state.cardLevelIDList || [],
-            cardLevelRangeType: this.state.cardLevelRangeType,
+            cardLevelRangeType: this.state.cardLevelRangeType
         };
-        if (this.props.type == '51' && this.state.cardLevelRangeType == 5) {
+        if (this.props.type == "51" && this.state.cardLevelRangeType == 5) {
             if (!this.state.groupMembersID) {
                 this.props.form.setFields({
                     setgroupMembersID: {
-                        errors: [new Error(`${this.props.intl.formatMessage(STRING_SPE.d7h7g9a5h130183)}`)],
-                    },
+                        errors: [new Error(`${this.props.intl.formatMessage(STRING_SPE.d7h7g9a5h130183)}`)]
+                    }
                 });
                 return false;
             } else {
@@ -333,67 +335,70 @@ class StepTwo extends React.Component {
         }
 
         opts.selectedTags = null;
-        if (this.props.type == '51' && this.state.cardLevelRangeType == 7) {
+        if (this.props.type == "51" && this.state.cardLevelRangeType == 7) {
             opts.customerRangeConditionIDs = this.state.selectedTags.map(item => item.tagRuleID);
         }
 
-        if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
+        if (smsGate == "1" || smsGate == "3" || smsGate == "4") {
             if (this.state.settleUnitID > 0 || this.state.accountNo > 0) {
                 opts.settleUnitID = this.state.settleUnitID;
                 opts.accountNo = this.state.accountNo;
             } else {
-                message.warning(`${this.props.intl.formatMessage(STRING_SPE.d34iceo4ec1176)}`)
+                message.warning(`${this.props.intl.formatMessage(STRING_SPE.d34iceo4ec1176)}`);
                 return false;
             }
         } else {
-            opts.settleUnitID = '0';
-            opts.accountNo = '0';
+            opts.settleUnitID = "0";
+            opts.accountNo = "0";
         }
 
         // 开卡增礼品加适用店铺
-        const { shopIDList, canUseShopIDs, cardLevelRangeType, excludeCardTypeShops, cardLevelIDList } = this.state
+        const { shopIDList, canUseShopIDs, cardLevelRangeType, excludeCardTypeShops, cardLevelIDList } = this.state;
 
-        if (this.props.type == '52' && cardLevelRangeType == '2') {
-            opts.shopIDList = shopIDList
-            opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
-            opts.canUseShopIDs = canUseShopIDs
+        if (this.props.type == "52" && cardLevelRangeType == "2") {
+            opts.shopIDList = shopIDList;
+            opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2;
+            opts.canUseShopIDs = canUseShopIDs;
             // 如果卡类选择了店铺，新建的时候还选择了这个卡，必须要选择店铺
 
-            let isShowShopTip = false
+            let isShowShopTip = false;
             if (cardLevelIDList) {
                 if (Array.isArray(excludeCardTypeShops)) {
-                    const chooseItem = excludeCardTypeShops.filter(v => cardLevelIDList.includes(v.cardTypeID))
-                    isShowShopTip = chooseItem.find(v => v.shopIDList && v.shopIDList.length)
+                    const chooseItem = excludeCardTypeShops.filter(v => cardLevelIDList.includes(v.cardTypeID));
+                    isShowShopTip = chooseItem.find(v => v.shopIDList && v.shopIDList.length);
                 }
             }
 
             if (isShowShopTip && !shopIDList.length) {
-                flag = false
+                flag = false;
             }
 
             this.setState({
                 isShowShopTip
-            })
-
-
-        } else if (this.props.type == '52' && cardLevelRangeType != '2') {
-            opts.shopIDList = []
-            opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
-            opts.canUseShopIDs = canUseShopIDs
+            });
+        } else if (this.props.type == "52" && cardLevelRangeType != "2") {
+            opts.shopIDList = [];
+            opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2;
+            opts.canUseShopIDs = canUseShopIDs;
         }
 
         // 授权门店过滤
         if (isFilterShopType(this.props.type)) {
             let dynamicShopSchema = Object.assign({}, this.props.shopSchemaInfo.toJS());
-            let { shopSchema = {} } = dynamicShopSchema
-            let { shops = [] } = shopSchema
-            let { shopIDList = [] } = opts
+            let { shopSchema = {} } = dynamicShopSchema;
+            let { shops = [] } = shopSchema;
+            let { shopIDList = [] } = opts;
             // 是否存在自助
-            let flag = shopIDList.includes(-1) || shopIDList.includes('-1')
-            let extra = flag ? [-1] : []
-            opts.shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item)).concat(extra)
+            let flag = shopIDList.includes(-1) || shopIDList.includes("-1");
+            let extra = flag ? [-1] : [];
+            opts.shopIDList = shopIDList.filter(item => shops.some(i => i.shopID == item)).concat(extra);
         }
-
+        //埋点事件第二步
+        setSensorsData(SensorsCodes.sensorsSecondStepId[this.props.type] ? SensorsCodes.sensorsSecondStepId[this.props.type] : "", {
+            channel_limit: this.state.sourceWayLimit,
+            apply_cardtype: opts.cardLevelIDList && opts.cardLevelIDList.length > 0 ? opts.cardLevelIDList.join(",") : "",
+            apply_shop: opts.shopIDList && opts.shopIDList.length > 0 ? opts.shopIDList.join(",") : ""
+        });
         this.props.setSpecialBasicInfo(opts);
         return flag;
     }
@@ -451,6 +456,9 @@ class StepTwo extends React.Component {
 
     handleSourceWayLimitChange = (v) => {
         this.props.setSpecialBasicInfo({ sourceWayLimit: v });
+        this.setState({
+            sourceWayLimit: v
+        });
     }
 
     renderBirthDayGroupSelector() {
@@ -592,7 +600,6 @@ class StepTwo extends React.Component {
             shopIDList: shops,
             shopStatus: shops.length > 0,
         })
-        // console.log(shops);
     }
     // 过滤已有卡类的店铺
     filterHasCardShop = (cardList) => {
@@ -616,7 +623,6 @@ class StepTwo extends React.Component {
     }
     // 查询已选卡类型的可用店铺
     querycanUseShopIDs = (tids = []) => {
-        // console.log('tids', tids);
         axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
             groupID: this.props.user.accountInfo.groupID,
             queryCardType: 1, // questArr.length === 0 ? 0 : 1,

@@ -4,9 +4,10 @@ import rootEpic from "./redux/modules";
 import sensors from "sa-sdk-javascript";
 import * as entryCodes from "./constants/entryCodes";
 import "config/AssociateConfig.js";
+import { getStore } from "@hualala/platform-base";
 // 初始化Dva
 import "./utils/dva/index";
-import { getAccountInfo } from "./helpers/util";
+import { getCookie, getAccountInfo } from "./helpers/util";
 const { registeEntryCode, registeLocale } = registerPackage("sale", process.env.JS_VERSION);
 const DEFAULT_LANGUAGE = "zh-cn";
 const LOCEL_LANGUAGE_MAP = new Map([
