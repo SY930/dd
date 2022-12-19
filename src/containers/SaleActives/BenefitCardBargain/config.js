@@ -77,7 +77,7 @@ const formItems2 = {
     type: 'custom',
     label: '',
     wrapperCol,
-    render: () => (<p className={styles.tips}>“砍至指定价格”砍价到指定的价格才可以购</p>)
+    render: () => (<p className={styles.tips}>“砍至指定价格”砍价到指定的价格才可以购</p>),
   },
   giftGetRuleValue: {
     type: 'text',
@@ -85,15 +85,10 @@ const formItems2 = {
     surfix: '元',
     rules: [{
       required: true,
-      validator: (rule, value, callback) => {
-        if (!/^\d+$/.test(value)) {
-          return callback('请输入数字');
-        }
-        if (+value < 1 || +value > 9999) {
-          return callback('底价需要设置1～9999正整数之间');
-        }
-        return callback();
-      },
+      message: '请输入礼品底价',
+    }, {
+      pattern: /^(([1-9]\d{0,3})(\.\d{0,2})?|0.\d?[1-9]{1})$/,
+      message: '必须>0，整数不超过4位且小数不超过2位',
     }],
   },
   giftCountTip: {

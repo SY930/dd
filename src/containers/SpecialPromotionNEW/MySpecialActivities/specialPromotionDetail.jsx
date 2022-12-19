@@ -73,7 +73,8 @@ const exportablePromotionTypes = [
     '69',
     '79',
     '83',
-    '95'
+    '95',
+    '91'
 ];
 const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 import {
@@ -990,6 +991,7 @@ class SpecialPromotionDetail extends React.Component {
     }
     // 礼品信息表格
     renderGiftInfoTable(records, type) {
+        console.log("🚀 ~ file: specialPromotionDetail.jsx:993 ~ SpecialPromotionDetail ~ renderGiftInfoTable ~ records", records)
         const way = this.state.eventInfo.data.eventWay;
         const { intl } = this.props;
         let giftCountText = '';
@@ -1014,6 +1016,14 @@ class SpecialPromotionDetail extends React.Component {
             },
             {
                 title: '权益卡名称',
+                dataIndex: 'benefitCardName',
+                key: 'benefitCardName',
+                render: (text, record) => {
+                    return <span title={record.benefitCardName}>{record.benefitCardName}</span>
+                }
+            },
+            {
+                title: '档位名称',
                 dataIndex: 'EGiftName',
                 key: 'EGiftName',
                 render: (text, record) => {
@@ -1021,25 +1031,17 @@ class SpecialPromotionDetail extends React.Component {
                 }
             },
             {
-                title: '档位名称',
-                dataIndex: 'giftName',
-                key: 'giftName',
-                render: (text, record) => {
-                    return <span title={record.giftName}>{record.giftName}</span>
-                }
-            },
-            {
                 title: '发起数量',
-                dataIndex: 'count',
-                key: 'count',
+                dataIndex: 'launchEventCount',
+                key: 'launchEventCount',
                 render: (text, record) => {
                     return <span title={text}>{text}</span>
                 }
             },
             {
                 title: '砍价人数',
-                dataIndex: 'countNum',
-                key: 'countNum',
+                dataIndex: 'helpEventCount',
+                key: 'helpEventCount',
                 render: (text, record) => {
                     return <span title={text}>{text}</span>
                 }
@@ -1151,7 +1153,10 @@ class SpecialPromotionDetail extends React.Component {
                 EGfitValidUntilDayCount: gift.giftValidUntilDayCount > 0 ? gift.giftValidUntilDayCount : days,
                 resumeGiftsCount: gift.resumeGiftsCount || 0,
                 resumeGiftsCountPercent: gift.giftSendCount == 0 ? '0%' : `${Math.round((gift.resumeGiftsCount || 0) / (gift.giftSendCount) * 10000) / 100}%`,
-                giftIncome: gift.giftIncome ? gift.giftIncome : 0
+                giftIncome: gift.giftIncome ? gift.giftIncome : 0,
+                benefitCardName: gift.cardTypeName,  
+                helpEventCount: gift.helpEventCount,
+                launchEventCount: gift.launchEventCount,
             }
         });
         if (this.props.record.eventInfo.data.eventWay == 68) {
@@ -1950,7 +1955,6 @@ class SpecialPromotionDetail extends React.Component {
                 joinCount: user.joinCount || 0,
                 giftName: user.giftName || '',
                 orderNo: user.orderNo || '',
-                // 助力人数
             }
         });
         let len = null;

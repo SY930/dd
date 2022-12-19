@@ -5,7 +5,7 @@
  * @Descripttion: 
  */
 import React, { Component } from 'react'
-import { Spin } from 'antd';
+import { Spin, message } from 'antd';
 import moment from 'moment'
 import _ from 'loadsh';
 import { jumpPage, closePage } from '@hualala/platform-base';
@@ -72,7 +72,7 @@ class BenefitCardBargain extends Component {
     asyncParseForm(forms).then(({ values, error }) => {
       if (error) return;
       // console.log(values, 'values')
-      const { eventName, eventCode, eventRange, eventRemark, defaultCardType } = values;
+      const { eventName, eventCode, eventRange, eventRemark, defaultCardType, giftGetRuleValue } = values;
       const newEventRange = formatEventRange(eventRange);
       const allData = {
         event: { eventWay: 91, eventName, eventCode, eventRemark, ...newEventRange, defaultCardType },
@@ -83,6 +83,10 @@ class BenefitCardBargain extends Component {
           giftName,
           ..._.omit(values, ['eventName', 'eventCode', 'eventRange', 'eventRemark', 'defaultCardType', 'defaultCardType']),
           giftID }],
+      }
+      if (giftGetRuleValue > presentValue) {
+        message.warning('底价必须小于等于礼品卡售价')
+        return
       }
       if (itemID) {
         postEvent({

@@ -7,6 +7,7 @@
 import React, { Component } from 'react'
 import { Select, Table, Input, Row, Col, Form } from 'antd'
 import BaseForm from 'components/common/BaseForm';
+import moment from 'moment'
 import { formItems2, formItemLayout, columns } from './config'
 import { getBenefitCards, queryCardDetail } from './AxiosFactory'
 import styles from './styles.less'
@@ -199,9 +200,21 @@ class ActiveRules extends Component {
     };
   }
 
+  isBeginTime = (eventRange) => {
+    const nowDay = moment(new Date()).add('1', 'day')
+    if (eventRange[0]) {
+      const diff = nowDay.diff(eventRange[0], 'days')
+      if (diff > 0) {
+        return true
+      }
+    }
+    return false
+  }
+
   render() {
     const { newFormKeys } = this.state;
-    let { formData = {}, isView, getForm, itemID } = this.props;
+    let { formData = { }, isView, getForm, itemID } = this.props;
+    const { eventRange = [] } = formData
 
     const newFormItems = this.resetFormItems();
     return (
@@ -215,7 +228,7 @@ class ActiveRules extends Component {
           formItemLayout={formItemLayout}
         />
         {
-          itemID && <Col className={styles.conditionListBoxPop}></Col>
+          itemID && this.isBeginTime(eventRange) &&  <Col className={styles.conditionListBoxPop}></Col>
         }
       </div>
 
