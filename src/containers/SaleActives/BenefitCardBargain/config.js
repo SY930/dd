@@ -140,6 +140,7 @@ const formItems2 = {
     surfix: '小时',
     rules: [{
       required: true,
+      message: '请输入砍价有效期',
       validator: (rule, value, callback) => {
         if (!/^\d+$/.test(value)) {
           return callback('请输入数字');
@@ -161,7 +162,7 @@ const formItems2 = {
     prefix: '活动期限内可发起',
     rules: [{
       required: true,
-      message: '请设置砍价有效期',
+      message: '请输入发起次数限制',
       validator: (rule, value, callback) => {
         if (!/^\d+$/.test(value)) {
           return callback('请输入数字');
