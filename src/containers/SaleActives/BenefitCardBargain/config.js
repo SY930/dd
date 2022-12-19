@@ -95,7 +95,7 @@ const formItems2 = {
     type: 'custom',
     label: '',
     wrapperCol,
-    render: () => (<p className={styles.tips}>用户将权益卡砍至此价格才完成购买，底价需</p>)
+    render: () => (<p className={styles.tips}>用户将权益卡砍至此价格才完成购买，底价需小于权益卡原价</p>)
   },
   needCount: {
     type: 'text',
@@ -132,7 +132,7 @@ const formItems2 = {
     type: 'custom',
     label: '',
     wrapperCol,
-    render: () => (<p className={styles.tips}>用户自己的首刀比例会在设置的区间范围内随</p>)
+    render: () => (<p className={styles.tips}>用户自己的首刀比例会在设置的区间范围内随机选择，若设置相同则为固定概率</p>)
   },
   eventDuration: {
     type: 'text',
@@ -185,6 +185,12 @@ const formItems3 = {
     defaultValue: '',
     rules: ['required'],
 },
+  cardTypeTips: {
+    type: 'custom',
+    label: '',
+    wrapperCol,
+    render: () => (<p className={styles.tips}> 针对所参与此活动的新用户自动注册为所选卡类下的会员</p>)
+  }
 }
 
 const columns = [

@@ -12,7 +12,7 @@ import { getGroupCardTypeList } from './AxiosFactory'
 
 const Option = Select.Option
 
-const formKeys = ['defaultCardType']
+const formKeys = ['defaultCardType', 'cardTypeTips']
 
 class HelpRules extends Component {
 
@@ -59,12 +59,13 @@ class HelpRules extends Component {
 
   /** formItems 重新设置 */
   resetFormItems() {
-    const { defaultCardType } = formItems3;
+    const { defaultCardType, ...other } = formItems3;
     return {
       defaultCardType: {
         ...defaultCardType,
         render: this.cardRender
       },
+      ...other,
     };
   }
 
