@@ -4,7 +4,6 @@ import rootEpic from "./redux/modules";
 import sensors from "sa-sdk-javascript";
 import * as entryCodes from "./constants/entryCodes";
 import "config/AssociateConfig.js";
-import { getStore } from "@hualala/platform-base";
 // 初始化Dva
 import "./utils/dva/index";
 import { getCookie, getAccountInfo } from "./helpers/util";
@@ -142,13 +141,13 @@ const registeLangPack = async () => {
         console.log(getAccountInfo(), "getAccountInfo12");
         sensors.init({
             server_url: "http://data-sc.hualala.com/sa?project=default",
-            show_log: false,
+            show_log: true,
             is_track_single_page: false, // 单页面配置，默认开启，若页面中有锚点设计，需要将该配置删除，否则触发锚点会多触发 $pageview 事件
             use_client_time: true,
             send_type: "beacon",
             heatmap: {
                 //是否开启点击图，default 表示开启，自动采集 $WebClick 事件，可以设置 'not_collect' 表示关闭。
-                clickmap: "not_collect",
+                clickmap: "default",
                 //是否开启触达图，not_collect 表示关闭，不会自动采集 $WebStay 事件，可以设置 'default' 表示开启。
                 scroll_notice_map: "default",
             },
@@ -169,8 +168,12 @@ const registeLangPack = async () => {
             brand_id: "default",
             shop_id: "default"
         });
+        let pageName = $('#pageName').attr('pageName') || '';
+        let params = {
+            "pageName": pageName
+        };
         sensors.login(accountID);
-        sensors.quick("autoTrack"); //用于采集 $pageview 事件。
+        sensors.quick("autoTrack", params); //用于采集 $pageview 事件。
     }, 8000);
 };
 

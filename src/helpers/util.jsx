@@ -849,6 +849,15 @@ export function setSensorsData(event_id = "wtcrm_promotion_clk", params = {}) {
     sensors.track(event_id, params);
 }
 /**
+ * 页面浏览事件
+ */
+export function sensorsAutoTrack(name) {
+    console.log(name,'name00000000000')
+    sensors.quick('autoTrack', {
+        pageName: name
+    })
+}
+/**
  * 获取cookie值
  */
 export function getCookie(name) {

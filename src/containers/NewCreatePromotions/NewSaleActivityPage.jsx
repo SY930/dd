@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import registerPage from "../../../index";
 import { NEW_SALE_ACTIVITY_BOX, SALE_CENTER_PAYHAVEGIFT, SALE_ACTIVE_NEW_PAGE } from "../../constants/entryCodes";
 import SensorsCodes from "../../constants/SensorsCodes";
-import { axiosData, checkAuthLicense, setSensorsData } from "../../helpers/util";
+import { axiosData, checkAuthLicense, setSensorsData, sensorsAutoTrack } from "../../helpers/util";
 import { COMMON_STRING } from "i18n/common";
 import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";
 import { injectIntl } from "./IntlDecor";
@@ -118,7 +118,8 @@ class NewCustomerPage extends Component {
         this.props.getAuthLicenseData({ productCode: "HLL_CRM_Marketingbox" }).then(res => {
             this.setState({ authLicenseData: res });
         });
-        setSensorsData("wtcrm_promotion_clk");
+        // setSensorsData("wtcrm_promotion_clk");
+        sensorsAutoTrack("营销活动");
     }
     componentWillReceiveProps(nextProps) {
         // todo:上线放开

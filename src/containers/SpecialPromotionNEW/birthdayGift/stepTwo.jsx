@@ -36,10 +36,7 @@ import { STRING_SPE } from 'i18n/common/special';
 import { setSensorsData } from "../../../helpers/util";
 import SensorsCodes from "../../../constants/SensorsCodes";
 
-
-
 const RadioGroup = Radio.Group;
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 @injectIntl

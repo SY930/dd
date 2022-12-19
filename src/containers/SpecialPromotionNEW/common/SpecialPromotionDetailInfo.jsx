@@ -78,14 +78,12 @@ import {
     upGradeInitPerfectCheckBox,
 } from "../upGradeReturnGift/StepThreeHelp";
 import { freeGetStep3Render } from "../freeGet/step3";
-import { h5GetStep3Render } from '../h5Get/step3'
-import { scoreConvertGiftStep3Render } from '../scoreConvertGift/step3'
-import { consumeGiveGiftStep3Render } from '../consumeGiveGift/step3'
-import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+import { h5GetStep3Render } from "../h5Get/step3";
+import { scoreConvertGiftStep3Render } from "../scoreConvertGift/step3";
+import { consumeGiveGiftStep3Render } from "../consumeGiveGift/step3";
+import Approval from "../../../containers/SaleCenterNEW/common/Approval";
 import { isZhouheiya } from "../../../constants/WhiteList";
-import Permission from './Permission';
-import WxCouponModal from "../onLineReturnGift/WxCouponModal";
-import SleectedWxCouponTable from "../onLineReturnGift/SleectedWxCouponTable";
+import Permission from "./Permission";
 import { setSensorsData } from "../../../helpers/util";
 import SensorsCodes from "../../../constants/SensorsCodes";
 
