@@ -109,8 +109,8 @@ const formItems2 = {
         if (!/^\d+$/.test(value)) {
           return callback('请输入数字');
         }
-        if (+value < 1 || +value > 9999) {
-          return callback('人数设置支持1～9999正整数');
+        if (+value < 1 || +value > 99) {
+          return callback('人数设置支持1～99正整数');
         }
         return callback();
       },

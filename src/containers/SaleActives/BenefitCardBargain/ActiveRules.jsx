@@ -131,8 +131,11 @@ class ActiveRules extends Component {
             {d({
               key: 'leftIntervalValue',
               rules: [{
-                required: true, message: '请设置首刀砍价比例',
+                required: true,
                 validator: (rule, value, callback) => {
+                  if (!value) {
+                    return callback('请设置首刀砍价比例')
+                  }
                   if (!/^\d+$/.test(value)) {
                     return callback('请输入数字');
                   }
