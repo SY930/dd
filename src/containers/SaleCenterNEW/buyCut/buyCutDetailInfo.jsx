@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Radio, Select, Col, Row, Icon} from 'antd';
+import { Form, Radio, Select, Col, Row, Icon, message} from 'antd';
 import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -104,6 +104,14 @@ class BuyCutDetailInfo extends React.Component {
 
         // 
         let [cutWay, ruleType = '1'] = [...String(_rule.disType)]
+        const ruleInfo = (_rule.stage || []).map(item => {
+            return {
+                validationStatus: 'success',
+                helpMsg: null,
+                start: item.stageAmount,
+                end: item.discountRate * 10,
+            }
+        })
 
         this.setState({
             stageAmount: _rule.stageAmount,
@@ -111,6 +119,7 @@ class BuyCutDetailInfo extends React.Component {
             discountRate: _rule.discountRate ? Number((_rule.discountRate * 10).toFixed(3)).toString() : '',
             cutWay,
             ruleType,
+            ruleInfo,
         });
     }
 
@@ -122,7 +131,27 @@ class BuyCutDetailInfo extends React.Component {
     }
 
     handleSubmit = () => {
-        let { ruleType, cutWay, stageAmount, freeAmount, discountRate, targetScope, stageAmountFlag, freeAmountFlag, discountRateFlag } = this.state;
+        let { ruleType, ruleInfo, cutWay, stageAmount, freeAmount, discountRate, targetScope, stageAmountFlag, freeAmountFlag, discountRateFlag } = this.state;
+        if(cutWay == '5') {
+            const isCheckedPass = ruleInfo.every(item => item.validationStatus == 'success' && item.start && item.end)
+            const disType = ruleType == '1' ? 51 : 52;
+            if(!isCheckedPass) {
+                message.error('请填写完整活动条件')
+                return
+            }
+            const stage = ruleInfo.map(item => {
+                return { stageAmount: item.start, discountRate: item.end / 10 }
+            })
+            this.props.setPromotionDetail({
+                rule: {
+                    disType,
+                    stageType: 0,
+                    targetScope,
+                    stage,
+                },
+            });
+            return true;
+        }
         if (stageAmount == null || stageAmount == '') {
             stageAmountFlag = false;
         }
@@ -484,10 +513,9 @@ class BuyCutDetailInfo extends React.Component {
             )
         }
         if(this.state.cutWay === '5') {
-            console.log(this.state.ruleInfo)
             const type = [
-                { value: '0', name: '指定菜品消费满' },
-                { value: '1', name: '同一菜品消费满' },
+                { value: '1', name: '指定菜品消费满' },
+                { value: '2', name: '同一菜品消费满' },
             ];
             return (
                 <FormItem
@@ -518,7 +546,15 @@ class BuyCutDetailInfo extends React.Component {
                                                         getPopupContainer={(node) => node.parentNode}
                                                         value={this.state.ruleType}
                                                         onChange={(val) => {
-                                                            
+                                                            this.setState({ 
+                                                                ruleType: val, 
+                                                                ruleInfo: [{
+                                                                    validationStatus: 'success',
+                                                                    helpMsg: null,
+                                                                    start: '',
+                                                                    end: '',
+                                                                }] 
+                                                            })
                                                         }}
                                                     >
                                                         {type.map((type) => {
