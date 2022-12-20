@@ -77,7 +77,7 @@ const formItems2 = {
     type: 'custom',
     label: '',
     wrapperCol,
-    render: () => (<p className={styles.tips}>“砍至指定价格”砍价到指定的价格才可以购</p>),
+    render: () => (<p className={styles.tips}>“砍至指定价格”砍价到指定的价格才可以购买</p>),
   },
   giftGetRuleValue: {
     type: 'text',
