@@ -2399,6 +2399,7 @@ class SpecialDetailInfo extends Component {
     };
 
     renderScoreConvertImage = (title, { key, image }, index) => {
+        const cropperRatio = index === '0' ? 1044 / 842 : 200 / 200
         return (
             <FormItem
                     label={title}
@@ -2413,7 +2414,7 @@ class SpecialDetailInfo extends Component {
                                 className={styles.uploadCom}
                                 width={120}
                                 height={110}
-                                cropperRatio={200 / 200}
+                                cropperRatio={cropperRatio}
                                 limit={2048}
                                 allowedType={["image/png", "image/jpeg"]}
                                 value={image}
