@@ -2543,7 +2543,7 @@ class SpecialDetailInfo extends Component {
                                 className={styles.uploadCom}
                                 width={120}
                                 height={110}
-                                cropperRatio={200 / 200}
+                                cropperRatio={1044 / 842}
                                 limit={2048}
                                 allowedType={["image/png", "image/jpeg"]}
                                 value={shareImagePath}
