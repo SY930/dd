@@ -81,11 +81,12 @@ const PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS = new Set([
     '53',  // 群发礼品
 ])
 
-
+// _TODO
 const ATSEnabledTypes = [ // advanced time settings enabled promotion types
     '20',
     '30',
     '67',
+    '31'
 ];
 const dateLimitedTypes = [ // 活动日期不能选到今天以前的活动类型
     '61',
