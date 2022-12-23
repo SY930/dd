@@ -19,10 +19,7 @@ import {
     message
 } from 'antd';
 import {
-    NEW_CUSTOMER_PROMOTION_TYPES,
-    REPEAT_PROMOTION_TYPES,
     SALE_PROMOTION_TYPES,
-    CRM_PROMOTION_TYPES,
 } from 'constants/promotionType';
 import NewSaleCard from "./NewSaleCard";
 const UNRELEASED_PROMOTION_TYPES = [
@@ -99,9 +96,14 @@ class NewOnSaleActivityPage extends Component {
 
     componentDidMount() {
         this.getWhite();
+        const path = window.location.pathname.split('/') || [];
+        const menuID = path[path.length - 1];
         this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' }).then((res) => {
             this.setState({ authLicenseData: res })
         });
+        this.setState({
+            menuID,
+        })
     }
     componentWillReceiveProps(nextProps) {
         // todo:上线放开
@@ -150,179 +152,14 @@ class NewOnSaleActivityPage extends Component {
     fromCrmJump() {
         const {
             from = '',
-            type,
-            gmID,
-            totalMembers,
-            groupMembersName,
-            groupMembersID,
-            groupID,
-            mfrGrades = '',
-            awakenTip,
-            RValue,
-            BenefitName = '',
-            rangeType = 'm',
-            // jumpSepid = '7024319846141660053',
-            jumpSepid = '',
         } = this.getQueryVariable()
         const state = getStore().getState();
-        if (from === 'rfm') {
-            const item = CRM_PROMOTION_TYPES[type];
-            this.handleNewPromotionCardClick(item);
-            if (groupMembersName) {
-                this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
-            }
-            this.props.saveRFMParams({
-                groupID,
-                mfrGrades: mfrGrades.split(','),
-                awakenTip,
-                RValue,
-                groupMembersName,
-                totalMembers,
-                groupMembersID,
-            })
-            this.clearUrl();
-            this.props.saleCenterSetJumpOpenCardParams(false)
-            this.props.saleCenterSetJumpSendGiftParams(false)
-        } else if (from === 'giftInfo') {
-            if (!type) return;
-            const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((val) => {
-                return val.key == type;
-            })
-            this.handleNewPromotionCardClick(item[0]);
-            this.props.saleCenterSetJumpOpenCardParams(false)
-            this.props.saleCenterSetJumpSendGiftParams(false)
-            this.clearUrl();
-        } else if (from === 'openCard') { // 开卡赠送
-            const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((item) => {
-                return item.key == 52
-            })[0];
-            // 新建逻辑
-            // jumpSepid 判断有没有id来判断是否可以查到活动内容
-            setTimeout(() => {
-                this.handleNewPromotionCardClick(item, true);
-            }, 2000)
-            if (jumpSepid) {
-                this.props.fetchSpecialDetail({
-                    data: {
-                        itemID: jumpSepid,
-                        groupID: state.user.get('accountInfo').toJS().groupID,
-                    },
-                    success: this.handleSuccessData,
-                    fail: this.failFn,
-                })
-                this.setState({
-                    isJumpNew: false,
-                })
-            } else {
-                const {
-                    ifJumpSelfDefine
-                } = this.state
-                if (!ifJumpSelfDefine) {
-                    this.props.setSpecialPromotionInfo({
-                        eventName: '权益卡开卡发放活动',
-                        smsGate: '0',
-                        eventRemark: '权益卡开卡发放活动',
-                        sourceWayLimit: '0',
-                        cardLevelRangeType: '2',
-                        defaultCardType: BenefitName,
-                        eventWay: 52,
-                    });
-                    this.setState({
-                        ifJumpSelfDefine: true
-                    })
-                }
-            }
-            this.props.saleCenterSetJumpOpenCardParams(true)
-            this.props.saleCenterSetJumpSendGiftParams(false)
-
-            this.clearUrl();
-        } else if (from === 'groupsendGift') { // 群发礼品
-            const item = REPEAT_PROMOTION_TYPES.filter((item) => {
-                return item.key == 53
-            })[0];
-            setTimeout(() => {
-                this.handleNewPromotionCardClick(item, true);
-            }, 2000)
-            // jumpSepid 判断有没有id来判断是否可以查到活动内容
-            if (jumpSepid) {
-                this.props.fetchSpecialDetail({
-                    data: {
-                        itemID: jumpSepid,
-                        groupID: state.user.get('accountInfo').toJS().groupID,
-                    },
-                    success: this.handleSuccessData,
-                    fail: this.failFn,
-                })
-                this.setState({
-                    isJumpNew: false,
-                })
-            } else {
-                const {
-                    ifJumpSelfDefine
-                } = this.state
-                if (!ifJumpSelfDefine) {
-                    this.props.setSpecialPromotionInfo({
-                        eventName: '权益卡周期权益',
-                        smsGate: '0',
-                        eventRemark: '权益卡周期权益',
-                        eventStartDate: moment(new Date()).format('YYYYMMDD'),
-                        eventEndDate: moment(new Date(new Date().setFullYear(new Date().getFullYear() + 10))).format('YYYYMMDD'),
-                        dateRangeType: rangeType,
-                        groupMemberID: '权益卡有效会员',
-                        eventWay: 53,
-                    });
-                    this.setState({
-                        ifJumpSelfDefine: true
-                    })
-                }
-                // isBenefitJumpSendGift
-            }
-            this.props.saleCenterSetJumpSendGiftParams(true)
-            this.props.saleCenterSetJumpOpenCardParams(false)
-            // 新建逻辑
-            this.clearUrl();
-        } else if (from === 'tagsSendGroupGift') { // 群发礼品
-            const item = REPEAT_PROMOTION_TYPES.filter((item) => {
-                return item.key == 53
-            })[0];
-            setTimeout(() => {
-                this.handleNewPromotionCardClick(item, true);
-            }, 1000)
-            // 新建逻辑
-            this.clearUrl();
-        } else if (from === 'doNothingButSth') {
-            const saleID = type;
-            // this.setState({ currentCategoryIndex: 4 })
-            if (!saleID) {
-                setTimeout(() => {
-                    this.setState({ currentCategoryIndex: 4 })
-                }, 500)
-                return;
-            }
-            const item = CRM_PROMOTION_TYPES[saleID];
-            this.handleNewPromotionCardClick(item);
-            this.props.setSpecialPromotionCardGroupID(gmID);
-            this.clearUrl();
+         if (from === 'giftInfo') {
+           
         } else if (from === 'scenePut') {
-            if (!type) return;
-            const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((val) => {
-                return val.key == type;
-            })
-            this.handleNewPromotionCardClick(item[0]);
-            this.props.saleCenterSetJumpOpenCardParams(false)
-            this.props.saleCenterSetJumpSendGiftParams(false)
-            this.clearUrl();
+           
         } else {
-            const saleID = type;
-            if (!saleID) {
-                return;
-            }
-            const item = CRM_PROMOTION_TYPES[saleID];
-            this.handleNewPromotionCardClick(item);
-            this.props.setSpecialPromotionCardGroupID(gmID);
-            this.props.saleCenterSetJumpOpenCardParams(false)
-            this.props.saleCenterSetJumpSendGiftParams(false)
-            this.clearUrl();
+           
         }
 
     }
@@ -512,7 +349,7 @@ class NewOnSaleActivityPage extends Component {
     }
 
     render() {
-        const { whiteList, v3visible, curKey, currentPlatformIndex } = this.state;
+        const { whiteList, v3visible, curKey, currentPlatformIndex, menuID } = this.state;
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
         const { intl } = this.props;
@@ -526,13 +363,23 @@ class NewOnSaleActivityPage extends Component {
         ]
         
         //周黑鸭需求
-        if(isZhouheiya(groupID)){
+        if (isZhouheiya(groupID)) {
             ALL_PROMOTION_CATEGORIES = [
                 {
                     title: k6316iio,
                     list: salePromotionType.filter(item => item.isZhy),
                 }]
         }
+
+        // 零售展示的活动
+        if (['2001431'].includes(menuID)) {
+            ALL_PROMOTION_CATEGORIES = [
+                {
+                    title: k6316iio,
+                    list: salePromotionType.filter(item => item.menuID && item.menuID.includes(menuID)),
+                }]
+        }
+
 
         // 插件授权状态--营销盒子大礼包
         let { authPluginStatus } = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')

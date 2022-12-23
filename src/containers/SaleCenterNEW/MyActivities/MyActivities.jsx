@@ -628,7 +628,7 @@ class MyActivities extends React.Component {
         }
     }
     getParams = () => {
-        const { promotionType, promotionDateRange, promotionValid, promotionState, promotionCategory, promotionTags, promotionBrands, promotionOrder, channelLst, promotionShop, promotionName, promotionCode, auditStatus, selectedGoods = [], applyShopIds = []} = this.state;
+        const { promotionType, promotionDateRange, promotionValid, promotionState, promotionCategory, promotionTags, promotionBrands, promotionOrder, channelLst, promotionShop, promotionName, promotionCode, auditStatus, selectedGoods = [], applyShopIds = [], promotionVersion } = this.state;
         const opt = {};
         if (promotionType !== "" && promotionType !== undefined && promotionType !== "undefined") {
             opt.promotionType = promotionType;
@@ -669,6 +669,9 @@ class MyActivities extends React.Component {
         }
         if (auditStatus !== '' && auditStatus !== undefined) {
             opt.auditStatus = auditStatus;
+        }
+        if (promotionVersion !== "" && promotionVersion !== undefined) {
+            opt.promotionVersion = promotionVersion;
         }
         opt.groupID = this.props.user.accountInfo.groupID;
         opt.accountID = this.props.user.accountInfo.accountID;
@@ -1796,6 +1799,31 @@ class MyActivities extends React.Component {
                         </li>
                         }
                         <li>
+                            <h5>业态</h5>
+                        </li>
+                        <li>
+                            <Select
+                                style={{ width: 80 }}
+                                defaultValue=""
+                                value={this.state.promotionVersion}
+                                onChange={(value) => {
+                                    this.setState({
+                                        promotionVersion: value,
+                                    });
+                                }}
+                            >
+                                <Option value={""}>
+                                    全部
+                                </Option>
+                                <Option value={"1.0"}>
+                                    餐饮
+                                </Option>
+                                <Option value={"2.0"}>
+                                    零售
+                                </Option>
+                            </Select>
+                        </li>
+                        <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}>
                                     <Icon type="search" />
@@ -2262,6 +2290,16 @@ class MyActivities extends React.Component {
                 // width: 80,
                 render: t => {
                     return t == "0" ? "集团创建" : "门店创建";
+                }
+            },
+            {
+                title: "业态",
+                className: "TableTxtCenter",
+                dataIndex: "promotionVersion",
+                key: "promotionVersion",
+                width: 80,
+                render: t => {
+                    return t == "1.0" ? "餐饮" : t == '2.0' ? '零售' : '';
                 }
             },
             {

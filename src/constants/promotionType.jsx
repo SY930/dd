@@ -629,6 +629,7 @@ export const SALE_PROMOTION_TYPES = [
         bottom: -14,
         isHot: true,
         isZhy: true,
+        menuID: ['2001431'], // 零售促销展示的活动
     },
     {
         title: SALE_LABEL.k67b2sac,
@@ -641,6 +642,7 @@ export const SALE_PROMOTION_TYPES = [
         right: 10,
         bottom: 0,
         isZhy: true,
+        menuID: ['2001431'],
     },
     {
         title: SALE_LABEL.k67b2sio,
@@ -664,6 +666,7 @@ export const SALE_PROMOTION_TYPES = [
         right: 15,
         bottom: 5,
         isZhy: true,
+        menuID: ['2001431'],
     },
     {
         title: SALE_LABEL.k67b3uk0,
@@ -676,6 +679,7 @@ export const SALE_PROMOTION_TYPES = [
         right: 14,
         bottom: 12,
         isZhy: true,
+        menuID: ['2001431'],
     },
     {
         title: SALE_LABEL.k5m5auib,
@@ -710,6 +714,7 @@ export const SALE_PROMOTION_TYPES = [
         right: 14,
         bottom: 5,
         isZhy: true,
+        menuID: ['2001431'],
     },
     {
         isSpecial: false,
@@ -722,6 +727,7 @@ export const SALE_PROMOTION_TYPES = [
         right: 16,
         bottom: 11,
         isZhy: true,
+        menuID: ['2001431'],
     },
     {
         isSpecial: false,
@@ -745,6 +751,7 @@ export const SALE_PROMOTION_TYPES = [
         right: 0,
         bottom: 1,
         isZhy: true,
+        menuID: ['2001431'],
     },
     {
         isSpecial: false,
@@ -768,6 +775,7 @@ export const SALE_PROMOTION_TYPES = [
         right: 0,
         bottom: -3,
         isZhy: true,
+        menuID: ['2001431'],
     },
     {
         isSpecial: false,
