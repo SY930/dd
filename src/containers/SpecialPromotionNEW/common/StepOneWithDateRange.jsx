@@ -129,7 +129,7 @@ class StepOneWithDateRange extends React.Component {
         ];
         try {
             const eventInfo = props.specialPromotion.getIn(['$eventInfo']).toJS();
-            if(props.timeList.toJS()){
+            if(props.timeList && Array.isArray(props.timeList.toJS()) && props.timeList.toJS().length > 0){
                 timeList = props.timeList.toJS().map(item => {
                     if(item.startTime){
                         item.startTime = moment.isMoment(item.startTime) ? item.startTime : moment(item.startTime, 'HH:mm');
@@ -140,7 +140,7 @@ class StepOneWithDateRange extends React.Component {
                     return item;
                 }).filter(item => item.startTime && item.endTime);
             }
-            excludeDateArray = eventInfo.excludedDate.map(item => moment(item, 'YYYYMMDD'))
+            excludeDateArray = eventInfo.excludedDate.map(item => moment(item, 'YYYYMMDD'));
             expand = !!excludeDateArray.length;
             if (!eventInfo.validCycle) {
                 validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
