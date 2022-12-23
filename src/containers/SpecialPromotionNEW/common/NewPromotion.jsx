@@ -105,6 +105,12 @@ export default class NewPromotion extends React.Component {
             eventMutexDependRuleInfos: specialPromotion.$eventInfo.eventMutexDependRuleInfos,
             recommendEventRuleInfos: specialPromotion.$eventRecommendSettings,
         };
+        // 关注送礼
+        if(this.props.promotionType === '31' ){
+            if(opts.event.timeList){
+                opts.timeList = opts.event.timeList;
+            }
+        }
         // 生日赠送 且 非会员群体时
         if (this.props.promotionType === '51' && specialPromotion.$eventInfo.cardLevelRangeType != 5) {
             delete opts.event.cardGroupID

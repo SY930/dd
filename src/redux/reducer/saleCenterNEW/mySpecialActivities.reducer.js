@@ -98,6 +98,7 @@ const $initialState = Immutable.fromJS({
     $saveMoneySetList: [],
     $rightPackageList: [],//权益包列表
     $rightCardList: [],//权益卡列表
+    timeList: [], // 活动时段
 });
 export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
     switch (action.type) {
@@ -186,7 +187,8 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
                     .setIn(['$specialDetailInfo', 'data', 'eventInfo'], Immutable.fromJS(action.payload))
                     .setIn(['giftsLevel'], Immutable.fromJS(action.payload.gifts))
                     .setIn(['eventMutexDependRuleInfos'], Immutable.fromJS(action.payload.eventMutexDependRuleInfos))
-                    .setIn(['eventConditionInfos'], Immutable.fromJS(action.payload.eventConditionInfos));
+                    .setIn(['eventConditionInfos'], Immutable.fromJS(action.payload.eventConditionInfos))
+                    .setIn(['timeList'], Immutable.fromJS(action.payload.timeList));
             }
             return $$state;
 

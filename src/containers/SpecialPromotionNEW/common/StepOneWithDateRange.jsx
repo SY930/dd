@@ -34,7 +34,7 @@ import ExcludeCardTable from './ExcludeCardTable';
 import ExcludeGroupTable from './ExcludeGroupTable';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import {fetchSpecialCardLevel} from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
-import {queryOccupiedWeiXinAccountsStart} from "../../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
+import { queryOccupiedWeiXinAccountsStart, queryOccupiedDouYinAccountsStart } from "../../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 import {queryWechatMpInfo} from "../../GiftNew/_action";
 import {
     MONTH_OPTIONS,
@@ -43,6 +43,7 @@ import {
 import EveryDay from '../../GiftNew/GiftInfo/TicketBag/EveryDay';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import TimeRange from "containers/PromotionV3/Camp/TimeRange/index";
 
 const CheckboxGroup = Checkbox.Group;
 const moment = require('moment');
@@ -81,6 +82,11 @@ const PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS = new Set([
     '53',  // 群发礼品
 ])
 
+// 活动时段 enabled promotion types
+const TimeRangeEnabledTypes = [
+    '31'
+]
+
 // _TODO
 const ATSEnabledTypes = [ // advanced time settings enabled promotion types
     '20',
@@ -115,8 +121,25 @@ class StepOneWithDateRange extends React.Component {
         let selectMonthValue;
         let validCycleType;
         let expand;
+        let timeList = [
+            {
+                startTime: '',
+                endTime: ''
+            }
+        ];
         try {
             const eventInfo = props.specialPromotion.getIn(['$eventInfo']).toJS();
+            if(props.timeList.toJS()){
+                timeList = props.timeList.toJS().map(item => {
+                    if(item.startTime){
+                        item.startTime = moment.isMoment(item.startTime) ? item.startTime : moment(item.startTime, 'HH:mm');
+                    }
+                    if(item.endTime){
+                        item.endTime = moment.isMoment(item.endTime) ? item.endTime : moment(item.endTime, 'HH:mm');
+                    }
+                    return item;
+                }).filter(item => item.startTime && item.endTime);
+            }
             excludeDateArray = eventInfo.excludedDate.map(item => moment(item, 'YYYYMMDD'))
             expand = !!excludeDateArray.length;
             if (!eventInfo.validCycle) {
@@ -133,6 +156,9 @@ class StepOneWithDateRange extends React.Component {
                 validCycleType = ACTIVITY_CYCLE_TYPE.WEEKLY;
                 selectMonthValue = ['1'];
                 selectWeekValue = eventInfo.validCycle.map(item => item.substring(1));
+            }
+            if(timeList.length > 0){
+                expand = true;
             }
         } catch (e) {
             validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
@@ -162,6 +188,7 @@ class StepOneWithDateRange extends React.Component {
             excludeDateArray,
             selectWeekValue,
             selectMonthValue,
+            timeRangelist: timeList,
 
             iconDisplay: false,
             getExcludeEventList: [],
@@ -376,7 +403,9 @@ class StepOneWithDateRange extends React.Component {
                     allWeChatIDList
                 })
             }
+            // console.log("__TODO 111", this.props.occupiedWeChatInfo.toJS(), nextProps.occupiedWeChatInfo.toJS());
             if (this.props.occupiedWeChatInfo !== nextProps.occupiedWeChatInfo) {
+                // console.log('_TODO')
                 isLoadingWeChatOccupiedInfo = nextProps.occupiedWeChatInfo.get('isLoading');
                 isAllWeChatIDOccupied = nextProps.occupiedWeChatInfo.get('isAllOccupied');
                 occupiedWeChatIDs = nextProps.occupiedWeChatInfo.get('occupiedIDs');
@@ -386,7 +415,6 @@ class StepOneWithDateRange extends React.Component {
                     occupiedWeChatIDs,
                 }, this.throttledCheckWeChatID);
             }
-
         }
 
     }
@@ -419,11 +447,6 @@ class StepOneWithDateRange extends React.Component {
         if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.props.type != '23') { // 线上餐厅送礼活动过于复杂不限制下一步
             nextFlag = false;
             this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d31f01f38ji1267)}`)
-        }
-
-        // 关注送礼
-        if (this.props.type == '31') {
-            this.checkIfAllOccupied() && (nextFlag = false);
         }
 
         if (this.state.getExcludeEventList.length > 0) {
@@ -487,8 +510,12 @@ class StepOneWithDateRange extends React.Component {
             if (ATSEnabledTypes.includes(`${this.props.type}`)) {
                 const {
                     validCycleType,
-                    selectMonthValue,
-                    selectWeekValue
+                    selectMonthValue = [],
+                    selectWeekValue = [],
+                    dateRange,
+                    timeRangelist = [],
+                    excludeDateArray = [],
+                    expand
                 } = this.state;
                 let validCycle;
                 switch (validCycleType) {
@@ -500,10 +527,60 @@ class StepOneWithDateRange extends React.Component {
                         break;
                     default: validCycle = null;
                 }
-                this.props.setSpecialBasicInfo({
-                    excludedDate: (this.state.excludeDateArray || []).map(moments => moments.format('YYYYMMDD')),
-                    validCycle,
-                })
+                // _TODO
+                let excludedDate = excludeDateArray.map(moments => moments.format('YYYYMMDD'));
+
+                let params = {
+                    eventStartDate: dateRange[0].format('YYYYMMDD'),
+                    eventEndDate: dateRange[1].format('YYYYMMDD'),
+                    eventWay: this.props.type, 
+                }
+                if(TimeRangeEnabledTypes.includes(this.props.type)){
+                    let timeList = timeRangelist
+                        .filter(item => item && item.startTime && item.endTime)
+                        .map(item => {
+                            let startTime = moment.isMoment(item.startTime) ? item.startTime : moment(item.startTime);
+                            let endTime = moment.isMoment(item.endTime) ? item.endTime : moment(item.endTime);
+                            return {
+                                startTime: startTime.format('HHmm'),
+                                endTime: endTime.format('HHmm'),
+                            }
+                        });
+                    params.timeList = timeList;
+                    params.excludedDateList = excludedDate; 
+                    params.validCycleList = validCycle;
+                }
+                if(expand){
+                    this.props.setSpecialBasicInfo({
+                        excludedDate,
+                        validCycle,
+                        timeList: params.timeList,
+                        advMore: expand,
+                    });
+                }else{
+                    params.timeList = [];
+                    params.excludedDateList = []; 
+                    params.validCycleList = [];
+                    this.props.setSpecialBasicInfo({
+                        excludedDate: [],
+                        validCycle: null,
+                        timeList: [],   
+                        advMore: expand,
+                    });
+                }
+                // _TODO
+                this.props.queryOccupiedWeixinAccounts(params);
+                // console.log('_TODO 222', this.props.occupiedWeChatInfo.toJS());
+
+                // 关注送礼
+                if (this.props.type == '31') {
+                    // _TODO
+                    // this.checkIfAllOccupied() && (nextFlag = false);
+                }
+                        
+                // this.props.queryOccupiedDouYinAccounts({
+                //     eventInfo: params
+                // });
             }
         }
         return nextFlag;
@@ -567,7 +644,8 @@ class StepOneWithDateRange extends React.Component {
                     })
                 })
             }
-            if (this.props.type === '31' || this.props.type === '68') {
+            // 活动时段change
+            if (this.props.type === '68') {
                 this.props.queryOccupiedWeixinAccounts({ ...opts, eventWay: this.props.type, itemID: opts.itemID });
             }
         }
@@ -746,9 +824,36 @@ class StepOneWithDateRange extends React.Component {
                     <span className={styles.gTip}>{this.props.intl.formatMessage(STRING_SPE.de8g05amdm1166)}</span>
                     <span className={styles.gDate} onClick={this.toggleAdvancedDateSettings}>{this.props.intl.formatMessage(STRING_SPE.dk46c4417i1276)}</span>
                 </FormItem>
+                {
+                    this.state.expand && 
+                    TimeRangeEnabledTypes.includes(this.props.type) && 
+                    this.renderTimeRange()
+                }
                 {this.state.expand && this.renderPromotionCycleSetting()}
                 {this.state.expand && this.renderExcludedDatePicker()}
             </div>
+        )
+    }
+
+    onChangeTimeRange = (value) => {
+        this.setState({
+            timeRangelist: value
+        })
+    }
+
+    renderTimeRange(){
+        const formItemLayout = {
+            labelCol: { span: 4 },
+            wrapperCol: { span: 17 },
+        };
+        return (
+            <FormItem label='活动时段' {...formItemLayout}>
+                <TimeRange 
+                    value={this.state.timeRangelist} 
+                    onChange={this.onChangeTimeRange}
+                    type={this.props.type}
+                />
+            </FormItem>
         )
     }
 
@@ -1613,6 +1718,7 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
         isUpdate:state.sale_myActivities_NEW.get('isUpdate'),
+        timeList: state.sale_mySpecialActivities_NEW.get('timeList')
     }
 };
 
@@ -1621,7 +1727,7 @@ const mapDispatchToProps = (dispatch) => {
         setSpecialBasicInfo: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoAC(opts));
         },
-        saleCenterQueryFsmGroupSettleUnit: (opts) => {
+        saleCenterQueryFsmGroupSettleUnit: (opts) => { 
             dispatch(saleCenterQueryFsmGroupSettleUnit(opts));
         },
         saleCenterGetExcludeCardLevelIds: (opts) => {
@@ -1638,6 +1744,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryOccupiedWeixinAccounts: (opts) => {
             dispatch(queryOccupiedWeiXinAccountsStart(opts));
+        },
+        queryOccupiedDouYinAccounts: (opts) => {
+            dispatch(queryOccupiedDouYinAccountsStart(opts));
         },
         queryWechatMpInfo: (opts) => {
             dispatch(queryWechatMpInfo(opts))

@@ -10,6 +10,7 @@ function range(start, end) {
 }
 const href = 'javascript:;';
 const TF = 'HH:mm';
+const timeNoLimitType = ['85', '31'];
 class TimeRange extends Component {
     state= {
     }
@@ -50,14 +51,14 @@ class TimeRange extends Component {
     }
 
     getDisableMinutes = () => {
-        if (this.props.type === '85') {
+        if (timeNoLimitType.includes(this.props.type)) {
             return []
         }
         return range(1, 30).concat(range(31, 60))
     }
 
     getDisableMinutesEnd = () => {
-        if (this.props.type === '85') {
+        if (timeNoLimitType.includes(this.props.type)) {
             return []
         }
         return range(0, 29).concat(range(30, 59))
