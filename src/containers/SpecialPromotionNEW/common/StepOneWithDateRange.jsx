@@ -534,6 +534,7 @@ class StepOneWithDateRange extends React.Component {
                     eventStartDate: dateRange[0].format('YYYYMMDD'),
                     eventEndDate: dateRange[1].format('YYYYMMDD'),
                     eventWay: this.props.type, 
+                    itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
                 }
                 if(TimeRangeEnabledTypes.includes(this.props.type)){
                     let timeList = timeRangelist
