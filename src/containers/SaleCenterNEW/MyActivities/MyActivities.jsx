@@ -1660,7 +1660,7 @@ class MyActivities extends React.Component {
         const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
         const k5dlpczr = intl.formatMessage(SALE_STRING.k5dlpczr);
         const l88f03b4 = intl.formatMessage(SALE_STRING.l88f03b4);
-        
+        const { promotionVersion = '' } = this.state
         return (
             <div>
                  <div className={`${styles.searchBox} layoutsSearch`} >
@@ -1805,7 +1805,7 @@ class MyActivities extends React.Component {
                             <Select
                                 style={{ width: 80 }}
                                 defaultValue=""
-                                value={this.state.promotionVersion}
+                                value={promotionVersion}
                                 onChange={(value) => {
                                     this.setState({
                                         promotionVersion: value,
