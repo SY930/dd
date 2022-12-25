@@ -44,6 +44,7 @@ import EveryDay from '../../GiftNew/GiftInfo/TicketBag/EveryDay';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 import TimeRange from "containers/PromotionV3/Camp/TimeRange/index";
+import _ from 'lodash';
 
 const CheckboxGroup = Checkbox.Group;
 const moment = require('moment');
@@ -157,7 +158,8 @@ class StepOneWithDateRange extends React.Component {
                 selectMonthValue = ['1'];
                 selectWeekValue = eventInfo.validCycle.map(item => item.substring(1));
             }
-            if(timeList.length > 0){
+            let newTimeList = timeList.filter(item => item.startTime && item.endTime);
+            if(newTimeList.length > 0){
                 expand = true;
             }
         } catch (e) {
@@ -570,7 +572,10 @@ class StepOneWithDateRange extends React.Component {
                     });
                 }
                 // _TODO
-                this.props.queryOccupiedWeixinAccounts(params);
+                let newParams = _.cloneDeep(params);
+                newParams.timeIntervalList = newParams.timeList;
+                delete newParams.timeList;
+                this.props.queryOccupiedWeixinAccounts(newParams);
                 // console.log('_TODO 222', this.props.occupiedWeChatInfo.toJS());
 
                 // 关注送礼
