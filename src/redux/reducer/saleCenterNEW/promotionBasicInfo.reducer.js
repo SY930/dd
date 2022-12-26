@@ -85,6 +85,7 @@ const $initialState = Immutable.fromJS({
     },
     $filterShops: {},
     shopsAllSet: undefined,
+    menuID: ['2001431'],
 });
 
 export const promotionBasicInfo_NEW = ($$state = $initialState, action) => {

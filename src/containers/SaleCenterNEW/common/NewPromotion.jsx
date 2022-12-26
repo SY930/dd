@@ -45,6 +45,7 @@ class NewPromotion extends React.Component {
 
     onFinish(cb) {
         const { promotionBasicInfo, promotionScopeInfo, promotionDetailInfo, isOnline, isCopy } = this.props;
+        const menuID = promotionBasicInfo.get('menuID');
         const basicInfo = promotionBasicDataAdapter(promotionBasicInfo.get('$basicInfo').toJS(), true);
         const scopeInfo = promotionScopeInfoAdapter(promotionScopeInfo.get('$scopeInfo').toJS(), true);
         const _detailInfo = promotionDetailInfoAdapter(promotionDetailInfo.get('$promotionDetail').toJS(), true);
@@ -153,7 +154,6 @@ class NewPromotion extends React.Component {
                 // 魏家凉皮字段
                 executionRoleType: executionRoleType || 1,
                 shareType,
-
             },
             timeLst: opts.timeLst,
             priceLst: opts.priceLst,
@@ -172,9 +172,10 @@ class NewPromotion extends React.Component {
             ruleUseType,
             shopScopeList,
             requiredLst,
-            stageGoodsList
+            stageGoodsList,
         }
         if (this.props.isNew === false && !isCopy) {
+            promotionInfo.master.sale_promotionVersion = basicInfo.promotionVersion
             promotionInfo.master.promotionID = basicInfo.promotionID;
             this.props.updateNewPromotion({
                 data: { promotionInfo },
@@ -200,6 +201,7 @@ class NewPromotion extends React.Component {
                 },
             });
         } else {
+            promotionInfo.master.sale_promotionVersion = menuID.some(item => ['2001431'].includes(item)) ? '2.0' : '1.0';
             this.props.addNewPromotion({
                 data: { promotionInfo },
                 success: () => {
