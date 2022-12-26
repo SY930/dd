@@ -200,7 +200,7 @@ class ActivityConditions extends Component {
 
     onChangeGiftPresentType = ({ target }, id) => {
         const { value } = target;
-        const form = this.conditionForms[id]
+        const form = this.conditionForms[id];
         form.setFieldsValue({ giftPresentType: value })
         this.setState({
             flag: !this.state.flag,
@@ -344,8 +344,7 @@ class ActivityConditions extends Component {
 
     renderAddGifts = (data, id) => {
         const form = this.conditionForms[id]
-        const { giftPresentType = 1 } = form ? form.getFieldsValue() : {}
-
+        const { giftPresentType = 1 } = form ? form.getFieldsValue() : {};
         if (data.presentType && data.presentType.includes(1) && giftPresentType == 1) {
             if (data && data.giftList) {
                 return <AddGifts
