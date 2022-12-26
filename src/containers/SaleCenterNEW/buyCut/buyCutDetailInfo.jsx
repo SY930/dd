@@ -140,7 +140,7 @@ class BuyCutDetailInfo extends React.Component {
                 return
             }
             const stage = ruleInfo.map(item => {
-                return { stageAmount: item.start, discountRate: item.end / 10 }
+                return { stageAmount: parseInt(item.start), discountRate: item.end / 10 }
             })
             this.props.setPromotionDetail({
                 rule: {
@@ -364,20 +364,24 @@ class BuyCutDetailInfo extends React.Component {
         const _end = value.end;
         let _validationStatus,
             _helpMsg;
-        if(notValidDiscountNumTwo(_end)){
-            _validationStatus = 'error';
-            _helpMsg = '可输入0~100的整数或小数，小数最多2位'
-        }else {
-            _validationStatus = 'success';
-            _helpMsg = null
+        if(_start) {
+            const reg = /^\d\d*$/;
+            if(!reg.test(_start)){
+                _validationStatus = 'error';
+                _helpMsg = '可输入整数'
+            }else {
+                _validationStatus = 'success';
+                _helpMsg = null
+            }
         }
-        const reg = /^\d\d*$/;
-        if(!reg.test(_start)){
-            _validationStatus = 'error';
-            _helpMsg = '可输入整数'
-        }else {
-            _validationStatus = 'success';
-            _helpMsg = null
+        if(_end) {
+            if(notValidDiscountNumTwo(_end)){
+                _validationStatus = 'error';
+                _helpMsg = '可输入0~100的整数或小数，小数最多2位'
+            }else {
+                _validationStatus = 'success';
+                _helpMsg = null
+            }
         }
         const _tmp = this.state.ruleInfo;
         _tmp[index] = {
