@@ -176,6 +176,7 @@ class NewPromotion extends React.Component {
         }
         if (this.props.isNew === false && !isCopy) {
             promotionInfo.master.sale_promotionVersion = basicInfo.promotionVersion
+            console.log("🚀 ~ file: NewPromotion.jsx:179 ~ NewPromotion ~ onFinish ~ basicInfo.promotionVersion", basicInfo.promotionVersion)
             promotionInfo.master.promotionID = basicInfo.promotionID;
             this.props.updateNewPromotion({
                 data: { promotionInfo },
@@ -201,7 +202,11 @@ class NewPromotion extends React.Component {
                 },
             });
         } else {
-            promotionInfo.master.sale_promotionVersion = menuID.some(item => ['2001431'].includes(item)) ? '2.0' : '1.0';
+            let promotionVersion = '1.0';
+            if (menuID.includes('2001431')) {
+                promotionVersion = '2.0'
+            }
+            promotionInfo.master.sale_promotionVersion = promotionVersion;
             this.props.addNewPromotion({
                 data: { promotionInfo },
                 success: () => {
