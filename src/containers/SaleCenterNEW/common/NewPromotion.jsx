@@ -45,7 +45,7 @@ class NewPromotion extends React.Component {
 
     onFinish(cb) {
         const { promotionBasicInfo, promotionScopeInfo, promotionDetailInfo, isOnline, isCopy } = this.props;
-        const menuID = promotionBasicInfo.get('menuID');
+        const menuIDs = promotionBasicInfo.get('menuID');
         const basicInfo = promotionBasicDataAdapter(promotionBasicInfo.get('$basicInfo').toJS(), true);
         const scopeInfo = promotionScopeInfoAdapter(promotionScopeInfo.get('$scopeInfo').toJS(), true);
         const _detailInfo = promotionDetailInfoAdapter(promotionDetailInfo.get('$promotionDetail').toJS(), true);
@@ -203,7 +203,7 @@ class NewPromotion extends React.Component {
             });
         } else {
             let promotionVersion = '1.0';
-            if (menuID.includes('2001431')) {
+            if (menuIDs.includes('2001431')) {
                 promotionVersion = '2.0'
             }
             promotionInfo.master.sale_promotionVersion = promotionVersion;
