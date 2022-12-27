@@ -202,11 +202,9 @@ class NewPromotion extends React.Component {
                 },
             });
         } else {
-            let promotionVersion = '1.0';
-            if (menuIDs.includes('2001431')) {
-                promotionVersion = '2.0'
-            }
-            promotionInfo.master.sale_promotionVersion = promotionVersion;
+            const path = window.location.pathname.split('/') || [];
+            const pathMenuID = path[path.length - 1];
+            promotionInfo.master.sale_promotionVersion = menuIDs.includes(pathMenuID) ? '2.0' : '1.0';
             this.props.addNewPromotion({
                 data: { promotionInfo },
                 success: () => {
