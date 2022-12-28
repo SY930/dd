@@ -138,7 +138,6 @@ const registeLangPack = async () => {
     console.log("营销中心语言包加载完成:", lang);
     //神策埋点内容
     setTimeout(() => {
-        console.log(getAccountInfo(), "getAccountInfo12");
         sensors.init({
             server_url: "http://data-sc.hualala.com/sa?project=default",
             show_log: false,

@@ -106,7 +106,6 @@ class PromotionModalContent extends Component {
                         }
                     }
                 })
-                // console.log(res.enrollRules, 'res.enrollRules-----', materialData)
                 this.setState({
                     recruitPlans: res,
                     enrollRules: res.enrollRules.length ? res.enrollRules : [],
