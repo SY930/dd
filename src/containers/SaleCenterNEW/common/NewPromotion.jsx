@@ -149,8 +149,8 @@ class NewPromotion extends React.Component {
                 estimatedSales: approval ? approval.estimatedSales : '',
                 activityRate: approval ? approval.activityRate : '',
                 auditRemark: approval ? approval.auditRemark : '',
-                headquartersCost: approval ? approval.headquartersCost : '',
-                storeAttribute: approval ? approval.storeAttribute : '',
+                headquartersCost: approval ? approval.headquartersCost : null,
+                storeAttribute: approval ? approval.storeAttribute : null,
                 // 魏家凉皮字段
                 executionRoleType: executionRoleType || 1,
                 shareType,
