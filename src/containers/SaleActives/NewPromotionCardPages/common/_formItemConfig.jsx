@@ -473,7 +473,7 @@ export const ALL_FORM_ITEMS = {
         options: [
             { label: '优惠券', value: 1 },
             { label: '积分', value: 2 },
-            // { label: '卡值', value: 5 },
+            { label: '卡值', value: 5 },
         ],
         rules: ['required'],
     },
