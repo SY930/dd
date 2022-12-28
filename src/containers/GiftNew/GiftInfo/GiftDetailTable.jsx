@@ -43,10 +43,9 @@ import TicketBag from './TicketBag';
 import GiftList from './TicketBag/GiftList';
 import { GIFT_DETAILS } from '../../../constants/entryCodes';
 import { jumpPage, closePage } from '@hualala/platform-base';
-
 //周黑鸭新增
-import { isZhouheiya } from '../../../constants/WhiteList.jsx'
-
+import { isZhouheiya } from '../../../constants/WhiteList.jsx';
+import { sensorsAutoTrack } from "../../../helpers/util";
 const TabPane = Tabs.TabPane;
 const validUrl = require('valid-url');
 class GiftDetailTable extends Component {
@@ -164,6 +163,7 @@ class GiftDetailTable extends Component {
             FetchGiftSchemaAC(parm)
         }
         this.props.queryWechatMpInfo();
+        sensorsAutoTrack('礼品信息');
     }
 
     componentWillReceiveProps(nextProps) {
@@ -835,7 +835,7 @@ class GiftDetailTable extends Component {
             <div className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div className="layoutsTool" style={{ height: '64px' }}>
                     <div className={headerClasses}>
-                        <span className={styles2.customHeader}>
+                        <span className={styles2.customHeader} id="pageName" pageName="礼品信息">
                             礼品信息
                         </span>
                         <p style={{ marginLeft: 'auto' }}>

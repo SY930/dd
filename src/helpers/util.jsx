@@ -4,7 +4,8 @@ import ReactDOM from 'react-dom';
 import { Modal } from 'antd';
 import _ from 'lodash';
 import $ from 'jquery';
-import uuid from 'uuid/v4'
+import uuid from 'uuid/v4';
+import sensors from 'sa-sdk-javascript';
 import { getStore } from '@hualala/platform-base'
 
 import getApiConfig from './callserver';
@@ -822,7 +823,6 @@ export function checkAuthLicense(licenseData = {}, productCode = 'HLL_CRM_NEW', 
         }
     }
 }
-
 export const formatGoodsData = (goods, category) => {
     const _goods = goods.map(item => ({
         ...item,
@@ -840,5 +840,33 @@ export const formatGoodsData = (goods, category) => {
     return {
         _goods,
         _category,
+    }
+}
+/**
+ *埋点自定义事件
+ */
+export function setSensorsData(event_id = "wtcrm_promotion_clk", params = {}) {
+    sensors.track(event_id, params);
+}
+/**
+ * 页面浏览事件
+ */
+export function sensorsAutoTrack(name) {
+    if(sensors && typeof sensors.quick() === "function"){
+        sensors.quick('autoTrack', {
+            pageName: name
+        })
+    }
+}
+/**
+ * 获取cookie值
+ */
+export function getCookie(name) {
+    var arr,
+        reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    if ((arr = document.cookie.match(reg))) {
+        return decodeURI(arr[2]);
+    } else {
+        return null;
     }
 }

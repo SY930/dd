@@ -6,7 +6,7 @@ import * as entryCodes from "./constants/entryCodes";
 import "config/AssociateConfig.js";
 // 初始化Dva
 import "./utils/dva/index";
-import { getAccountInfo } from "./helpers/util";
+import { getCookie, getAccountInfo } from "./helpers/util";
 const { registeEntryCode, registeLocale } = registerPackage("sale", process.env.JS_VERSION);
 const DEFAULT_LANGUAGE = "zh-cn";
 const LOCEL_LANGUAGE_MAP = new Map([
@@ -146,7 +146,7 @@ const registeLangPack = async () => {
             send_type: "beacon",
             heatmap: {
                 //是否开启点击图，default 表示开启，自动采集 $WebClick 事件，可以设置 'not_collect' 表示关闭。
-                clickmap: "not_collect",
+                clickmap: "default",
                 //是否开启触达图，not_collect 表示关闭，不会自动采集 $WebStay 事件，可以设置 'default' 表示开启。
                 scroll_notice_map: "default",
             },

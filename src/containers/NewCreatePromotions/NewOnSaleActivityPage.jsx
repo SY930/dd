@@ -1,19 +1,18 @@
 /**
  *
- * @description 营销活动（新） 入口文件
+ * @description 促销活动（新） 入口文件
 */
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import registerPage from '../../../index';
 import { NEW_ON_SALE_ACTIVITY_BOX } from "../../constants/entryCodes";
-import { axiosData, checkAuthLicense } from '../../helpers/util';
+import { axiosData, checkAuthLicense, sensorsAutoTrack } from '../../helpers/util';
 import { COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
 import selfStyle from './NewSalePage.less';
 import moment from 'moment'
-
 import {
     Modal,
     message
@@ -102,6 +101,7 @@ class NewOnSaleActivityPage extends Component {
         this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' }).then((res) => {
             this.setState({ authLicenseData: res })
         });
+        sensorsAutoTrack("促销活动");
     }
     componentWillReceiveProps(nextProps) {
         // todo:上线放开

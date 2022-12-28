@@ -78,14 +78,15 @@ import {
     upGradeInitPerfectCheckBox,
 } from "../upGradeReturnGift/StepThreeHelp";
 import { freeGetStep3Render } from "../freeGet/step3";
-
-import { h5GetStep3Render } from '../h5Get/step3'
-import { scoreConvertGiftStep3Render } from '../scoreConvertGift/step3'
-import { consumeGiveGiftStep3Render } from '../consumeGiveGift/step3'
-import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+import { h5GetStep3Render } from "../h5Get/step3";
+import { scoreConvertGiftStep3Render } from "../scoreConvertGift/step3";
+import { consumeGiveGiftStep3Render } from "../consumeGiveGift/step3";
+import Approval from "../../../containers/SaleCenterNEW/common/Approval";
 import { isZhouheiya } from "../../../constants/WhiteList";
 import Permission from './Permission';
 import { getDefaultGiftData, getDefaultRecommendSetting, MULTIPLE_LEVEL_GIFTS_CONFIG, descImage } from './SpecialPromotionConfig'
+import { setSensorsData } from "../../../helpers/util";
+import SensorsCodes from "../../../constants/SensorsCodes";
 
 const moment = require("moment");
 const FormItem = Form.Item;
@@ -1824,8 +1825,16 @@ class SpecialDetailInfo extends Component {
                     v.giftTotalCopies = giftTotalCopies;
                 });
             }
+            let giftIdsArr = [];
+            giftInfo.forEach((item) => {
+                if(item.giftID){giftIdsArr.push(item.giftID)};
+            })
+            //埋点事件第三步
+            // setSensorsData(SensorsCodes.sensorsThirdStepId[this.props.type] ? SensorsCodes.sensorsThirdStepId[this.props.type] : "", {
+            //     gift_point: this.state.givePoints ? Number(this.state.presentValue) : "",
+            //     gift_coupon: giftIdsArr.join(',')
+            // });
             this.props.setSpecialGiftInfo(giftInfo);//发起action
-            
             //H5领券
             if (["69"].includes(type)) {
                 const { approvalInfo, userCount } = this.state;
