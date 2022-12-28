@@ -47,7 +47,7 @@ import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";
 import { injectIntl } from "../IntlDecor";
 import Card from "../../../assets/card.png";
 import CardSaleActive from "./CardSaleActive";
-import { isZhouheiya, isGeneral, businessTypesList, WJLPGroupID } from "../../../constants/WhiteList";
+import { isZhouheiya, isGeneral, WJLPGroupID } from "../../../constants/WhiteList";
 import GoodsRef from '@hualala/sc-goodsRef';
 import { getWJLPCoulums } from './config'
 
@@ -1582,7 +1582,11 @@ class MyActivities extends React.Component {
         return (
             <GoodsSelector
                 defaultValue={selectedGoods}
-                businessTypesList={businessTypesList}
+                businessTypesList={[{
+                    biz: 'ris',
+                    bizName: '零售',
+                    isDefault: true,
+                }]}
                 visible={this.state.selectGoodsVisible}
                 onCancel={() => {
                     this.setState({
