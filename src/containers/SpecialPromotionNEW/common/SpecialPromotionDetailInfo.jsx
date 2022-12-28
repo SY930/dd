@@ -85,22 +85,12 @@ import { consumeGiveGiftStep3Render } from '../consumeGiveGift/step3'
 import Approval from '../../../containers/SaleCenterNEW/common/Approval';
 import { isZhouheiya } from "../../../constants/WhiteList";
 import Permission from './Permission';
+import { getDefaultGiftData, getDefaultRecommendSetting, MULTIPLE_LEVEL_GIFTS_CONFIG, descImage } from './SpecialPromotionConfig'
 
 const moment = require("moment");
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-
-const getDefaultRecommendSetting = (recommendType = 1) => ({
-    recommendType,
-    rechargeRate: undefined,
-    consumeRate: undefined,
-    pointRate: undefined,
-    rewardRange: 0,
-    presentValue: undefined,
-    redPackageLimitValue: undefined,
-    redPackageRate: undefined,
-});
 
 const roundToDecimal = (number, bit = 2) => +number.toFixed(bit);
 
@@ -110,96 +100,6 @@ const getIntervalID = () => {
     return uuid;
 };
 
-const getDefaultGiftData = (typeValue = 0, typePropertyName = "sendType") => ({
-    // 膨胀所需人数
-    needCount: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品数量
-    giftCount: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品数量
-    giftTotalCount: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 免费活动礼品分数
-    giftTotalCopies: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品ID和name
-    giftInfo: {
-        giftName: null,
-        giftItemID: null,
-        validateStatus: "success",
-        msg: null,
-    },
-    effectType: "1",
-    // 礼品生效时间
-    giftEffectiveTime: {
-        value: "0",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品有效期
-    giftValidDays: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    giftOdds: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    [typePropertyName]: typeValue,
-    // 适用区域
-    region: {
-        value: '',
-        validateStatus: 'success',
-        msg: null,
-    },
-    //领取日期及个数
-    segments: [
-        {
-            getDate: {
-                value: [],
-                validateStatus: "success",
-                msg: null,
-            }, //领取日期
-            giftTotalCount: {
-                value: "",
-                validateStatus: "success",
-                msg: null,
-            }, //领取总数
-            id: Date.now().toString(36),
-        }
-    ]
-});
-
-const MULTIPLE_LEVEL_GIFTS_CONFIG = [
-    {
-        type: "63",
-        propertyName: "lastConsumeIntervalDays",
-        levelLabel: COMMON_SPE.d1e0750k82809,
-        levelAffix: COMMON_SPE.k6hk1aa1,
-    },
-    {
-        type: "75",
-        propertyName: "needCount",
-        levelLabel: COMMON_SPE.k6hk1aid,
-        levelAffix: COMMON_SPE.k6hk1aqp,
-    },
-];
-const limitType = ".jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF";
 @injectIntl
 class SpecialDetailInfo extends Component {
     constructor(props) {
@@ -467,7 +367,8 @@ class SpecialDetailInfo extends Component {
                     category: [],
                     goods: []
                 }
-            }
+            },
+            giftConfImagePath: data[0] ? data[0].giftConfImagePath : '',
         };
 
         this.rightControl = Permission(props.user.accountInfo.groupID).find(item => props.type === item.key);
@@ -883,7 +784,6 @@ class SpecialDetailInfo extends Component {
                     giftTotalCountBag: giftTotalCount == '0' ? '不限制' : giftTotalCount
                 });
             }
-
             if (
                 this.props.type == "21" &&
                 giftTotalCount &&
@@ -1045,6 +945,9 @@ class SpecialDetailInfo extends Component {
                 if (this.props.type == "30" && gift.presentType === 4) {
                     data[index].giftInfo.giftName = "";
                 }
+                if (this.props.type == '30') {
+                    data[index].giftConfImagePath = gift.giftConfImagePath;
+                }
                 data[index].needCount.value = gift.needCount || 0;
                 data[index].giftInfo.giftItemID = gift.giftID;
                 data[index].giftInfo.itemID = gift.itemID;
@@ -1059,9 +962,7 @@ class SpecialDetailInfo extends Component {
                 } else {
                     data[index].giftTotalCount.value = gift.giftTotalCount;
                 }
-                data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(
-                    2
-                );
+                data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
                 data[
                     index
                 ].lastConsumeIntervalDays = gift.lastConsumeIntervalDays
@@ -1629,7 +1530,7 @@ class SpecialDetailInfo extends Component {
                 return true;
             }
         }
-        const { sendTypeValue, giftTotalCountBag } = this.state;
+        const { sendTypeValue, giftTotalCountBag, giftConfImagePath } = this.state;
         if (type === "30" && sendTypeValue === "1") {
             if (!Number(giftTotalCountBag)) { message.warning('请填写礼品总数'); return false }
             const { bag } = this.state;
@@ -1641,6 +1542,7 @@ class SpecialDetailInfo extends Component {
                     presentType: 4,
                     giftOdds: "3",
                     giftTotalCount: giftTotalCountBag,
+                    giftConfImagePath,
                 };
                 this.props.setSpecialGiftInfo([params]);
                 const { shareTitle, shareImagePath } = this.state;
@@ -1879,6 +1781,7 @@ class SpecialDetailInfo extends Component {
                 }
                 if (sendTypeValue == '0') {
                      giftInfo[0].presentType = 1;
+                     giftInfo[0].giftConfImagePath = giftConfImagePath
                 }
                 const { shareTitle, shareImagePath } = this.state;
                 const shareInfo = { shareTitle, shareImagePath };
@@ -2081,7 +1984,6 @@ class SpecialDetailInfo extends Component {
         };
     };
     gradeChange = (gifts, typeValue) => {
-        console.log(111111, gifts, typeValue);
         // 赠送优惠券
         const typePropertyName =
             this.props.type == "68" ? "recommendType" : "sendType";
@@ -2511,6 +2413,43 @@ class SpecialDetailInfo extends Component {
         );
     };
 
+    renderScoreConvertImage = (title, { key, image }, index) => {
+        const cropperRatio = index === '0' ? 1044 / 842 : 200 / 200
+        return (
+            <FormItem
+                    label={title}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    style={{ position: "relative" }}
+                >
+                    <Row>
+                        <Col span={6}>
+                            <CropperUploader
+                                className={styles.uploadCom}
+                                width={120}
+                                height={110}
+                                cropperRatio={cropperRatio}
+                                limit={2048}
+                                allowedType={["image/png", "image/jpeg"]}
+                                value={image}
+                                uploadTest="上传图片"
+                                onChange={(value) =>
+                                    this.onRestImg({
+                                        key,
+                                        value,
+                                    })
+                                }
+                            />
+                        </Col>
+                        <Col span={18} className={styles.grayFontPic}>
+                            {descImage[index]}
+                        </Col>
+                    </Row>
+                </FormItem>
+        )
+    }
+
     renderShareInfo3 = () => {
         // const { type } = this.props;
         const { shareTitle, shareImagePath, shareTitlePL } = this.state;
@@ -2530,55 +2469,7 @@ class SpecialDetailInfo extends Component {
                         onChange: this.handleShareTitleChange,
                     })(<Input placeholder={shareTitlePL} />)}
                 </FormItem>
-                <FormItem
-                    label="分享图片"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                    style={{ position: "relative" }}
-                >
-                    <Row>
-                        <Col span={6}>
-                            <CropperUploader
-                                className={styles.uploadCom}
-                                width={120}
-                                height={110}
-                                cropperRatio={1044 / 842}
-                                limit={2048}
-                                allowedType={["image/png", "image/jpeg"]}
-                                value={shareImagePath}
-                                uploadTest="上传图片"
-                                onChange={(value) =>
-                                    this.onRestImg({
-                                        key: "shareImagePath",
-                                        value,
-                                    })
-                                }
-                            />
-                        </Col>
-                        <Col span={18} className={styles.grayFontPic}>
-                            <p
-                                style={{
-                                    position: "relative",
-                                    top: 20,
-                                    left: 70,
-                                }}
-                            >
-                                小程序分享图
-                                <br />
-                                图片建议尺寸：1044*842
-                                <br />
-                                支持PNG、JPG格式，大小不超过2M
-                            </p>
-                        </Col>
-                    </Row>
-                    {/* <PhotoFrame
-                        restaurantShareImagePath={restaurantShareImagePath}
-                        shareImagePath={shareImagePath}
-                        onChange={this.onRestImg}
-                        type={type}
-                    /> */}
-                </FormItem>
+                {this.renderScoreConvertImage('分享图片', { key: 'shareImagePath', image: shareImagePath }, '0')}
             </div>
         );
     };
@@ -4722,7 +4613,7 @@ class SpecialDetailInfo extends Component {
     }
 
     render() {
-        const { giveCoupon, couponValue } = this.state;
+        const { giveCoupon, couponValue, giftConfImagePath = '' } = this.state;
         const { type, isBenefitJumpSendGift = false } = this.props;
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
@@ -4823,6 +4714,7 @@ class SpecialDetailInfo extends Component {
                     </Row>
                 )}
                 {type === "30" && this.renderPointDuihuan()}
+                {type === '30' && this.renderScoreConvertImage('礼品图片', { key: 'giftConfImagePath', image: giftConfImagePath }, 1)} 
                 {type === "60" && renderThree.call(this, type)}
                 {type === "53" &&
                     renderThree.call(this, type, isBenefitJumpSendGift)}
