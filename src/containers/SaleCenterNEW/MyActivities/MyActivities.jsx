@@ -1572,7 +1572,7 @@ class MyActivities extends React.Component {
             </div>
         }
         return (
-            <Input addonAfter={<Icon type="plus-circle-o" />} placeholder="请选择适用商品" readonly={true} onClick={this.handleSelectGoods} />
+            <Input addonAfter={<Icon type="plus-circle-o" />} placeholder="请选择零售商品" readonly={true} onClick={this.handleSelectGoods} />
         );
     }
 
@@ -1880,7 +1880,7 @@ class MyActivities extends React.Component {
                 <div className="layoutsSeniorQuery">
                     <ul>
                         {isZhouheiya(accountInfo.groupID) && <li>
-                            <h5>适用商品</h5>
+                            <h5>零售商品</h5>
                         </li>}
                         {isZhouheiya(accountInfo.groupID) && <li>
                             {this.renderGoodsInTreeSelectMode()}
