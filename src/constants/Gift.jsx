@@ -305,6 +305,7 @@ const GiftCfg = {
     { value: '166', label: '消费送礼活动' },
     { value: '170', label: '积分换礼' },
     { value: '180', label: '消费送礼' },
+    { value: '142', label: '自动化营销活动送礼' },
   ],
   giftSendStatus: [
     { value: '', label: '全部' },
