@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Radio, Select ,Col} from 'antd';
+import { Form, Radio, Select, Col, Row, Icon, message} from 'antd';
 import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -14,12 +14,35 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
 import { notValidDiscountNum } from "../../../containers/SaleCenterNEW/discount/discountDetailInfo.jsx";
 import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common/PriceInput';
+import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRangeInput';
 
 const Immutable = require('immutable');
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
+
+const notValidDiscountNumTwo = (strNum) => {
+    if(typeof strNum == 'string'){
+        if(+strNum !== +strNum){
+            return true;
+        }
+        if(strNum.indexOf('.') == -1){
+            // 没有小数点
+           return strNum > 100 || (strNum.length > 1 && strNum[0] == 0) || strNum < 0;
+        }else{
+            let index = strNum.indexOf('.');
+            // 有小数点
+            if(strNum > 0 && strNum < 10){
+                return strNum.length > 4;
+            }else if(strNum > 10){
+                return strNum.length > 5;
+            }
+            return strNum[0] == 0 || index != strNum.lastIndexOf('.');
+       }
+    }
+    return false;
+}
 
 //周黑鸭需求
 import { isCheckApproval, isZhouheiya } from '../../../constants/WhiteList';
@@ -41,6 +64,13 @@ class BuyCutDetailInfo extends React.Component {
             discountRateFlag: true,
             cutWay: '1',
             ruleType: '1',
+            ruleInfo: [{
+                validationStatus: 'success',
+                helpMsg: null,
+                start: '',
+                end: '',
+            },],//满X份折扣的活动条件
+            maxCount: 5,
         };
 
         this.renderBuyDishNumInput = this.renderBuyDishNumInput.bind(this);
@@ -74,6 +104,14 @@ class BuyCutDetailInfo extends React.Component {
 
         // 
         let [cutWay, ruleType = '1'] = [...String(_rule.disType)]
+        const ruleInfo = (_rule.stage || []).map(item => {
+            return {
+                validationStatus: 'success',
+                helpMsg: null,
+                start: item.stageAmount,
+                end: item.discountRate * 10,
+            }
+        })
 
         this.setState({
             stageAmount: _rule.stageAmount,
@@ -81,6 +119,7 @@ class BuyCutDetailInfo extends React.Component {
             discountRate: _rule.discountRate ? Number((_rule.discountRate * 10).toFixed(3)).toString() : '',
             cutWay,
             ruleType,
+            ruleInfo,
         });
     }
 
@@ -92,7 +131,27 @@ class BuyCutDetailInfo extends React.Component {
     }
 
     handleSubmit = () => {
-        let { ruleType, cutWay, stageAmount, freeAmount, discountRate, targetScope, stageAmountFlag, freeAmountFlag, discountRateFlag } = this.state;
+        let { ruleType, ruleInfo, cutWay, stageAmount, freeAmount, discountRate, targetScope, stageAmountFlag, freeAmountFlag, discountRateFlag } = this.state;
+        if(cutWay == '5') {
+            const isCheckedPass = ruleInfo.every(item => item.validationStatus == 'success' && item.start && item.end)
+            const disType = ruleType == '1' ? 51 : 52;
+            if(!isCheckedPass) {
+                message.error('请填写完整活动条件')
+                return
+            }
+            const stage = ruleInfo.map(item => {
+                return { stageAmount: parseInt(item.start), discountRate: item.end / 10 }
+            })
+            this.props.setPromotionDetail({
+                rule: {
+                    disType,
+                    stageType: 0,
+                    targetScope,
+                    stage,
+                },
+            });
+            return true;
+        }
         if (stageAmount == null || stageAmount == '') {
             stageAmountFlag = false;
         }
@@ -300,6 +359,102 @@ class BuyCutDetailInfo extends React.Component {
         )
     }
 
+    onCustomRangeInputChange = (value, index) => {
+        const _start = value.start;
+        const _end = value.end;
+        let _validationStatus,
+            _helpMsg;
+        if(_start) {
+            const reg = /^\d\d*$/;
+            if(!reg.test(_start)){
+                _validationStatus = 'error';
+                _helpMsg = '可输入整数'
+            }else {
+                _validationStatus = 'success';
+                _helpMsg = null
+            }
+        }
+        if(_end) {
+            if(notValidDiscountNumTwo(_end)){
+                _validationStatus = 'error';
+                _helpMsg = '可输入0~100的整数或小数，小数最多2位'
+            }else {
+                _validationStatus = 'success';
+                _helpMsg = null
+            }
+        }
+        const _tmp = this.state.ruleInfo;
+        _tmp[index] = {
+            start: _start,
+            end: _end,
+            validationStatus: _validationStatus,
+            helpMsg: _helpMsg,
+        };
+        this.setState({ ruleInfo: _tmp });
+    }
+
+    renderOperationIcon = (index) => {
+        const _len = this.state.ruleInfo.length;
+        if (_len == 1 && this.state.maxCount > _len) {
+            return (
+                <span className={styles.iconsStyle}>
+                    <Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.addRule} />
+                </span>
+            )
+        }
+        if (_len == this.state.maxCount && index == this.state.maxCount - 1) {
+            return (
+                <span className={styles.iconsStyle}>
+                    <Icon
+                        className={styles.deleteIconLeft}
+                        type="minus-circle-o"
+                        onClick={(e) => {
+                            const _index = index;
+                            this.deleteRule(_index, e)
+                        }}
+                    />
+                </span>
+            )
+        }
+        if (index == _len - 1 && _len < this.state.maxCount) {
+            return (
+                <span className={styles.iconsStyle}>
+                    <Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.addRule} />
+                    <Icon
+                        className={styles.deleteIcon}
+                        type="minus-circle-o"
+                        onClick={(e) => {
+                            const _index = index;
+                            this.deleteRule(_index, e)
+                        }}
+                    />
+                </span>
+            )
+        }
+        return null;
+    }
+
+    addRule = () => {
+        const _tmp = this.state.ruleInfo;
+        _tmp.push({
+            validationStatus: 'success',
+            helpMsg: null,
+            start: '',
+            end: '',
+        });
+        this.setState({
+            ruleInfo: _tmp,
+        });
+    }
+
+    deleteRule = (index, e) => {
+        const _tmp = this.state.ruleInfo;
+        _tmp.splice(index, 1);
+        this.setState({
+            ruleInfo: _tmp,
+        })
+    }
+
     renderGiveDishNumInput = () => {
         const { intl } = this.props;
         const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
@@ -361,6 +516,77 @@ class BuyCutDetailInfo extends React.Component {
             </FormItem>
             )
         }
+        if(this.state.cutWay === '5') {
+            const type = [
+                { value: '1', name: '指定菜品消费满' },
+                { value: '2', name: '同一菜品消费满' },
+            ];
+            return (
+                <FormItem
+                    className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
+                    label={'活动条件'}
+                >
+                    {
+                        this.state.ruleInfo.map((itemRule, index) => {
+                            const _value = {
+                                start: itemRule.start,
+                                end: itemRule.end,
+                            };
+                            return (
+                                <Row key={index}>
+                                    <Col>
+                                        <FormItem
+                                            label=""
+                                            className={styles.FormItemStyle}
+                                            validateStatus={itemRule.validationStatus}
+                                            help={itemRule.helpMsg}
+                                        >
+                                            <CustomRangeInput
+                                                addonBefore={
+                                                    <Select
+                                                        className={`${styles.linkSelectorRight} discountDetailMountClassJs`}
+                                                        getPopupContainer={(node) => node.parentNode}
+                                                        value={this.state.ruleType}
+                                                        onChange={(val) => {
+                                                            this.setState({ 
+                                                                ruleType: val, 
+                                                                ruleInfo: [{
+                                                                    validationStatus: 'success',
+                                                                    helpMsg: null,
+                                                                    start: '',
+                                                                    end: '',
+                                                                }] 
+                                                            })
+                                                        }}
+                                                    >
+                                                        {type.map((type) => {
+                                                            return <Select.Option key={type.value} value={type.value}>{type.name}</Select.Option>
+                                                        })}
+                                                    </Select>
+                                                }
+                                                endPlaceHolder={'打7折，填写70'}
+                                                discountMode={true}
+                                                relation={'折扣'}
+                                                addonAfterUnit={'%'}
+                                                addonAfter={'份'}
+                                                value={_value}
+                                                onChange={(value) => {
+                                                    this.onCustomRangeInputChange(value, index);
+                                                }}
+                                            />
+
+                                        </FormItem>
+                                    </Col>
+                                    <Col>{this.renderOperationIcon(index)}</Col>
+                                </Row>
+                            )
+                        })
+                    }
+                </FormItem>
+            )
+        }
         return (<FormItem
             className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
             wrapperCol={{ span: 17, offset: 4 }}
@@ -404,6 +630,7 @@ class BuyCutDetailInfo extends React.Component {
                     {
                         ruleType == '1' ? <Radio value={'4'} key="4">{'每X份减免'}</Radio> : null
                     }
+                    <Radio value={'5'} key="5">{'满X份折扣'}</Radio>
                     
                 </RadioGroup>
             </FormItem>
@@ -428,7 +655,7 @@ class BuyCutDetailInfo extends React.Component {
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
                     <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
-                    {this.renderBuyDishNumInput()}
+                    {this.state.cutWay != '5' ? this.renderBuyDishNumInput() : null}
                     {this.renderCutWay()}
                     {this.renderGiveDishNumInput()}
                     {this.renderAdvancedSettingButton()}
