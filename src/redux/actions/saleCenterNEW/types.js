@@ -1060,7 +1060,7 @@ export const arrayTransformAdapter = function (source) {
  * @param {Bool} direction flag 'false' indicate it is transform to redux format or to the server end format
  * @return {Object}  transformed data
  */
-export const promotionBasicDataAdapter = function (source, dir, promotionVersion) {
+export const promotionBasicDataAdapter = function (source, dir, promotionVersion = '') {
     if (!(source instanceof Object)) {
         throw new Error(`source should be an Object, which is ${source}`);
     }

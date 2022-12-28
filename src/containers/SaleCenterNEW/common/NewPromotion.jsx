@@ -175,8 +175,8 @@ class NewPromotion extends React.Component {
             stageGoodsList,
         }
         if (this.props.isNew === false && !isCopy) {
-            promotionInfo.master.sale_promotionVersion = basicInfo.promotionVersion
-            console.log("🚀 ~ file: NewPromotion.jsx:179 ~ NewPromotion ~ onFinish ~ basicInfo.promotionVersion", basicInfo.promotionVersion)
+            console.log(basicInfo.promotionVersion, 'basicInfo.promotionVersion')
+            promotionInfo.master.sale_promotionVersion = basicInfo.promotionVersion ? '2.0' : '1.0'
             promotionInfo.master.promotionID = basicInfo.promotionID;
             this.props.updateNewPromotion({
                 data: { promotionInfo },
