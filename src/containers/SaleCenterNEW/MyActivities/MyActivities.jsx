@@ -926,7 +926,8 @@ class MyActivities extends React.Component {
         this.props.fetchPromotionDetail_NEW({
             data: {
                 promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
-                groupID: this.props.user.accountInfo.groupID
+                groupID: this.props.user.accountInfo.groupID,
+                sale_promotionVersion: _record ? _record.promotionVersion : '1.0'
             },
             success: this.successFn,
             fail: this.failFn
@@ -1074,7 +1075,8 @@ class MyActivities extends React.Component {
         this.props.fetchPromotionDetail_NEW({
             data: {
                 promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
-                groupID: this.props.user.accountInfo.groupID
+                groupID: this.props.user.accountInfo.groupID,
+                sale_promotionVersion:  _record ? _record.sale_promotionVersion : '1.0'
             },
             fail: this.failFn
         });
