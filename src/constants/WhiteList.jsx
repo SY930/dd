@@ -1,6 +1,6 @@
 
 import { getStore } from '@hualala/platform-base'
-import { isRetailMenuID } from 'helpers/util';
+import { isFoodMenuID, isRetailMenuID } from 'helpers/util';
 
 const getAccountInfo = () => {
     const promotionBasicInfo = getStore().getState().sale_promotionBasicInfo_NEW;
@@ -38,6 +38,9 @@ export const businessTypesList = [
 // 是否周黑鸭集团
 export function isZhouheiya(groupID = getAccountInfo().groupID) {
     if (!groupID) return false;
+    if (isFoodMenuID()) {
+        return false;
+    }
     return zhouheiyaGroupID.includes(String(groupID)) || isRetailMenuID() || getAccountInfo().promotionVersion === '2.0';
 }
 
@@ -84,3 +87,6 @@ export function checkGoodsScopeListIsNotEmpty(goodsScopeList) {
 
 // TODO: 增加线上ID——————————————
 export const RetailMenuID = ['2001431']; // 零售促销活动menuID
+
+
+export const FoodMenuID = ['2000450']; // 餐饮促销活动menuID 

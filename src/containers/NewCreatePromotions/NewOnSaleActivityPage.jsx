@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import registerPage from '../../../index';
 import { NEW_ON_SALE_ACTIVITY_BOX } from "../../constants/entryCodes";
-import { axiosData, checkAuthLicense, getRetailMenuID, isRetailMenuID } from '../../helpers/util';
+import { axiosData, checkAuthLicense, getMenuID, isRetailMenuID } from '../../helpers/util';
 import { COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
@@ -371,7 +371,7 @@ class NewOnSaleActivityPage extends Component {
             ALL_PROMOTION_CATEGORIES = [
                 {
                     title: k6316iio,
-                    list: salePromotionType.filter(item => item.menuID && item.menuID.includes(getRetailMenuID())),
+                    list: salePromotionType.filter(item => item.menuID && item.menuID.includes(getMenuID())),
                 }]
         }
 

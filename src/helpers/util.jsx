@@ -8,7 +8,7 @@ import uuid from 'uuid/v4'
 import { getStore } from '@hualala/platform-base'
 
 import getApiConfig from './callserver';
-import { RetailMenuID } from '../constants/WhiteList'
+import { FoodMenuID, RetailMenuID } from '../constants/WhiteList'
 
 /* eslint-disable */
 /**
@@ -844,7 +844,7 @@ export const formatGoodsData = (goods, category) => {
     }
 }
 
-export const getRetailMenuID = () => {
+export const getMenuID = () => {
     const path = window.location.pathname.split('/') || [];
     const pathMenuID = path[path.length - 1];
     return pathMenuID
@@ -852,6 +852,10 @@ export const getRetailMenuID = () => {
 
 // 是否为零售促销活动页面
 export const isRetailMenuID = () => {
-    return RetailMenuID.includes(getRetailMenuID())
+    return RetailMenuID.includes(getMenuID())
 }
 
+
+export const isFoodMenuID = () => {
+    return FoodMenuID.includes(getMenuID())
+}
