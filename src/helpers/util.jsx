@@ -8,6 +8,7 @@ import uuid from 'uuid/v4'
 import { getStore } from '@hualala/platform-base'
 
 import getApiConfig from './callserver';
+import { RetailMenuID } from '../constants/WhiteList'
 
 /* eslint-disable */
 /**
@@ -842,3 +843,15 @@ export const formatGoodsData = (goods, category) => {
         _category,
     }
 }
+
+export const getRetailMenuID = () => {
+    const path = window.location.pathname.split('/') || [];
+    const pathMenuID = path[path.length - 1];
+    return pathMenuID
+}
+
+// 是否为零售促销活动页面
+export const isRetailMenuID = () => {
+    return RetailMenuID.includes(getRetailMenuID())
+}
+

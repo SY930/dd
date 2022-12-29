@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import registerPage from '../../../index';
 import { NEW_ON_SALE_ACTIVITY_BOX } from "../../constants/entryCodes";
-import { axiosData, checkAuthLicense } from '../../helpers/util';
+import { axiosData, checkAuthLicense, getRetailMenuID, isRetailMenuID } from '../../helpers/util';
 import { COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
@@ -67,7 +67,7 @@ const REDUCE_SHIPPING_GROUPID = ['11157', '189702', '89447', '28007'] // 配送�
 
 
 //周黑鸭需求
-import { isZhouheiya } from '../../constants/WhiteList';
+import { isZhouheiya, RetailMenuID } from '../../constants/WhiteList';
 
 @registerPage([NEW_ON_SALE_ACTIVITY_BOX], {
 })
@@ -96,14 +96,9 @@ class NewOnSaleActivityPage extends Component {
 
     componentDidMount() {
         this.getWhite();
-        const path = window.location.pathname.split('/') || [];
-        const menuID = path[path.length - 1];
         this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' }).then((res) => {
             this.setState({ authLicenseData: res })
         });
-        this.setState({
-            menuID,
-        })
     }
     componentWillReceiveProps(nextProps) {
         // todo:上线放开
@@ -349,7 +344,7 @@ class NewOnSaleActivityPage extends Component {
     }
 
     render() {
-        const { whiteList, v3visible, curKey, currentPlatformIndex, menuID } = this.state;
+        const { whiteList, v3visible, curKey, currentPlatformIndex } = this.state;
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
         const { intl } = this.props;
@@ -372,11 +367,11 @@ class NewOnSaleActivityPage extends Component {
         }
 
         // 零售展示的活动
-        if (['2001431'].includes(menuID)) {
+        if (isRetailMenuID()) {
             ALL_PROMOTION_CATEGORIES = [
                 {
                     title: k6316iio,
-                    list: salePromotionType.filter(item => item.menuID && item.menuID.includes(menuID)),
+                    list: salePromotionType.filter(item => item.menuID && item.menuID.includes(getRetailMenuID())),
                 }]
         }
 

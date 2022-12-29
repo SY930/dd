@@ -5,7 +5,7 @@ import { BASIC_LOOK_PROMOTION_QUERY,
 import { BASIC_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import Authority from '../../../components/common/Authority';
 import { isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian, isMine } from '../../../constants/projectHuatianConf';
-import { isZhouheiya, isGeneral, businessTypesList, WJLPGroupID } from '../../../constants/WhiteList';
+import { isZhouheiya, isGeneral, businessTypesList } from '../../../constants/WhiteList';
 import styles from '../ActivityPage.less';
 
 // 活动列表字段针对魏家重新排序

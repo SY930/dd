@@ -29,6 +29,7 @@ import {
 import {
     ACTIVITY_CYCLE_TYPE,
 } from '../../actions/saleCenterNEW/types';
+import { RetailMenuID } from '../../../constants/WhiteList'
 
 const Immutable = require('immutable');
 const moment = require('moment');
@@ -85,7 +86,7 @@ const $initialState = Immutable.fromJS({
     },
     $filterShops: {},
     shopsAllSet: undefined,
-    menuID: ['2001431'],
+    menuID: RetailMenuID,
 });
 
 export const promotionBasicInfo_NEW = ($$state = $initialState, action) => {
