@@ -89,4 +89,4 @@ export function checkGoodsScopeListIsNotEmpty(goodsScopeList) {
 export const RetailMenuID = ['2001431']; // 零售促销活动menuID
 
 
-export const FoodMenuID = ['2000450']; // 餐饮促销活动menuID 
+export const FoodMenuID = ['2000450', '4140']; // 餐饮促销活动menuID 
