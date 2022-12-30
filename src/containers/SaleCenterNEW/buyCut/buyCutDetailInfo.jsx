@@ -64,6 +64,7 @@ class BuyCutDetailInfo extends React.Component {
             discountRateFlag: true,
             cutWay: '1',
             ruleType: '1',
+            ruleType5: '1',
             ruleInfo: [{
                 validationStatus: 'success',
                 helpMsg: null,
@@ -104,21 +105,27 @@ class BuyCutDetailInfo extends React.Component {
 
         // 
         let [cutWay, ruleType = '1'] = [...String(_rule.disType)]
-        const ruleInfo = (_rule.stage || []).map(item => {
+        const ruleInfo = _rule.stage && _rule.stage.length ? _rule.stage.map(item => {
             return {
                 validationStatus: 'success',
                 helpMsg: null,
                 start: item.stageAmount,
                 end: item.discountRate * 10,
             }
-        })
+        }) : [{
+            validationStatus: 'success',
+            helpMsg: null,
+            start: '',
+            end: '',
+        }]
 
         this.setState({
             stageAmount: _rule.stageAmount,
             freeAmount: _rule.freeAmount || '',
             discountRate: _rule.discountRate ? Number((_rule.discountRate * 10).toFixed(3)).toString() : '',
             cutWay,
-            ruleType,
+            ruleType: cutWay == '5' ? '1' : ruleType,
+            ruleType5: ruleType,
             ruleInfo,
         });
     }
@@ -131,10 +138,10 @@ class BuyCutDetailInfo extends React.Component {
     }
 
     handleSubmit = () => {
-        let { ruleType, ruleInfo, cutWay, stageAmount, freeAmount, discountRate, targetScope, stageAmountFlag, freeAmountFlag, discountRateFlag } = this.state;
+        let { ruleType, ruleType5, ruleInfo, cutWay, stageAmount, freeAmount, discountRate, targetScope, stageAmountFlag, freeAmountFlag, discountRateFlag } = this.state;
         if(cutWay == '5') {
             const isCheckedPass = ruleInfo.every(item => item.validationStatus == 'success' && item.start && item.end)
-            const disType = ruleType == '1' ? 51 : 52;
+            const disType = ruleType5 == '1' ? 51 : 52;
             if(!isCheckedPass) {
                 message.error('请填写完整活动条件')
                 return
@@ -267,6 +274,7 @@ class BuyCutDetailInfo extends React.Component {
     };
     // 优惠方式change
     onCutWayChange(e) {
+        console.log(this.state.ruleInfo)
         let { cutWay } = this.state;
         cutWay = e.target.value;
         this.setState({ cutWay });
@@ -548,10 +556,10 @@ class BuyCutDetailInfo extends React.Component {
                                                     <Select
                                                         className={`${styles.linkSelectorRight} discountDetailMountClassJs`}
                                                         getPopupContainer={(node) => node.parentNode}
-                                                        value={this.state.ruleType}
+                                                        value={this.state.ruleType5}
                                                         onChange={(val) => {
                                                             this.setState({ 
-                                                                ruleType: val, 
+                                                                ruleType5: val, 
                                                                 ruleInfo: [{
                                                                     validationStatus: 'success',
                                                                     helpMsg: null,
