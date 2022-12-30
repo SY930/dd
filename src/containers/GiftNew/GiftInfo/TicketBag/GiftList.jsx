@@ -21,6 +21,7 @@ import {
 } from '../../_action';
 import _ from 'lodash';
 import { axiosData } from '../../../../helpers/util';
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 const searchDefaultPageParams = {
     pageNo: 1,
@@ -42,6 +43,7 @@ class GiftList extends Component {
             },        // 临时查询缓存，具体对象查看QueryForm对象
             dataSource: [],
             total: 0,
+            expand: false,
         };
         this.setTableRef = el => this.tableRef = el;
         this.queryFroms = null;
@@ -222,6 +224,12 @@ class GiftList extends Component {
         });
     }
 
+    toggleExpandState = () => {
+        this.setState({
+            expand: !this.state.expand
+        })
+    }
+
     render() {
         const { loading, queryParams, dataSource = [], total } = this.state;
         const { groupID, formItems, formKeys, getTableColumns, } = this.props;
@@ -232,6 +240,7 @@ class GiftList extends Component {
                     <div className="layoutsSearch">
                         <ul>
                             <li className={styles.formWidth}>
+                                {/* _TODO */}
                                 <BaseForm
                                     getForm={form => this.queryFroms = form}
                                     formItems={formItems}
@@ -240,6 +249,10 @@ class GiftList extends Component {
                                     layout="inline"
                                 // onChange={(key, value) => this.handleFormChange(key, value)}
                                 />
+                                <a style={{marginTop: '10px'}} onClick={this.toggleExpandState}>
+                                    高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+                                </a>
+
                             </li>
                             <li>
                                 <Authority rightCode={GIFT_LIST_QUERY}>

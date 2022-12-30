@@ -82,7 +82,10 @@ class CategoryFormItem extends React.Component {
                         </Select>
                     )
                 }
-                <span className={styles.adminTag} onClick={() => this.setState({ modalVisible: true })}>管理标签</span>
+                {
+                    !this.props.hideBtn &&
+                    <span className={styles.adminTag} onClick={() => this.setState({ modalVisible: true })}>管理标签</span>
+                }
                 {
                     modalVisible &&
                     <NewAddCategorys
