@@ -845,19 +845,19 @@ export const formatGoodsData = (goods, category) => {
 /**
  *埋点自定义事件
  */
-export function setSensorsData(event_id = "wtcrm_promotion_clk", params = {}) {
-    sensors.track(event_id, params);
-}
+// export function setSensorsData(event_id = "wtcrm_promotion_clk", params = {}) {
+//     sensors.track(event_id, params);
+// }
 /**
  * 页面浏览事件
  */
-export function sensorsAutoTrack(name) {
-    if(sensors && typeof sensors.quick() === "function"){
-        sensors.quick('autoTrack', {
-            pageName: name
-        })
-    }
-}
+// export function sensorsAutoTrack(name) {
+//     if(sensors && typeof sensors.quick() === "function"){
+//         sensors.quick('autoTrack', {
+//             pageName: name
+//         })
+//     }
+// }
 /**
  * 获取cookie值
  */

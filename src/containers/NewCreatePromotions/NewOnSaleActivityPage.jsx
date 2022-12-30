@@ -101,7 +101,7 @@ class NewOnSaleActivityPage extends Component {
         this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' }).then((res) => {
             this.setState({ authLicenseData: res })
         });
-        sensorsAutoTrack("促销活动");
+        // sensorsAutoTrack("促销活动");
     }
     componentWillReceiveProps(nextProps) {
         // todo:上线放开

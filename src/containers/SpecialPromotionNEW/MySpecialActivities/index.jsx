@@ -896,7 +896,7 @@ class MySpecialActivities extends React.Component {
         // 千人千面活动创建和更新完，点去装修跳转页面
         this.handleFromOtherPage();
         this.getSearchListContent(); // 查询方案列表
-        sensorsAutoTrack("活动管理")
+        // sensorsAutoTrack("活动管理")
     }
 
     // 产品授权
