@@ -1028,7 +1028,7 @@ class PromotionScopeInfo extends React.Component {
                     {!isZhouheiya(this.props.user.toJS().accountInfo.groupID) && (promotionType != '10071' ? (this.props.user.toJS().shopID > 0 || promotionType == '5020' ? null : this.renderBrandFormItem()) : null)}
                     {!isZhouheiya(this.props.user.toJS().accountInfo.groupID) && (promotionType != '10071' ? (promotionType != '5010' ? this.renderChannelList() : null) : null)}
                     {!isZhouheiya(this.props.user.toJS().accountInfo.groupID) && promotionType != '10071' ? this.renderBusinessOptions() : null}
-                    {WJLPGroupID.includes(this.props.user.toJS().accountInfo.groupID) ? this.renderBusinessOptionsWeiJia() : isZhouheiya(this.props.user.toJS().accountInfo.groupID) ? this.renderBusinessOptionsZhy() : null}
+                    {isZhouheiya(this.props.user.toJS().accountInfo.groupID) ? this.renderBusinessOptionsZhy() : null}
                     {isZhouheiya(this.props.user.toJS().accountInfo.groupID) ? this.renderZHYShopsOptions() : this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
                     {promotionType != '10071' ? (promotionType == '4010' ? this.renderGroup() : null) : null}
                 </Form>
