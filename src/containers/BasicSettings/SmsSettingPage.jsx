@@ -19,11 +19,10 @@ import {messageTemplateState} from "./reducers";
 import {getMessageTemplateList} from "./actions";
 import Authority from "../../components/common/Authority/index";
 import {SMS_TEMPLATE_CREATE} from "../../constants/authorityCodes";
-import {isBrandOfHuaTianGroupList} from "../../constants/projectHuatianConf";
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
-
+import { setSensorsData } from "../../helpers/util";
 @registerPage([SET_MSG_TEMPLATE], {
     messageTemplateState
 })
@@ -46,6 +45,7 @@ class MessageTemplatesPage extends React.Component {
             pageNo : 1,
             pageSize : 10
         });
+        setSensorsData("短信模板");
     }
 
     componentWillReceiveProps(nextProps) {

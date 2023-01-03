@@ -12,7 +12,7 @@ import no_start_icon from "../assets/no_start_icon.png";
 import running_icon from "../assets/running_icon.png";
 import stoped_icon from "../assets/stoped_icon.png";
 import ended_icon from "../assets/ended_icon.png";
-
+import { sensorsAutoTrack } from "../../../helpers/util";
 const initialPaging = {
     pageNo: 1,
     pageSize: 10
@@ -66,6 +66,7 @@ export default class Main extends React.PureComponent {
 
     componentDidMount() {
         this.onQueryList(initialPaging);
+        sensorsAutoTrack("自动化营销")
     }
 
     onQueryList = (pagingParams = initialPaging) => {

@@ -6,7 +6,7 @@ import ChannelModal from "./components/ChannelModal";
 import List from "./components/List";
 import GroupTree from "./components/GroupTree";
 import styles from "./style.less";
-import { axiosData } from "../../helpers/util";
+import { axiosData, setSensorsData } from "../../helpers/util";
 
 class LanchChannel extends React.Component {
     state = {
@@ -26,6 +26,7 @@ class LanchChannel extends React.Component {
     componentDidMount() {
         this.getGroupList();
         this.getChannelList({ pageNo: 1, pageSize: 10 });
+        setSensorsData("活动投放渠道管理");
     }
 
     getGroupList = () => {

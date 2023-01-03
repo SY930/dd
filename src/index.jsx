@@ -1,7 +1,7 @@
 ﻿import registerPackage, { registerLocalPage } from "@hualala/platform-base";
 import { mountEpics } from "@hualala/platform-base";
 import rootEpic from "./redux/modules";
-// import sensors from "sa-sdk-javascript";
+import sensors from "sa-sdk-javascript";
 import * as entryCodes from "./constants/entryCodes";
 import "config/AssociateConfig.js";
 // 初始化Dva
@@ -159,13 +159,14 @@ const registeLangPack = async () => {
         });
         //设置公共属性
         sensors.registerPage({
-            platform_type: "JavaScript",
-            business_id: "online_pos",
-            app_id: "online_pos",
+            platform_type: "03",
+            business_id: "01",
+            app_id: "102",
             org_id: "default",
             group_id: groupID,
             brand_id: "default",
-            shop_id: "default"
+            shop_id: "default",
+            view_point: "集团视角"
         });
         sensors.login(accountID);
         sensors.quick("autoTrack"); //用于采集 $pageview 事件。

@@ -852,9 +852,9 @@ export function setSensorsData(event_id = "wtcrm_promotion_clk", params = {}) {
  * 页面浏览事件
  */
 export function sensorsAutoTrack(name) {
-    if(sensors && typeof sensors.quick() === "function"){
+    if(sensors && typeof sensors.quick === "function"){
         sensors.quick('autoTrack', {
-            pageName: name
+            view_point_title: name
         })
     }
 }
