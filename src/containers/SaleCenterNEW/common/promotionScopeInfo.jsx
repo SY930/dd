@@ -74,7 +74,7 @@ class PromotionScopeInfo extends React.Component {
             // redux
             channel: ifOffLine ? '1' : '0',
             auto: '0',
-            orderType: ['31'],
+            orderType: isZhouheiya(this.props.user.toJS().accountInfo.groupID)?['51']:['31'],
             // be caution, state key is diff with redux key.
             brands: [],
             shopsInfo: [],
