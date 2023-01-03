@@ -249,10 +249,6 @@ class GiftList extends Component {
                                     layout="inline"
                                 // onChange={(key, value) => this.handleFormChange(key, value)}
                                 />
-                                <a style={{marginTop: '10px'}} onClick={this.toggleExpandState}>
-                                    高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-                                </a>
-
                             </li>
                             <li>
                                 <Authority rightCode={GIFT_LIST_QUERY}>
@@ -261,6 +257,9 @@ class GiftList extends Component {
                                         查询
                                     </Button>
                                 </Authority>
+                                <a style={{marginTop: '10px', marginLeft: '10px'}} onClick={this.toggleExpandState}>
+                                    高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+                                </a>
                             </li>
                         </ul>
                     </div>
