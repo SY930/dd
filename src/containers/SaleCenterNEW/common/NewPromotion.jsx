@@ -204,7 +204,12 @@ class NewPromotion extends React.Component {
         } else {
             const path = window.location.pathname.split('/') || [];
             const pathMenuID = path[path.length - 1];
-            promotionInfo.master.sale_promotionVersion = menuIDs.includes(pathMenuID) ? '2.0' : '1.0';
+            if(isCopy){
+                const promotionVersion = promotionBasicInfo.getIn(['$basicInfo', 'promotionVersion']);
+                promotionInfo.master.sale_promotionVersion = promotionVersion ? '2.0' : '1.0'
+            }else{
+                promotionInfo.master.sale_promotionVersion = menuIDs.includes(pathMenuID) ? '2.0' : '1.0';
+            }
             this.props.addNewPromotion({
                 data: { promotionInfo },
                 success: () => {
