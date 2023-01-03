@@ -74,7 +74,7 @@ class PromotionScopeInfo extends React.Component {
             // redux
             channel: ifOffLine ? '1' : '0',
             auto: '0',
-            orderType: isZhouheiya(this.props.user.toJS().accountInfo.groupID)?['51']:['31'],
+            orderType: ['31'],
             // be caution, state key is diff with redux key.
             brands: [],
             shopsInfo: [],
@@ -242,7 +242,7 @@ class PromotionScopeInfo extends React.Component {
                 brands: _stateFromRedux.brands,
                 channel: promotionType === '1021' ? '1' : _stateFromRedux.channel,
                 auto: _stateFromRedux.auto,
-                orderType: isSelDefined ? ['31'] : _stateFromRedux.orderType,
+                orderType: isSelDefined ? ['31'] : isZhouheiya(this.props.user.toJS().accountInfo.groupID)?['51']:_stateFromRedux.orderType,
                 initialized: true,
                 usageMode: _stateFromRedux.usageMode || 1,
             });
@@ -300,7 +300,7 @@ class PromotionScopeInfo extends React.Component {
                 brands: _data.brands,
                 channel: promotionType === '1021' ? '1' : _data.channel,
                 auto: _data.auto,
-                orderType: isSelDefined ? ['31'] : _data.orderType,
+                orderType: isSelDefined ? ['31'] : isZhouheiya(this.props.user.toJS().accountInfo.groupID)?['51']:_data.orderType,
                 // TODO: shopsIdInfo converted to shopsInfo
                 initialized: true,
                 usageMode: _data.usageMode || 1,

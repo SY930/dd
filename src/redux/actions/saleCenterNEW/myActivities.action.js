@@ -142,6 +142,7 @@ export const toggleSelectedActivityStateAC = (opts) => {
         promotionID: opts.record.promotionIDStr,
         promotionType: opts.record.promotionType,
         isActive: opts.record.isActive == '1' ? '0' : '1',
+        sale_promotionVersion: opts ? opts.record.promotionVersion : '1.0',
     };
     return (dispatch) => {
 

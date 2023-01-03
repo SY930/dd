@@ -476,6 +476,7 @@ class MyActivities extends React.Component {
                 record,
                 nextActive,
                 modalTip,
+                sale_promotionVersion: record ? record.promotionVersion : '1.0',
                 cb: (val) => {
                     message.success(val);
                     this.handleQuery(this.state.pageNo);
@@ -487,6 +488,7 @@ class MyActivities extends React.Component {
                 record,
                 nextActive,
                 modalTip,
+                sale_promotionVersion: record ? record.promotionVersion : '1.0',
                 cb: () => {}
             });
         }
@@ -520,7 +522,8 @@ class MyActivities extends React.Component {
             shopID: record.shopID,
             promotionID: record.promotionIDStr,
             isActive: 2,
-            modifiedBy: getAccountInfo().userName
+            modifiedBy: getAccountInfo().userName,
+            sale_promotionVersion: record ? record.promotionVersion : '1.0',
         };
         return axiosData("/promotion/docPromotionService_setActive.ajax", params, {}, { path: "data" }, "HTTP_SERVICE_URL_PROMOTION_NEW")
             .then(() => {
@@ -2121,7 +2124,7 @@ class MyActivities extends React.Component {
                                             }
                                             this.handleEditActive(record)(() => {
                                                 this.props.toggleIsUpdate(true);
-						                                                                                if(!isGeneral(this.props.user.accountInfo.roleType) && (record.auditStatus == 2 || record.auditStatus == 4) && isZhouheiya(this.props.user.accountInfo.groupID)) {
+                                                    if(!isGeneral(this.props.user.accountInfo.roleType) && (record.auditStatus == 2 || record.auditStatus == 4) && isZhouheiya(this.props.user.accountInfo.groupID)) {
                                                         this.setState({ onlyModifyShop: true });
                                                         this.props.saleCenterSetPromotionDetailOnlyModifyShop(true);
                                                     }
