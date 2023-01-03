@@ -46,6 +46,7 @@ import {
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
+// _TODO_入口文件
 const _pages = [
     NewBirthdayGift, // 生日赠送
     NewCardGive, // 开卡赠送

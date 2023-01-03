@@ -23,10 +23,12 @@ export const formItems1 = {
     eventRemark,
 };
 
+// _TODO
 export const formKeys1 = [
     'actType',
     'eventName',
     'eventCode',
+    'tagLst',
     'eventLimitDate',
     'eventRemark',
 ];

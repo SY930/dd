@@ -61,6 +61,7 @@ const $initialState = Immutable.fromJS({
         getExcludeEventList: [], // 同时段已建立唤醒
         excludedDate: [], // 活动排除日期：excludedDate，格式为 yyyyMMdd，例：20181210
         validCycle: null, // 可选择每日、每周、每月，每一项的第一位表示周期类型w-周,m-月,第二位之后表示周期内值,如w1表示每周一,m2表示每周二，m1表示每月1号，当表示每日时该字段为null
+        tagLst: '', // 所选标签
     },
     isBenefitJumpOpenCard: false, // 从权益卡跳转过来交互开卡赠送的
     isBenefitJumpSendGift: false, // 从权益卡跳转过来交互群发礼品的
