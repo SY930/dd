@@ -57,6 +57,10 @@ class SwellGiftBag extends React.Component {
 
                  const { data, gifts } = res
                  const { eventRemark, eventStartDate,  eventEndDate , eventName, shareTitle, shareSubtitle} = data
+                console.log('_TODO 222', data);
+                if(data.tagLst){
+                    data.tagLst = data.tagLst.split(',');
+                }
                  const needCount = [];
 
                  this.props.dispatch({
@@ -168,7 +172,7 @@ class SwellGiftBag extends React.Component {
                     partInTimes,
                     giftList,
                     defaultCardType,
-
+                    tagLst
                 } = formData
                 const { shareSubtitle,
                     shareTitle,} = v
@@ -205,6 +209,7 @@ class SwellGiftBag extends React.Component {
                             countCycleDays,
                             partInTimes,
                             defaultCardType,
+                            tagLst: tagLst.join(',')
                         },
                         gifts: giftList.filter(v => v)
                     }

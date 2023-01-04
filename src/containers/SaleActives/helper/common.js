@@ -5,6 +5,8 @@ import moment from 'moment'
 import PriceInput from '../../../components/common/PriceInput/PriceInput'
 import { checkAuthLicense } from '../../../helpers/util';
 import { jumpPage, axios } from '@hualala/platform-base';
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
+
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
 const DATE_FORMAT = 'YYYYMMDD000000';
@@ -259,4 +261,26 @@ export function partInTimesRender(d) {
             </RadioGroup>)
         }
     </div>)
+}
+
+// 标签管理的render函数
+export function renderTagLst(d, form) {
+    // _TODO
+    const { formData } = this.props.createActiveCom;
+    console.log(5555, this.props);
+    const { tagLst } = formData;
+    return (
+        <div className={styles.textAreaWrap}>
+            {
+                d({})(
+                    <CategoryFormItem
+                        decorator={d}
+                        form={form}
+                        key='category'
+                        phraseType='2'
+                    />
+                )
+            }
+        </div>
+    );
 }
