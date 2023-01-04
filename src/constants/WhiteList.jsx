@@ -44,6 +44,12 @@ export function isZhouheiya(groupID = getAccountInfo().groupID) {
     return zhouheiyaGroupID.includes(String(groupID)) || isRetailMenuID() || getAccountInfo().promotionVersion === '2.0';
 }
 
+// 是否魏家集团
+export function isWeijia(groupID = getAccountInfo().groupID) {
+    if (!groupID) return false;
+    return WJLPGroupID.includes(String(groupID));
+}
+
 // 是否是集团经理角色
 export function isGeneral(roleType = getAccountInfo().roleType) {
     if (!roleType) return false;

@@ -47,7 +47,7 @@ import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";
 import { injectIntl } from "../IntlDecor";
 import Card from "../../../assets/card.png";
 import CardSaleActive from "./CardSaleActive";
-import { isZhouheiya, isGeneral, WJLPGroupID } from "../../../constants/WhiteList";
+import { isZhouheiya, isGeneral, WJLPGroupID, isWeijia } from "../../../constants/WhiteList";
 import GoodsRef from '@hualala/sc-goodsRef';
 import { getWJLPCoulums } from './config'
 
@@ -1847,7 +1847,7 @@ class MyActivities extends React.Component {
                             </a>
                         </li>
                     </ul>
-                    {isZhouheiya(accountInfo.groupID) && <p>
+                    {isWeijia(accountInfo.groupID) && <p>
                         <Button type="primary" onClick={() => { this.setState({ activeImportVisible: true }) }} >导入活动</Button>
                     </p>}
 
@@ -1884,17 +1884,17 @@ class MyActivities extends React.Component {
             return (
                 <div className="layoutsSeniorQuery">
                     <ul>
-                        {isZhouheiya(accountInfo.groupID) && <li>
+                        {isWeijia(accountInfo.groupID) && <li>
                             <h5>零售商品</h5>
                         </li>}
-                        {isZhouheiya(accountInfo.groupID) && <li>
+                        {isWeijia(accountInfo.groupID) && <li>
                             {this.renderGoodsInTreeSelectMode()}
                         </li>}
                         <li>
                             <h5>{SALE_LABEL.k5dlggak}</h5>
                         </li>
                         <li>{
-                            isZhouheiya(accountInfo.groupID) ? this.renderWJShopsTreeSelectMode() :   this.renderShopsInTreeSelectMode()
+                            isWeijia(accountInfo.groupID) ? this.renderWJShopsTreeSelectMode() :   this.renderShopsInTreeSelectMode()
                         }</li>
                         <li>
                             <h5>{SALE_LABEL.k5dljb1v}</h5>
@@ -2373,7 +2373,7 @@ class MyActivities extends React.Component {
                 },
             })
         }
-        if(isZhouheiya(this.props.user.accountInfo.groupID)){
+        if(isWeijia(this.props.user.accountInfo.groupID)){
             columns.splice(13, 0,{
                 title: '适用商品',
                 className: 'TableTxtCenter',

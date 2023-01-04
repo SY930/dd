@@ -30,7 +30,7 @@ import { jumpPage } from '@hualala/platform-base';
 import { SHARE_RULES_GROUP_NEW, CREATE_SHARE_RULES_NEW } from '../../constants/entryCodes'
 import ShopSelector from "../../components/common/ShopSelector/ShopSelector";
 
-import { isZhouheiya } from '../../constants/WhiteList';
+import { isWeijia, isZhouheiya } from '../../constants/WhiteList';
 import CustomExecutModal from './CustomExecutModal';
 
 
@@ -169,7 +169,7 @@ export default class ShareRules extends Component {
                 </div>
                 <div>
                     {/* 仅魏家凉皮可见 */}
-                    {isZhouheiya(groupID) && <Button type="ghost" onClick={() => { this.setState({ customExecutVisible: true }) }}>自定义执行顺序</Button>}
+                    {isWeijia(groupID) && <Button type="ghost" onClick={() => { this.setState({ customExecutVisible: true }) }}>自定义执行顺序</Button>}
                     <Button
                         onClick={() => {
                             const { refreshList } = this.props;
