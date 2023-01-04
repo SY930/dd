@@ -2373,7 +2373,7 @@ class MyActivities extends React.Component {
                 },
             })
         }
-        if(isWeijia(this.props.user.accountInfo.groupID)){
+        if(isZhouheiya(this.props.user.accountInfo.groupID)){
             columns.splice(13, 0,{
                 title: '适用商品',
                 className: 'TableTxtCenter',

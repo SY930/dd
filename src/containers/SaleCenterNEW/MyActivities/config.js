@@ -278,6 +278,16 @@ export const getWJLPCoulums = (_this) => {
         },
       },
       {
+        title: "业态",
+        className: "TableTxtCenter",
+        dataIndex: "promotionVersion",
+        key: "promotionVersion",
+        width: 80,
+        render: t => {
+            return t == "1.0" ? "餐饮" : t == '2.0' ? '零售' : '';
+        }
+      },
+      {
         title: 'BPM单号',
         className: 'TableTxtCenter',
         dataIndex: 'auditNo',
