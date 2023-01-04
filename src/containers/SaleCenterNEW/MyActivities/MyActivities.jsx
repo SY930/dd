@@ -1527,7 +1527,7 @@ class MyActivities extends React.Component {
                     )}
                     {!isHuaTian() && !this.isOnlinePromotionPage() && (
                         <Authority rightCode={AUTO_RUN_QUERY}>
-                            <Button onClick={() => this.setRunDataList()} icon="plus" className={styles.customPrimaryButton}>
+                            <Button type="ghost" onClick={() => this.setRunDataList()} icon="plus" style={{ marginRight: 10 }}>
                                 执行顺序（原自动执行）
                             </Button>
                         </Authority>
