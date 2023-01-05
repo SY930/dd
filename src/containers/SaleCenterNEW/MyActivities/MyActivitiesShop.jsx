@@ -1021,6 +1021,7 @@ class MyActivitiesShop extends React.Component {
         const k5ey8jvj = intl.formatMessage(SALE_STRING.k5ey8jvj);
         const k5ey8l0e = intl.formatMessage(SALE_STRING.k5ey8l0e);
         const k5ey8lip = intl.formatMessage(SALE_STRING.k5ey8lip);
+        const l88f03b4 = intl.formatMessage(SALE_STRING.l88f03b4);
         const columns = [
             {
                 title: COMMON_LABEL.serialNumber,
@@ -1200,7 +1201,7 @@ class MyActivitiesShop extends React.Component {
                 key: 'valid',
                 width: 72,
                 render: (status) => {
-                    return status == '1' ? k5dlp2gl : status == '2' ? k5dlp7zc : k5dlpczr;
+                    return status == '1' ? <span className={styles.unBegin}>{k5dlp2gl}</span> : status == '2' ? <span className={styles.begin}>{k5dlp7zc}</span> :status == '3' ? <span className={styles.end}>{k5dlpczr}</span> :<span className={styles.end}>{l88f03b4}</span>;
                 },
             },
 
