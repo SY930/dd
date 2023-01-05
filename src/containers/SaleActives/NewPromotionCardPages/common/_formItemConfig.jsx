@@ -679,24 +679,14 @@ export const ALL_FORM_ITEMS = {
         type: 'custom',
         labelCol: { span: 4 },
         wrapperCol: { span: 20 },
-        render: (decorator, form) => {
-            return (
-                <div>
-                    {
-                        decorator({
-                            key: 'tagLst'
-                        })(
-                            <CategoryFormItem
-                                decorator={decorator}
-                                form={form}
-                                key='category'
-                                phraseType='2'
-                            />
-                        )
-                    }
-                </div>
-            )
-        }
+        render: (d, form) => d()(
+            <CategoryFormItem 
+                decorator={d}
+                form={form}
+                key='tagLst'
+                phraseType='2'
+            />
+        ),
     }
 };
 

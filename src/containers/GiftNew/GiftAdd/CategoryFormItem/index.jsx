@@ -18,11 +18,6 @@ class CategoryFormItem extends React.Component {
         this.getPhraseList();
     }
 
-    componentWillReceiveProps(nextProps){
-        console.log(111, this.props);
-        console.log(222, nextProps);
-    }
-
     getPhraseList = () => {
         this.setState({
             loading: true
@@ -66,6 +61,7 @@ class CategoryFormItem extends React.Component {
     render() {
         const { decorator, key } = this.props;
         const { modalVisible, phraseList } = this.state;
+        console.log('=======', this.props);
         return (
             <Col span={24} className={styles.CategoryFormItem}>
                 {
