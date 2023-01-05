@@ -124,6 +124,7 @@ class ActiveRules extends Component {
   }
 
   renderRatio = (d, form) => {
+    const { leftIntervalValue } = form.getFieldsValue()
     return (
       <Row>
         <InputGroup size="large">

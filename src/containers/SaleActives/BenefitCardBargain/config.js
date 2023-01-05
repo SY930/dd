@@ -7,6 +7,7 @@
 import DateRange from '../../PromotionV3/Camp/DateRange';
 import { Tooltip, Icon } from 'antd';
 import styles from './styles.less'
+import classnames from 'classnames';
 
 const formItemLayout = {
   labelCol: { span: 5 },
@@ -50,6 +51,19 @@ const formItems1 = {
     placeholder: '请输入活动说明（最多1000字符）'
   },
 };
+
+const getValidator = (value) => {
+  if (!value) {
+    return true
+  }
+  if (!/^\d+$/.test(value)) {
+    return true
+  }
+  if (+value < 1 || +value > 99) {
+    return true
+  }
+  return false
+}
 
 const formItems2 = {
   cardTypeID: {
@@ -132,7 +146,14 @@ const formItems2 = {
     type: 'custom',
     label: '',
     wrapperCol,
-    render: () => (<p className={styles.tips}>用户自己的首刀比例会在设置的区间范围内随机选择，若设置相同则为固定概率</p>)
+    render: (d, form) => {
+      const { rightIntervalValue } = form.getFieldsValue();
+      const flag = getValidator(rightIntervalValue)
+      return (<p className={classnames(styles.tips, {
+        [styles.erorrPosition]: flag,
+      })}
+      >用户自己的首刀比例会在设置的区间范围内随机选择，若设置相同则为固定概率</p>)
+    },
   },
   eventDuration: {
     type: 'text',
@@ -140,10 +161,16 @@ const formItems2 = {
     surfix: '小时',
     rules: [{
       required: true,
-      message: '请输入砍价有效期',
+      // message: '请输入砍价有效期',
       validator: (rule, value, callback) => {
+        if (!value) {
+          return callback('请输入砍价有效期');
+        }
         if (!/^\d+$/.test(value)) {
           return callback('请输入数字');
+        }
+        if (value > 240) {
+          return callback('最大可配置240小时');
         }
         return callback();
       },
@@ -162,10 +189,15 @@ const formItems2 = {
     prefix: '活动期限内可发起',
     rules: [{
       required: true,
-      message: '请输入发起次数限制',
       validator: (rule, value, callback) => {
+        if (!value) {
+          return callback('请输入发起次数限制');
+        }
         if (!/^\d+$/.test(value)) {
           return callback('请输入数字');
+        }
+        if (value > 99) {
+          return callback('最大可配置99次');
         }
         return callback();
       },
@@ -184,7 +216,6 @@ const formItems3 = {
     label: '新用户注册卡类',
     type: 'custom',
     defaultValue: '',
-    rules: ['required'],
 },
   cardTypeTips: {
     type: 'custom',

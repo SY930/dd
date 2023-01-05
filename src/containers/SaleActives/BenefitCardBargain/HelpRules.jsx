@@ -38,13 +38,8 @@ class HelpRules extends Component {
     return (
       <div>
         {d({
-          rules: [
-            {
-              required: true,
-              message: '请选择权益卡',
-            },
-          ],
-          onChange: this.onBenefitCardSelectChange
+          rules: [],
+          onChange: this.onBenefitCardSelectChange,
         })(<Select
           allowClear={true}
           getPopupContainer={(node) => node.parentNode}
