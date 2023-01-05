@@ -266,9 +266,6 @@ export function partInTimesRender(d) {
 // 标签管理的render函数
 export function renderTagLst(d, form) {
     // _TODO
-    const { formData } = this.props.createActiveCom;
-    console.log(5555, this.props);
-    const { tagLst } = formData;
     return (
         <div className={styles.textAreaWrap}>
             {

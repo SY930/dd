@@ -6,6 +6,7 @@ import ShopSelector from '../../../../components/ShopSelector/ShopSelector';
 import CategoryAndFoodSelector from 'containers/SaleCenterNEW/common/CategoryAndFoodSelector';
 import moment from 'moment';
 import OnSaleNoShareBenifit from '../components/OnSaleNoShareBenifit'
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 const DATE_FORMAT = 'YYYYMMDD000000';
 const END_DATE_FORMAT = 'YYYYMMDD235959';
@@ -673,6 +674,30 @@ export const ALL_FORM_ITEMS = {
             return null
         },
     },
+    tagLst: {
+        label: '标签',
+        type: 'custom',
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 },
+        render: (decorator, form) => {
+            return (
+                <div>
+                    {
+                        decorator({
+                            key: 'tagLst'
+                        })(
+                            <CategoryFormItem
+                                decorator={decorator}
+                                form={form}
+                                key='category'
+                                phraseType='2'
+                            />
+                        )
+                    }
+                </div>
+            )
+        }
+    }
 };
 
 export const BASE_FORM_KEYS = {
@@ -681,7 +706,7 @@ export const BASE_FORM_KEYS = {
             col: {
                 span: 24,
             },
-            keys: ['eventType', 'eventName', 'eventRange', 'eventRemark'],
+            keys: ['eventType', 'eventName', 'tagLst', 'eventRange', 'eventRemark'],
         },
     ],
     'todo_demo': [
@@ -700,7 +725,6 @@ export const ACTIVITY_RULE_FORM_KEYS = {
             col: {
                 span: 24,
             },
-            // keys: ['joinCount', 'cardScopeType', 'defaultCardType', 'brandList', 'shopIDList', 'sourceWayLimit', 'orderTypeList'],
             keys: ['joinCount', 'cardScopeType', 'brandList', 'shopIDList', 'sourceWayLimit', 'orderTypeList'],
         },
     ],

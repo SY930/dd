@@ -187,7 +187,7 @@ export async function getAuthLicenseData(data) {
         groupID,
         ...data
     }, method };
-    const response = await axios.post(url + method, params);
+    const response = await axios.post('/api/v1/universal?' + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
         return obj;

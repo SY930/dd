@@ -114,10 +114,14 @@ class PromotionRightMain extends Component {
             foodScopeList = [],
             cardLevelIDList,
             cardLevelRangeType,
-            defaultCardType
+            defaultCardType,
+            tagLst,
         } = data;
         if (orderTypeList) {
             data.orderTypeList = orderTypeList.split(',')
+        }
+        if (tagLst && !Array.isArray(tagLst)) {
+            data.tagLst = tagLst.split(',');
         }
         if (eventStartDate) {
             data.eventRange = [moment(eventStartDate), moment(eventEndDate)];

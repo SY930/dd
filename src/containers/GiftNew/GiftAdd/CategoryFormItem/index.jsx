@@ -18,6 +18,11 @@ class CategoryFormItem extends React.Component {
         this.getPhraseList();
     }
 
+    componentWillReceiveProps(nextProps){
+        console.log(111, this.props);
+        console.log(222, nextProps);
+    }
+
     getPhraseList = () => {
         this.setState({
             loading: true
@@ -37,7 +42,9 @@ class CategoryFormItem extends React.Component {
             const phraseList = res.phraseList || [];
             const { getFieldsValue } = this.props.form;
             let { tagLst = [] } = getFieldsValue();
-            tagLst = tagLst.filter(id => phraseList.map(item => item.itemID).includes(id));
+            if(tagLst.length > 0){
+                tagLst = tagLst.filter(id => phraseList.map(item => item.itemID).includes(id));
+            }
             this.props.onChange(tagLst);
             this.setState({
                 phraseList

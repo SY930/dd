@@ -4,7 +4,7 @@ import { Input } from 'antd'
 import {formItems1,formKeys1} from '../constant'
 import styles from '../CouponsGiveCoupons.less'
 import {connect} from 'react-redux';
-import { renderEventRemark, eventLimitDateRender,sendSmsGateRender } from '../../helper/common'
+import { renderEventRemark, eventLimitDateRender,sendSmsGateRender, renderTagLst } from '../../helper/common'
 import moment from 'moment'
 import { dateFormat } from '../../constant'
 import ShopSelector from 'components/ShopSelector';
@@ -65,12 +65,13 @@ class Step1 extends React.Component {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
         formItems1.eventLimitDate.render = eventLimitDateRender.bind(this)
         formItems1.smsGate.render = sendSmsGateRender.bind(this);
+        formItems1.tagLst.render = renderTagLst.bind(this);
         const render = d => d()(<ShopSelector eventWay='81' filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={[]} />);
         formItems1.shopIDList = { ...formItems1.shopIDList, render };
         let { formData,isView,isEdit  } = this.props.createActiveCom;
         formData = {
             ...formData,
-            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`,
         }
         let shopIdList = [];
         if(formData.shopIDList && formData.shopIDList.length > 0){
@@ -79,6 +80,9 @@ class Step1 extends React.Component {
             })
         }
         formData.shopIDList = shopIdList;
+        if(formData && formData.tagLst && !Array.isArray(formData.tagLst)){
+            formData.tagLst = formData.tagLst.split(',');
+        }
         
         return (
             <div className={styles.step1Wrap}>

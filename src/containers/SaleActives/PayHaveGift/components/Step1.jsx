@@ -5,7 +5,7 @@ import { Input } from 'antd'
 import {formItems1,formKeys1} from '../constant'
 import styles from '../payHaveGift.less'
 import {connect} from 'react-redux';
-import { renderEventRemark } from '../../helper/common'
+import { renderEventRemark, renderTagLst } from '../../helper/common'
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step1 extends React.Component {
@@ -48,6 +48,7 @@ class Step1 extends React.Component {
     }
     render () {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
+        formItems1.tagLst.render = renderTagLst.bind(this)
         let { formData,isView,isEdit } = this.props.createActiveCom
         formData = {
             ...formData,

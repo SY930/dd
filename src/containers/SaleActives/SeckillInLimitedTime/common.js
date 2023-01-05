@@ -1,6 +1,7 @@
 import { Icon, Tooltip, Radio, Input, Form, Select } from "antd";
 import moment from "moment";
 import DateRange from "../../PromotionV3/Camp/DateRange";
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 export const baseFormItems = {
     eventType: {
@@ -84,6 +85,28 @@ export const baseFormItems = {
         defaultValue: '',
         rules: ['required'],
     },
+    tagLst: {
+        label: '标签',
+        type: 'custom',
+        labelCol: { span: 5 },
+        wrapperCol: { span: 14 },
+        render: (decorator, form) => {
+            return (
+                <div>
+                    {
+                        decorator({})(
+                            <CategoryFormItem
+                                decorator={decorator}
+                                form={form}
+                                key='category'
+                                phraseType='2'
+                            />
+                        )
+                    }
+                </div>
+            )
+        }
+    }
 };
 
 export const ruleFormItem = {
@@ -223,6 +246,6 @@ export const ruleFormItem = {
 }
 
 export const ruleFormKeys = ["eventRange","gifts"];
-export const baseFormKeys = ["eventType","eventName","eventCode","shopIDList","settleUnitID","cardTypeID","eventRemark"];
+export const baseFormKeys = ["eventType","eventName","eventCode", 'tagLst', "shopIDList","settleUnitID","cardTypeID","eventRemark"];
 export const giftRemainSettings = ["giftName","giftID","giftTotalCount","buyLimit","presentValue","giftGetRuleValue"];
 

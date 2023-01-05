@@ -293,6 +293,7 @@ export default {
                 mySendGift,
                 originalImageUrl,
                 miniProgramInfo,
+                tagLst,
             } = formData;
             const {
                 giftID,
@@ -327,6 +328,7 @@ export default {
                 groupID,
                 eventWay: 80,
                 consumeType: 8,
+                tagLst: tagLst ? tagLst.join(',') : '',
             };
             if (miniProgramInfo && afterPayJumpType === '4') {
                 event.miniProgramInfo = JSON.stringify({
