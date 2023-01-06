@@ -384,7 +384,7 @@ class BuyAFreeDetailInfo extends React.Component {
                             onChange={(val) => {
                                 this.setState({ maxFreeLimitType: val, maxFreeAmount: '' })
                             }}
-                            value={this.state.maxFreeLimitType}
+                            value={String(this.state.maxFreeLimitType)}
                         >
                             <Option key={'0'} value={'0'}>不限制</Option>
                             <Option key={'1'} value={'1'}>限制</Option>
