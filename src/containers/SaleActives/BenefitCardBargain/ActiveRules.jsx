@@ -8,11 +8,13 @@ import React, { Component } from 'react'
 import { Select, Table, Input, Row, Col, Form } from 'antd'
 import BaseForm from 'components/common/BaseForm';
 import moment from 'moment'
+import _ from 'lodash';
 import { formItems2, formItemLayout, columns } from './config'
 import { getBenefitCards, queryCardDetail } from './AxiosFactory'
 import styles from './styles.less'
 
-const formKeys = ['cardTypeID', 'gears', 'giftGetRule', 'bargainTip', 'giftGetRuleValue', 'giftCountTip', 'needCount', 'bargainCountTip', 'ratio', 'ratioTip', 'eventDuration', 'bargainValidityTip', 'buyLimit', 'countLimitTip'];
+const formKeys = ['cardTypeID', 'gears', 'giftGetRule', 'bargainTip',
+  'giftGetRuleValue', 'giftCountTip', 'needCount', 'bargainCountTip', 'ratio', 'ratioTip', 'eventDuration', 'bargainValidityTip', 'buyLimit', 'countLimitTip'];
 
 const Option = Select.Option
 const InputGroup = Input.Group;
@@ -33,8 +35,21 @@ class ActiveRules extends Component {
 
   componentWillReceiveProps(np) {
     const { itemID, formData } = this.props
-    if ((formData !== np.formData) && np.itemID) {
+    if ((!_.isEqual(formData, np.formData)) && np.itemID) {
       this.onBenefitCardSelectChange(np.formData.cardTypeID, np.formData)
+    }
+  }
+
+
+  onBenefitCardSelectChange = (value, formData) => {
+    // paymentStageList
+    if (value) {
+      queryCardDetail(value).then((data) => {
+        this.setState({
+          dataSource: data,
+          selectedRowKeys: this.getSelectedRowKey(formData, data),
+        })
+      })
     }
   }
 
@@ -46,32 +61,62 @@ class ActiveRules extends Component {
     })
   }
 
+  getSelectedRowKey = (formData, data) => {
+    const { itemID } = this.props
+    if (itemID) {
+      const index = data.findIndex(item => formData.giftID === item.paymentStageID);
+      return [index]
+    }
+    return [0]
+  }
+
+
+  isBeginTime = (eventRange) => {
+    const nowDay = moment(new Date()).add('1', 'day')
+    if (eventRange[0]) {
+      const diff = nowDay.diff(eventRange[0], 'days')
+      if (diff > 0) {
+        return true
+      }
+    }
+    return false
+  }
+
   handleSelected = (selectedRowKeys, selectedRows) => {
     const { paymentStageID, realPrice, indexName } = selectedRows[0] || {};
     this.props.onChangeGears({ giftID: paymentStageID, presentValue: realPrice, giftName: indexName })
+    this.setState({
+      selectedRowKeys,
+    })
+  }
+  /** formItems 重新设置 */
+  resetFormItems() {
+    const { cardTypeID, gears, ratio, ...other } = formItems2;
+    return {
+      cardTypeID: {
+        ...cardTypeID,
+        render: (d, form) => {
+          return this.renderBenefitSelect(d, form)
+        }
+      },
+      gears: {
+        ...gears,
+        render: (d, form) => {
+          const { cardTypeID } = form.getFieldsValue()
+          if (!cardTypeID) return null
+          return this.renderGears(d, form)
+        }
+      },
+      ratio: {
+        ...ratio,
+        render: (d, form) => {
+          return this.renderRatio(d, form)
+        }
+      },
+      ...other,
+    };
   }
 
-  onBenefitCardSelectChange = (value, formData) => {
-    // paymentStageList
-    if (value) {
-      const { itemID } = this.props
-      queryCardDetail(value).then((data) => {
-        this.setState({
-          dataSource: data.map((item, index) => {
-            if (index === 0 && !itemID) {
-              this.props.onChangeGears({ giftID: item.paymentStageID, presentValue: item.realPrice, giftName: item.indexName })
-              return { ...item, isBind: true }
-            }
-            if (itemID && formData.giftID === item.paymentStageID) {
-              this.props.onChangeGears({ giftID: item.paymentStageID, presentValue: item.realPrice, giftName: item.indexName })
-              return { ...item, isBind: true }
-            }
-            return { ...item }
-          }),
-        })
-      })
-    }
-  }
 
   renderBenefitSelect = (d, form) => {
     const { benefitCardLst } = this.state
@@ -113,9 +158,8 @@ class ActiveRules extends Component {
             rowSelection={{
               onChange: (selectedRowKeys, selectedRows) => this.handleSelected(selectedRowKeys, selectedRows),
               type: 'radio',
-              getCheckboxProps: (record) => ({
-                defaultChecked: record.isBind == true,
-              }),
+              // getCheckboxProps: record => ({ defaultChecked: record.isBind === true }),
+              selectedRowKeys: this.state.selectedRowKeys,
             }}
           />
         )}
@@ -150,7 +194,7 @@ class ActiveRules extends Component {
           </Col>
           <Col span={1}>至</Col>
           <Col span={11}>
-            <FormItem required style={{ padding: 0 }}>
+            <FormItem required={true} style={{ padding: 0 }}>
               {d({
                 key: 'rightIntervalValue',
                 rules: [{
@@ -176,48 +220,10 @@ class ActiveRules extends Component {
     )
   }
 
-  /** formItems 重新设置 */
-  resetFormItems() {
-    const { cardTypeID, gears, ratio, ...other } = formItems2;
-    return {
-      cardTypeID: {
-        ...cardTypeID,
-        render: (d, form) => {
-          return this.renderBenefitSelect(d, form)
-        }
-      },
-      gears: {
-        ...gears,
-        render: (d, form) => {
-          const { cardTypeID } = form.getFieldsValue()
-          if (!cardTypeID) return null
-          return this.renderGears(d, form)
-        }
-      },
-      ratio: {
-        ...ratio,
-        render: (d, form) => {
-          return this.renderRatio(d, form)
-        }
-      },
-      ...other,
-    };
-  }
-
-  isBeginTime = (eventRange) => {
-    const nowDay = moment(new Date()).add('1', 'day')
-    if (eventRange[0]) {
-      const diff = nowDay.diff(eventRange[0], 'days')
-      if (diff > 0) {
-        return true
-      }
-    }
-    return false
-  }
 
   render() {
     const { newFormKeys } = this.state;
-    let { formData = { }, isView, getForm, itemID } = this.props;
+    const { formData = { }, isView, getForm, itemID } = this.props;
     const { eventRange = [] } = formData
 
     const newFormItems = this.resetFormItems();
