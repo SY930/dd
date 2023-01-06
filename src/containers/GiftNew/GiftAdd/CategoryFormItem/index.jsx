@@ -35,12 +35,20 @@ class CategoryFormItem extends React.Component {
                 loading: false
             })
             const phraseList = res.phraseList || [];
-            const { getFieldsValue, setFieldsValue } = this.props.form;
-            let { tagLst: newTagLst = [] } = getFieldsValue();
-            newTagLst = newTagLst.filter(id => phraseList.map(item => item.name).includes(id));
-            setFieldsValue({
-                tagLst: newTagLst
-            })
+            if(this.props.form){
+                const { getFieldsValue, setFieldsValue } = this.props.form;
+                let { tagLst: newTagLst = [] } = getFieldsValue();
+                newTagLst = newTagLst.filter(id => phraseList.map(item => item.name).includes(id));
+                setFieldsValue({
+                    tagLst: newTagLst
+                })
+            }else{
+                let selectedPhrases = this.state.selectedPhrases.filter(id => phraseList.map(item => item.name).includes(id));
+                this.props.onChange(selectedPhrases);
+                this.setState({
+                    selectedPhrases,
+                })
+            }
             this.setState({
                 phraseList
             })
