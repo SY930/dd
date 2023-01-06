@@ -223,7 +223,7 @@ class PromotionModalContent extends Component {
         if (!url) return;
         const path = DOMAIN + url;
         const { resourceIds } = this.state;
-        uploadImageUrl(path).then((res) => {
+        uploadImageUrl(path, 'PROMO_VOUCHER_IMAGE').then((res) => {
             if (res) {
                 resourceIds[index] = {
                     [index]: res,

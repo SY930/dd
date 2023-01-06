@@ -62,6 +62,13 @@ class CreateCouponContent extends Component {
         }
     }
 
+    onChangeBrand = ({ brandName, brandLogo }) => {
+        this.setState({
+            brandName,
+            brandLogo,
+        })
+    }
+
     // 选择微信的财务主体后改变MerchantID
     onChangeWXMerchantID = (record) => {
         this.setState({
@@ -416,7 +423,7 @@ class CreateCouponContent extends Component {
         const { channelID, platformType, type, groupID, editData
         } = this.props
 
-        const { effectType, effectGiftTimeHours, merchantID, giftType, giftItemID, entranceWords } = this.state;
+        const { effectType, effectGiftTimeHours, merchantID, giftType, giftItemID, entranceWords, brandLogo, brandName } = this.state;
         const rangePicker = values.rangePicker || [];
         const giftValidRange = values.giftValidRange || [];
         if (!effectGiftTimeHours && values.effectType === '3') {
@@ -462,6 +469,8 @@ class CreateCouponContent extends Component {
         }
         if (type === 1) { // 支付宝
             if (entranceWords.length) { datas.entranceWords = entranceWords; }
+            datas.brandLogo = brandLogo;
+            datas.brandName = brandName
         }
         if (type === 2) { // 微信
             datas.merchantID = this.state.WXMerchantID;
@@ -1055,7 +1064,7 @@ class CreateCouponContent extends Component {
                                 </FormItem>
                             }
                             {type === 1 && this.renderZhifubaoContent(merchantType)}
-                            {type === 1 && <AliContent form={form} merchantType={merchantType} aliShops={aliShops} onChangeEntranceWords={this.onChangeEntranceWords} />}
+                            {type === 1 && <AliContent form={form} merchantType={merchantType} aliShops={aliShops} onChangeEntranceWords={this.onChangeEntranceWords} onChangeBrand={this.onChangeBrand} />}
                             {type === 2 && <WXContent form={form} merchantType={merchantType} groupID={groupID} editData={editData} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
                             {type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
                             {type === 5 && <EDiscountContent form={form} merchantType={merchantType} giftValue={this.state.giftValue} />}
