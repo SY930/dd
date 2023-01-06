@@ -57,11 +57,11 @@ class PassWordCoupon extends Component {
      * 回显数据
      */
     setData4Step1(data) {
-        let { eventStartDate: sd, eventEndDate: ed, smsGate } = data;
+        let { eventStartDate: sd, eventEndDate: ed, smsGate, tagLst } = data;
         const eventRange = [moment(sd), moment(ed)];
         smsGate = `${smsGate}`
         
-        return { ...data, eventRange, smsGate };
+        return { ...data, eventRange, smsGate, tagLst: tagLst ? tagLst.split(',') : [], };
     }
 
     setData4Step2(data) {
@@ -191,11 +191,12 @@ class PassWordCoupon extends Component {
     onSubmit = (formData3) => {
         const { formData1 } = this.state;
         const { id } = this.props;
-        const { eventRange, ...others1, } = formData1;
+        const { eventRange, tagLst, ...others1 } = formData1;
         const newEventRange = this.formatEventRange(eventRange);
+        const newTagLst = Array.isArray(tagLst) ? tagLst.join(',') : '';
         const step2Data = this.setStep2Data();
-        const { gifts, ...others3,} = formData3;
-        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '83' };
+        const { gifts, ...others3 } = formData3;
+        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '83',tagLst: newTagLst };
         if(id) {
             const itemID = id;
             const allData = { event: {...event, itemID}, gifts };

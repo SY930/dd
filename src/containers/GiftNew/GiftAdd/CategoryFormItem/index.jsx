@@ -4,6 +4,7 @@ import { Col, Select } from 'antd';
 import styles from "./style.less";
 import NewAddCategorys from "./NewAddCategorys";
 import { axiosData } from 'helpers/util';
+import _ from "lodash";
 
 const Option = Select.Option;
 
@@ -12,10 +13,19 @@ class CategoryFormItem extends React.Component {
         phraseList: [], // 标签列表
         modalVisible: false,
         loading: false,
+        selectedPhrases: [],
     }
 
     componentDidMount() {
         this.getPhraseList();
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(!_.isEqual(this.props.selectedPhrases, nextProps.selectedPhrases)){
+            this.setState({
+                selectedPhrases: nextProps.selectedPhrases
+            })
+        }
     }
 
     getPhraseList = () => {
@@ -35,14 +45,23 @@ class CategoryFormItem extends React.Component {
                 loading: false
             })
             const phraseList = res.phraseList || [];
-            const { getFieldsValue } = this.props.form;
-            let { tagLst = [] } = getFieldsValue();
-            if(tagLst.length > 0){
-                tagLst = tagLst.filter(id => phraseList.map(item => item.itemID).includes(id));
+            if(this.props.form){
+                // BaseForm组件使用
+                const { getFieldsValue } = this.props.form;
+                let { tagLst = [] } = getFieldsValue();
+                if(tagLst.length > 0){
+                    tagLst = tagLst.filter(id => phraseList.map(item => item.name).includes(id));
+                }
+                this.props.onChange(tagLst);
+            }else{
+                let selectedPhrases = this.state.selectedPhrases.filter(id => phraseList.map(item => item.name).includes(id));
+                this.props.onChange(selectedPhrases);
+                this.setState({
+                    selectedPhrases,
+                })
             }
-            this.props.onChange(tagLst);
             this.setState({
-                phraseList
+                phraseList,
             })
         }).catch((error) => {
             this.setState({
@@ -58,30 +77,53 @@ class CategoryFormItem extends React.Component {
         this.getPhraseList();
     }
 
+    onChange = (value) => {
+        this.setState({
+            selectedPhrases: value
+        });
+        this.props.onChange(value);
+    }
+
     render() {
         const { decorator, key } = this.props;
-        const { modalVisible, phraseList } = this.state;
-        console.log('=======', this.props);
+        const { modalVisible, phraseList, selectedPhrases } = this.state;
         return (
             <Col span={24} className={styles.CategoryFormItem}>
                 {
-                    decorator({
-                        key,
-                    })(
+                    decorator ? 
+                        decorator({
+                            key,
+                        })(
+                            <Select
+                                size="default"
+                                notFoundContent='暂无数据'
+                                placeholder=""
+                                multiple
+                                showSearch
+                            >
+                                {
+                                    phraseList && phraseList.map(item => (
+                                        <Option value={item.name} key={item.itemID}>{item.name}</Option>
+                                    ))
+                                }
+                            </Select>
+                        )
+                        : 
                         <Select
                             size="default"
                             notFoundContent='暂无数据'
                             placeholder=""
                             multiple
                             showSearch
+                            onChange={this.onChange}
+                            value={selectedPhrases}
                         >
                             {
                                 phraseList && phraseList.map(item => (
-                                    <Option value={item.itemID} key={item.itemID}>{item.name}</Option>
+                                    <Option value={item.name} key={item.itemID}>{item.name}</Option>
                                 ))
                             }
                         </Select>
-                    )
                 }
                 {
                     !this.props.hideBtn &&

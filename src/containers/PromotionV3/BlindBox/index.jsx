@@ -58,11 +58,11 @@ class BlindBox extends Component {
      * 回显数据
      */
     setData4Step1(data) {
-        let { eventStartDate: sd, eventEndDate: ed, smsGate } = data;
+        let { eventStartDate: sd, eventEndDate: ed, smsGate, tagLst } = data;
         const eventRange = [moment(sd), moment(ed)];
         smsGate = `${smsGate}`
         
-        return { ...data, eventRange, smsGate };
+        return { ...data, eventRange, smsGate, tagLst: tagLst ? tagLst.split(',') : [] };
     }
 
     setData4Step2(data) {
@@ -265,12 +265,13 @@ class BlindBox extends Component {
     onSubmit = (formData3) => {
         const { formData1 } = this.state;
         const { id } = this.props;
-        const { eventRange, ...others1, } = formData1;
+        const { eventRange, tagLst, ...others1 } = formData1;
         const newEventRange = this.formatEventRange(eventRange);
+        const newTagLst = Array.isArray(tagLst) ? tagLst.join(',') : '';
         const step2Data = this.setStep2Data();
-        const { gifts,  eventImagePath, ...others3,} = formData3;
+        const { gifts,  eventImagePath, ...others3 } = formData3;
         const newEventImagePath = eventImagePath ? eventImagePath.url ? eventImagePath.url : eventImagePath : ''
-        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '79', eventImagePath: newEventImagePath };
+        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '79', eventImagePath: newEventImagePath, tagLst: newTagLst };
         if(id) {
             const itemID = id;
             const allData = { event: {...event, itemID}, gifts };

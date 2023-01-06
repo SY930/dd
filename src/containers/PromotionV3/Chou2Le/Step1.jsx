@@ -42,6 +42,14 @@ class Step1 extends Component {
             }
             this.setState({ newFormKeys });
         }
+        if(key == 'tagLst'){
+            if(form){
+                const { setFieldsValue } = form;
+                setFieldsValue({
+                    tagLst: value
+                })
+            }
+        }
     }
 
     /** formItems 重新设置 */

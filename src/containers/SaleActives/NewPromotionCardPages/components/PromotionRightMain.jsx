@@ -554,6 +554,10 @@ class PromotionRightMain extends Component {
             setFieldsValue({
                 shopIDList: value
             })
+        }else if(key == 'tagLst'){
+            setFieldsValue({
+                tagLst: value
+            })
         }
     }
 
@@ -605,8 +609,6 @@ class PromotionRightMain extends Component {
             }
             return newItem;
         }) || [];
-
-        console.log('formData===', this.state.formData)
 
         return (
             <Col className={styles.PromotionRightMain} style={{ height: 'calc(100vh - 65px)' }} span={24}>

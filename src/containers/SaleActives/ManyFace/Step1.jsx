@@ -37,6 +37,13 @@ class Step1 extends Component {
     onChange = (key, value) => {
         if (key === 'triggerSceneList') {
             this.props.onChangeForm(key, value)
+        }else if(key == 'tagLst'){
+            if(this.props.form1){
+                const { setFieldsValue } = this.props.form1;
+                setFieldsValue({
+                    tagLst: value
+                })
+            }
         }
     }
 

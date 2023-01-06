@@ -55,7 +55,7 @@ class Chou2Le extends Component {
     }
     // 回显需要重写整理的数据
     setData4Step1(data, times) {
-        const { eventStartDate: sd, eventEndDate: ed, validCycle, smsGate: sms } = data;
+        const { eventStartDate: sd, eventEndDate: ed, validCycle, smsGate: sms, tagLst } = data;
         const eventRange = [moment(sd), moment(ed)];
         let timsObj = {};
         const TF = 'HH:mm';
@@ -73,7 +73,7 @@ class Chou2Le extends Component {
             // 根据["w1", "w3", "w5"]获取第一个字符
             [cycleType] = validCycle[0];
         }
-        return { ...data, eventRange, ...timsObj, smsGate: `${sms}`, advMore: true, cycleType };
+        return { ...data, eventRange, ...timsObj, smsGate: `${sms}`, advMore: true, cycleType, tagLst: tagLst ? tagLst.split(',') : [], };
     }
     setData4Step2(data) {
         const { brandList: blist, orderTypeList: olist, shopIDList: slist } = data;
@@ -209,8 +209,9 @@ class Chou2Le extends Component {
         const { groupID } = getAccountInfo();
         const { formData1 } = this.state;
         const { id } = this.props;
-        const { timeList, eventRange, ...others1 } = formData1;
+        const { timeList, eventRange, tagLst, ...others1 } = formData1;
         const newTimeList = this.formatTimeList(timeList);
+        const newTagLst = Array.isArray(tagLst) ? tagLst.join(',') : '';
         const newEventRange = this.formatEventRange(eventRange);
         const step2Data = this.setStep2Data();
         const { gifts, sceneType, ...others3 } = formData3;
@@ -218,7 +219,7 @@ class Chou2Le extends Component {
         let {formData3: {eventID = ''}} = this.state
         let launchSceneList = [{groupID, eventID, sceneType}]
 
-        const event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '78', launchSceneList };
+        const event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '78', launchSceneList, tagLst: newTagLst };
         if(id) {
             const itemID = id;
             const allData = { timeList: newTimeList, event: {...event, itemID}, gifts };

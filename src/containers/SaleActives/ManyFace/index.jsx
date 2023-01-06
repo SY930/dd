@@ -303,9 +303,10 @@ class ManyFace extends Component {
 
     onSubmit = (values, formData2) => {
         const { itemID } = this.props
-        const { eventRange, timeList, validCycle = [], cycleType, clientType, sceneList, ...others1 } = values;
+        const { eventRange, timeList, validCycle = [], cycleType, clientType, sceneList, tagLst,  ...others1 } = values;
         const newEventRange = this.formatEventRange(eventRange);
         const newTimeList = this.formatTimeList(timeList);
+        const newTagLst = Array.isArray(tagLst) ? tagLst.join(',') : '';
 
         let triggerSceneList = clientType === '1' ? [1, 2, 3] : values.triggerSceneList
         if (sceneList === '21') { // 开屏页
@@ -317,7 +318,7 @@ class ManyFace extends Component {
             cycleObj = { validCycle: cycle };
         }
         // shopRange全部店铺和部分店铺的
-        const event = { ...others1, ...newEventRange, cycleType, ...cycleObj, ...others1, eventWay: '85', shopRange: '1', launchSceneList: [{ appID: values.launchSceneList, sceneType: 4 }] };
+        const event = { ...others1, ...newEventRange, cycleType, ...cycleObj, ...others1, eventWay: '85', shopRange: '1', launchSceneList: [{ appID: values.launchSceneList, sceneType: 4 }], tagLst: newTagLst};
         delete event.faceRule
         const eventConditionInfos = _.map(formData2, item =>
             (_.omit(item, ['triggerEventCustomInfo2', 'triggerEventValue2', 'triggerEventName2',
@@ -383,7 +384,7 @@ class ManyFace extends Component {
     }
 
     setData4Step1 = (data, eventConditionInfos, times, triggerSceneList) => {
-        const { eventStartDate: sd, eventEndDate: ed, shopIDList: slist, validCycle, excludedDate = [], launchSceneList = [] } = data;
+        const { eventStartDate: sd, eventEndDate: ed, shopIDList: slist, validCycle, excludedDate = [], launchSceneList = [], tagLst = '' } = data;
         const eventRange = [moment(sd), moment(ed)];
         const clientType = eventConditionInfos[0] ? String(eventConditionInfos[0].clientType) : '1';
         const shopIDList = slist ? slist.map(x => `${x}`) : [];
@@ -414,7 +415,6 @@ class ManyFace extends Component {
         if (!_.isEmpty(timsObj) || cycleType || excludedDate.length) {
             advMore = true
         }
-
         const formData = {
             step1Data: {
                 ...data,
@@ -422,6 +422,7 @@ class ManyFace extends Component {
                 shopIDList,
                 sceneList,
                 launchSceneList: launchSceneList[0] ? launchSceneList[0].appID : '',
+                tagLst: tagLst ? tagLst.split(',') : [],
             },
             setp2Data: {
                 ...data, eventRange, ...timsObj, advMore, cycleType,
@@ -650,7 +651,7 @@ class ManyFace extends Component {
     }
 
     preSubmit = (values, formData2) => {
-        const { clientType, eventRange, shopIDList, triggerSceneList = [], timeList, validCycle, cycleType, excludedDate, sceneList } = values;
+        const { clientType, eventRange, shopIDList, triggerSceneList = [], timeList, validCycle, cycleType, excludedDate, sceneList, } = values;
         const { itemID } = this.props
         const { eventStartDate, eventEndDate } = this.formatEventRange(eventRange);
         let triggerScene = triggerSceneList;

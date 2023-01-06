@@ -5,6 +5,7 @@ import DateRange from '../../PromotionV3/Camp/DateRange';
 import DateTag from '../../PromotionV3/Camp/DateTag';
 import TimeRange from '../../PromotionV3/Camp/TimeRange';
 import Advance from '../../PromotionV3/Camp/Advance';
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 const imgURI = 'http://res.hualala.com/';
 const href = 'javascript:;';
@@ -97,9 +98,21 @@ const formItems1 = {
         placeholder: '请输入活动说明，最多1000个字符',
         rules: ['description2'],
     },
+    tagLst: {
+        label: '标签',
+        type: 'custom',
+        render: (d, form) => d()(
+            <CategoryFormItem 
+                decorator={d}
+                form={form}
+                key='tagLst'
+                phraseType='2'
+            />
+        ),
+    }
 };
 
-const KEY1 = ['eventType', 'eventName', 'eventCode', 'clientType'];
+const KEY1 = ['eventType', 'eventName', 'eventCode', 'tagLst', 'clientType'];
 const KEY2 = ['sceneList', 'triggerSceneList', 'launchSceneList', 'shopIDList', 'eventRemark'];
 const KEY = ['clientTip'];
 
