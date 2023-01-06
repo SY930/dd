@@ -36,10 +36,10 @@ class CategoryFormItem extends React.Component {
             })
             const phraseList = res.phraseList || [];
             const { getFieldsValue, setFieldsValue } = this.props.form;
-            let { category: newCategory = [] } = getFieldsValue();
-            newCategory = newCategory.filter(id => phraseList.map(item => item.itemID).includes(id));
+            let { tagLst: newTagLst = [] } = getFieldsValue();
+            newTagLst = newTagLst.filter(id => phraseList.map(item => item.name).includes(id));
             setFieldsValue({
-                category: newCategory
+                tagLst: newTagLst
             })
             this.setState({
                 phraseList
@@ -76,7 +76,7 @@ class CategoryFormItem extends React.Component {
                         >
                             {
                                 phraseList && phraseList.map(item => (
-                                    <Option value={item.itemID} key={item.itemID}>{item.name}</Option>
+                                    <Option value={item.name} key={item.itemID}>{item.name}</Option>
                                 ))
                             }
                         </Select>

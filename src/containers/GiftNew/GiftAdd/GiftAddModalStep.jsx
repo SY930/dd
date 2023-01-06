@@ -1253,6 +1253,10 @@ class GiftAddModalStep extends React.PureComponent {
             }
             
             params.pushMimiAppMsg = params.pushMessage && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
+            if(Array.isArray(params.tagLst)){
+                params.tagLst = params.tagLst.join(',');
+            }
+
             // 商城券参数调整
             if(hasMallArr.includes(value)){
                 this.adjustParamsOfMallGift(params);
@@ -2906,7 +2910,7 @@ class GiftAddModalStep extends React.PureComponent {
         return flag
     }
 
-    hasCategoryKey = (keysObj) => {
+    hasTagLstKey = (keysObj) => {
         let allKeys = [];
         if(keysObj && Array.isArray(keysObj) && keysObj.length > 0){
             keysObj.map(item => {
@@ -2915,11 +2919,11 @@ class GiftAddModalStep extends React.PureComponent {
                 })
             })
         }
-        return allKeys.includes('category');
+        return allKeys.includes('tagLst');
     }
 
     addCategoryFormItem = (formItems) => {
-        formItems.category = {
+        formItems.tagLst = {
             label: '标签',
             type: 'custom',
             render: (decorator, form) => {
@@ -2927,8 +2931,8 @@ class GiftAddModalStep extends React.PureComponent {
                     <CategoryFormItem
                         decorator={decorator}
                         form={form}
-                        key='category'
-                        phraseType='1'
+                        key='tagLst'
+                        phraseType='3'
                     />
                 )
             }
@@ -2948,7 +2952,6 @@ class GiftAddModalStep extends React.PureComponent {
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
         let formData =JSON.stringify(values) == '{}' ? data : values ;
-        console.log('formData===_TODO', formData)
         let { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys,thirdKeysToDisplay:displayThirdKeys,fourthKeysToDisplay:displayFourthKeys} = this.justifyFormKeysToDisplay();
 
         if (formData.shopNames && formData.shopNames.length > 0 && formData.shopNames[0].id) {
@@ -3990,17 +3993,20 @@ class GiftAddModalStep extends React.PureComponent {
             formData.selectedShops = [];
         }
         // _TODO
-        if(this.hasCategoryKey(displayFirstKeys)){
+        if(this.hasTagLstKey(displayFirstKeys)){
             this.addCategoryFormItem(formItems);
         }
-        if(this.hasCategoryKey(displaySecondKeys)){
+        if(this.hasTagLstKey(displaySecondKeys)){
             this.addCategoryFormItem(formItems);
         }
-        if(this.hasCategoryKey(displayThirdKeys)){
+        if(this.hasTagLstKey(displayThirdKeys)){
             this.addCategoryFormItem(formItems);
         }
-        if(this.hasCategoryKey(displayFourthKeys)){
+        if(this.hasTagLstKey(displayFourthKeys)){
             this.addCategoryFormItem(formItems);
+        }
+        if(formData.tagLst && !Array.isArray(formData.tagLst)){
+            formData.tagLst = formData.tagLst.split(',');
         }
         return (
             <div className={styles2.formContainer}>
