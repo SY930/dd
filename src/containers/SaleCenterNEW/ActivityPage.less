@@ -2521,6 +2521,20 @@
         top: 8px;
         right: 20px;
     }
+
+    .categoryFormItemLi {
+        :global {
+            .ant-form-item-control {
+                width: 200px;
+            }
+
+            .ant-select-selection--multiple {
+                height: auto !important;
+                overflow: auto !important;
+                max-height: 50px;
+            }
+        }
+    }
 }
 
 .tableClass {

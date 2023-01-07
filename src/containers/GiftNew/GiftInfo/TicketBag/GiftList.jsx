@@ -1,6 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Button, Table, Icon, message } from 'antd';
+import { Row, Col, Button, Table, Icon, message, Form } from 'antd';
 import styles from '../GiftInfo.less';
 import styles2 from '../../../SaleCenterNEW/ActivityPage.less';
 import BaseForm from '../../../../components/common/BaseForm';
@@ -23,6 +23,7 @@ import _ from 'lodash';
 import { axiosData } from '../../../../helpers/util';
 import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
+const FormItem = Form.Item;
 const searchDefaultPageParams = {
     pageNo: 1,
     pageSize: 25, 
@@ -44,6 +45,7 @@ class GiftList extends Component {
             dataSource: [],
             total: 0,
             expand: false,
+            tagLst: [], // 标签
         };
         this.setTableRef = el => this.tableRef = el;
         this.queryFroms = null;
@@ -90,14 +92,17 @@ class GiftList extends Component {
         const { FetchGiftList } = this.props;
         this.queryFroms.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            const params = { ...values };
+            const params = { 
+                ...values,
+                tagLst: this.state.tagLst.join(','),
+            };
             this.setState({
                 queryParams: { 
                     pageNo: 1, 
                     pageSize: queryParams.pageSize || 1, 
                     action, 
                     ...params,
-                    ...pagingParams
+                    ...pagingParams,
                 },
             })
             FetchGiftList({
@@ -187,7 +192,10 @@ class GiftList extends Component {
         const { queryParams } = this.state;
         this.queryFroms.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            const params = { ...values };
+            const params = {
+                ...values,
+                tagLst: this.state.tagLst.join(','),
+            };
             this.setState({
                 queryParams: { pageNo: 1, pageSize: queryParams.pageSize || 1, action, ...params },
             })
@@ -226,7 +234,14 @@ class GiftList extends Component {
 
     toggleExpandState = () => {
         this.setState({
-            expand: !this.state.expand
+            expand: !this.state.expand,
+            tagLst: [],
+        });
+    }
+
+    changeCategoryFormItem = (value) => {
+        this.setState({
+            tagLst: value
         })
     }
 
@@ -250,6 +265,25 @@ class GiftList extends Component {
                                 // onChange={(key, value) => this.handleFormChange(key, value)}
                                 />
                             </li>
+                            <li style={{display: 'flex', alignItems: 'center'}} className={styles2.categoryFormItemLi}>
+                                <a style={{ margin: '0 10px' }} onClick={this.toggleExpandState}>
+                                    高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+                                </a>
+                                {
+                                    this.state.expand && 
+                                    <Form inline>
+                                        <FormItem label='标签'>
+                                            <CategoryFormItem 
+                                                onChange={this.changeCategoryFormItem}
+                                                key='tagLst'
+                                                phraseType='3'
+                                                selectedPhrases={this.state.tagLst}
+                                                hideBtn={true}
+                                            />
+                                        </FormItem>
+                                    </Form>
+                                }
+                            </li>
                             <li>
                                 <Authority rightCode={GIFT_LIST_QUERY}>
                                     <Button type="primary" onClick={() => this.onQueryList(searchDefaultPageParams)}>
@@ -257,9 +291,6 @@ class GiftList extends Component {
                                         查询
                                     </Button>
                                 </Authority>
-                                <a style={{marginTop: '10px', marginLeft: '10px'}} onClick={this.toggleExpandState}>
-                                    高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-                                </a>
                             </li>
                         </ul>
                     </div>
