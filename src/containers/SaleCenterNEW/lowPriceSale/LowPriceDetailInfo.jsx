@@ -90,12 +90,16 @@ class LowPriceDetailInfo extends React.Component {
         if (_scopeLstLength) {// 指定菜品
             if (stageType == 1) { // 每满
                 ruleType = '4'
+            } if (stageType == 21) {//同一菜品满
+                ruleType = '5'
             } else {
                 ruleType = '2'
             }
         } else {// 任意菜品
             if (stageType == 1) { // 每满
                 ruleType = '3'
+            } if (stageType == 21) {//同一菜品满
+                ruleType = '5'
             } else {
                 ruleType = '1'
             }
