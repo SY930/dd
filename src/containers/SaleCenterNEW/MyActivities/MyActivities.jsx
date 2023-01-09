@@ -2070,7 +2070,7 @@ class MyActivities extends React.Component {
 
     renderCoulums = (originCoulums) => {
         const { user: { accountInfo }} = this.props
-        if (WJLPGroupID.includes(`${accountInfo.groupID}`)) {
+        if (isWeijia(accountInfo.groupID)) {
             return getWJLPCoulums(this)
         }
         return originCoulums
@@ -2386,30 +2386,6 @@ class MyActivities extends React.Component {
                 },
             })
         }
-        if(isZhouheiya(this.props.user.accountInfo.groupID)){
-            columns.splice(13, 0,{
-                title: '适用商品',
-                className: 'TableTxtCenter',
-                dataIndex: 'applyGoodsName',
-                key: 'applyGoodsName',
-                width: 160,
-                render:  (text) => {
-                    const t = text
-                    return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
-                }
-            },
-            {
-                title: '适用店铺',
-                className: 'TableTxtCenter',
-                dataIndex: 'shopIDLst',
-                key: 'shopIDLst',
-                width: 160,
-                render:  (text) => {
-                    const t = text
-                    return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
-                }
-            })
-         }
 
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>
