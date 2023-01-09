@@ -47,7 +47,7 @@ import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";
 import { injectIntl } from "../IntlDecor";
 import Card from "../../../assets/card.png";
 import CardSaleActive from "./CardSaleActive";
-import { isZhouheiya, isGeneral, WJLPGroupID, isWeijia } from "../../../constants/WhiteList";
+import { isZhouheiya, isGeneral, WJLPGroupID, isWeijia, isSellGroupID } from "../../../constants/WhiteList";
 import GoodsRef from '@hualala/sc-goodsRef';
 import { getWJLPCoulums } from './config'
 
@@ -679,12 +679,12 @@ class MyActivities extends React.Component {
         opt.groupID = this.props.user.accountInfo.groupID;
         opt.accountID = this.props.user.accountInfo.accountID;
         opt.sourceType = +this.isOnlinePromotionPage();
-        if (isZhouheiya(opt.groupID) && selectedGoods.length > 0){
+        if (isSellGroupID(opt.groupID) && selectedGoods.length > 0){
             opt.applyGoodsList = selectedGoods.map(item => {
                 return { goodsID: item.goodsID, categoryOneID: item.categoryOneID, categoryTwoID: item.categoryTwoID, categoryID: item.categoryID}
             })
         }
-        if (isZhouheiya(opt.groupID) && applyShopIds.length > 0){
+        if (isSellGroupID(opt.groupID) && applyShopIds.length > 0){
             opt.applyShopIdList = applyShopIds
         }
         return opt;
@@ -1884,10 +1884,10 @@ class MyActivities extends React.Component {
             return (
                 <div className="layoutsSeniorQuery">
                     <ul>
-                        {isWeijia(accountInfo.groupID) && <li>
+                        {isSellGroupID(accountInfo.groupID) && <li>
                             <h5>零售商品</h5>
                         </li>}
-                        {isWeijia(accountInfo.groupID) && <li>
+                        {isSellGroupID(accountInfo.groupID) && <li>
                             {this.renderGoodsInTreeSelectMode()}
                         </li>}
                         <li>

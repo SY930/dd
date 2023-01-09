@@ -22,6 +22,8 @@ export const zhouheiyaMarketingtype = ['69', '88', '89', '90'];
 
 export const WJLPGroupID = ['259613', '317528', '11157'] // 针对魏家凉皮 促销活动管理列表 表头顺序 259613测试集团，线上待定
 
+export const SellGroupID = ['259613', '317528', '11157'] // 零售集团ID
+
 export const priceRulsGroupID = ['259250', '49367', '11157', '189702']
 
 export const businessTypesList = [
@@ -48,6 +50,12 @@ export function isZhouheiya(groupID = getAccountInfo().groupID) {
 export function isWeijia(groupID = getAccountInfo().groupID) {
     if (!groupID) return false;
     return WJLPGroupID.includes(String(groupID));
+}
+
+// 促销列表零售商品筛选条件白名单
+export function isSellGroupID(groupID = getAccountInfo().groupID) {
+    if (!groupID) return false;
+    return SellGroupID.includes(String(groupID));
 }
 
 // 是否是集团经理角色
