@@ -1437,11 +1437,24 @@ class MyActivities extends React.Component {
             </Modal>
         );
     };
+
+    renderTitle = () => {
+        return <div style={{display:'flex',alignItems:'center',marginRight:20}}><span style={{marginRight:20}}>批量导入活动</span><div style={{
+            backgroundColor: '#fefbe6',
+            border: '1px solid #f7e5ba',
+            borderRadius: '3px',
+            height: 30,
+            lineHeight: '30px',
+            fontSize:'14px',
+            width:'200px'
+        }}><Icon style={{ fontSize: 12, color: '#ffa22a', margin: '0 10px' }} type="exclamation-circle" />仅支持零售满减活动导入</div></div>
+    }
+
     renderImportActiveModal = () => {
         return (
             <Modal
             wrapClassName={styles.importActiveModal}
-            title={'批量导入活动'}
+            title={this.renderTitle()}
             visible={this.state.activeImportVisible}
             width={600}
             maskClosable={false}
