@@ -588,7 +588,7 @@ export const ALL_FORM_ITEMS = {
     assetsOptions: {
         label: '',
         type: 'custom',
-        defaultValue: [34],
+        defaultValue: [33, 34],
         wrapperCol,
         render: (decorator, form) => {
             const { getFieldsValue } = form;
@@ -597,7 +597,7 @@ export const ALL_FORM_ITEMS = {
             return (
                 decorator({
                     rules: [{ type: 'array', required: true, message: '至少要选择一种不共享会员资产' }],
-                })(<CheckboxGroup options={[{ label: '会员积分', value: 34 },]} />)
+                })(<CheckboxGroup options={[{ label: '会员储值', value: 33 }, { label: '会员积分', value: 34 },]} />)
             )
         }
     },
