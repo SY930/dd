@@ -36,18 +36,18 @@ class ActiveRules extends Component {
   componentWillReceiveProps(np) {
     const { itemID, formData } = this.props
     if ((!_.isEqual(formData, np.formData)) && np.itemID) {
-      this.onBenefitCardSelectChange(np.formData.cardTypeID, np.formData)
+      this.onBenefitCardSelectChange(np.formData.cardTypeID, np.formData, np.itemID)
     }
   }
 
 
-  onBenefitCardSelectChange = (value, formData) => {
+  onBenefitCardSelectChange = (value, formData, itemID) => {
     // paymentStageList
     if (value) {
       queryCardDetail(value).then((data) => {
         this.setState({
           dataSource: data,
-          selectedRowKeys: this.getSelectedRowKey(formData, data),
+          selectedRowKeys: this.getSelectedRowKey(formData, data, itemID),
         })
       })
     }
@@ -61,12 +61,13 @@ class ActiveRules extends Component {
     })
   }
 
-  getSelectedRowKey = (formData, data) => {
-    const { itemID } = this.props
+  getSelectedRowKey = (formData, data, itemID) => {
     if (itemID) {
       const index = data.findIndex(item => formData.giftID === item.paymentStageID);
       return [index]
     }
+    const { paymentStageID, realPrice, indexName } = data[0] || {};
+    this.props.onChangeGears({ giftID: paymentStageID, presentValue: realPrice, giftName: indexName })
     return [0]
   }
 
@@ -91,13 +92,13 @@ class ActiveRules extends Component {
   }
   /** formItems 重新设置 */
   resetFormItems() {
-    const { cardTypeID, gears, ratio, ...other } = formItems2;
+    const { cardTypeID: ID, gears, ratio, ...other } = formItems2;
     return {
       cardTypeID: {
-        ...cardTypeID,
+        ...ID,
         render: (d, form) => {
           return this.renderBenefitSelect(d, form)
-        }
+        },
       },
       gears: {
         ...gears,
@@ -105,7 +106,7 @@ class ActiveRules extends Component {
           const { cardTypeID } = form.getFieldsValue()
           if (!cardTypeID) return null
           return this.renderGears(d, form)
-        }
+        },
       },
       ratio: {
         ...ratio,

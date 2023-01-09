@@ -38,7 +38,6 @@ class HelpRules extends Component {
     return (
       <div>
         {d({
-          rules: [],
           onChange: this.onBenefitCardSelectChange,
         })(<Select
           allowClear={true}
