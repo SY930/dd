@@ -19,6 +19,11 @@ import { createMemberGroup } from '../sendGifts/stepThreeHelp'
 import { connect } from 'react-redux';
 //周黑鸭新增
 import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
+
+const TimeRangeEnabledTypes = [
+    '31',
+    '21',
+]
 export default class NewPromotion extends React.Component {
     constructor(props) {
         super(props);
@@ -106,7 +111,7 @@ export default class NewPromotion extends React.Component {
             recommendEventRuleInfos: specialPromotion.$eventRecommendSettings,
         };
         // 关注送礼
-        if(this.props.promotionType === '31' ){
+        if(TimeRangeEnabledTypes.includes(this.props.promotionType)){
             if(opts.event.timeList){
                 opts.timeList = opts.event.timeList;
             }

@@ -84,8 +84,9 @@ const PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS = new Set([
 ])
 
 // 活动时段 enabled promotion types
-const TimeRangeEnabledTypes = [
-    '31'
+export const TimeRangeEnabledTypes = [
+    '31',
+    '21',
 ]
 
 // _TODO
@@ -93,7 +94,8 @@ const ATSEnabledTypes = [ // advanced time settings enabled promotion types
     '20',
     '30',
     '67',
-    '31'
+    '31',
+    '21',
 ];
 const dateLimitedTypes = [ // 活动日期不能选到今天以前的活动类型
     '61',
@@ -387,7 +389,7 @@ class StepOneWithDateRange extends React.Component {
         //         tagList,
         //     });
         // }
-        if (this.props.type == '31') {
+        if (TimeRangeEnabledTypes.includes(this.props.type)) {
             let isLoadingWeChatOccupiedInfo = this.state.isLoadingWeChatOccupiedInfo;
             let isAllWeChatIDOccupied = this.state.isAllWeChatIDOccupied;
             let occupiedWeChatIDs = this.state.occupiedWeChatIDs;
