@@ -12,7 +12,7 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 import BaseInfo from './BaseInfo';
 import ActiveRules from './ActiveRules'
 import HelpRules from './HelpRules'
-import { putEvent, postEvent, getEvent } from './AxiosFactory';
+import { putEvent, postEvent, getEvent, queryActiveList } from './AxiosFactory';
 import { asyncParseForm, formatEventRange } from "../../../helpers/util";
 import styles from './styles.less'
 
@@ -40,6 +40,7 @@ class BenefitCardBargain extends Component {
       })
     }
     this.getEventDetail()
+    this.getActiveList()
   }
 
 
@@ -51,6 +52,17 @@ class BenefitCardBargain extends Component {
     })
   }
 
+
+  getActiveList = () => {
+    const { itemID } = this.props
+    const params = {
+      eventInfo: {
+        eventWay: 91,
+        itemID: itemID && itemID,
+      },
+    }
+    queryActiveList(params).then((dataSource) => {})
+  }
 
   getEventDetail() {
     const { itemID } = this.props;
