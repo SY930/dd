@@ -873,7 +873,7 @@ class MySpecialActivities extends React.Component {
 
         this.props.fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
-            phraseType: "1",
+            phraseType: "2",
         });
 
         this.props.fetchPromotionScopeInfo({
@@ -1327,6 +1327,19 @@ class MySpecialActivities extends React.Component {
             },
             () => {
                 this.handleQuery();
+                if(key == 'saleSpecialPage'){
+                    // 营销活动
+                    this.props.fetchPromotionTags({
+                        groupID: this.props.user.accountInfo.groupID,
+                        phraseType: "2",
+                    });
+                }else{
+                    // 促销活动
+                    this.props.fetchPromotionTags({
+                        groupID: this.props.user.accountInfo.groupID,
+                        phraseType: "1",
+                    });
+                }
             }
         );
     };
@@ -2258,7 +2271,7 @@ class MySpecialActivities extends React.Component {
             opt.brandID = promotionBrands;
         }
         if (promotionShop !== "" && promotionShop !== undefined) {
-            opt.shopID = promotionShop;
+            opt.applyShopIDList = promotionShop;
         }
 
         if (isActive !== "") {
@@ -2459,7 +2472,7 @@ class MySpecialActivities extends React.Component {
                     <ul>
                         <li><h5>适用店铺</h5></li>
                         <li>{this.renderShopsInTreeSelectMode()}</li>
-                        <li><h5>统计类别</h5></li>
+                        {/* <li><h5>统计类别</h5></li>
                         <li>
                             <Select
                                 placeholder=""
@@ -2479,7 +2492,7 @@ class MySpecialActivities extends React.Component {
                                     );
                                 })}
                             </Select>
-                        </li>
+                        </li> */}
                         <li><h5>标签</h5></li>
                         <li>
                             <Select
@@ -2501,7 +2514,7 @@ class MySpecialActivities extends React.Component {
                                 })}
                             </Select>
                         </li>
-                        <li> <h5>品牌</h5></li>
+                        {/* <li> <h5>品牌</h5></li>
                         <li>
                             <Select
                                 style={{ width: 100 }}
@@ -2521,7 +2534,7 @@ class MySpecialActivities extends React.Component {
                                     );
                                 })}
                             </Select>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
             );
@@ -2759,11 +2772,11 @@ class MySpecialActivities extends React.Component {
                                 </Button>
                             </Authority>
                         </li>
-                        {/* <li>
+                        <li>
                             <a onClick={this.toggleExpandState}>
                                 高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
                             </a>
-                        </li> */}
+                        </li>
                     </ul>
                 </div>
                 {this.renderAdvancedFilter()}

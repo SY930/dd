@@ -43,6 +43,7 @@ import {
 import EveryDay from '../../GiftNew/GiftInfo/TicketBag/EveryDay';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 const CheckboxGroup = Checkbox.Group;
 const moment = require('moment');
@@ -1080,6 +1081,11 @@ class StepOneWithDateRange extends React.Component {
         return result;
     }
 
+    changeCategoryFormItem = (value) => {
+        this.setState({
+            tagLst: value
+        })
+    }
 
     render() {
         const categorys = this.props.saleCenter.get('characteristicCategories').toJS();
@@ -1314,61 +1320,46 @@ class StepOneWithDateRange extends React.Component {
                         </FormItem>
                     }
                     {/* _TODO */}
-		    {!['69', '89', '88'].includes(this.props.type) && 
+                    {!['69', '89', '88'].includes(this.props.type) && 
+                            <FormItem
+                                label={<span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                {getFieldDecorator('eventCode', {
+                                    rules: [{
+                                        whitespace: true,
+                                        message: "字母、数字组成，不多于50个字符",
+                                        pattern: /^[A-Za-z0-9]{1,50}$/,
+                                    }],
+                                    initialValue: this.state.eventCode,
+                                })(
+                                        <Input
+                                            // disabled={this.props.isUpdate && this.props.isCopy === false}
+                                            placeholder='请输入编码名称'
+                                            onChange={this.handleEventCodeChange}
+                                        />
+                                )}
+                            </FormItem>
+                    }
+
                     <FormItem
-                        label={<span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>}
+                        label={<span>标签管理</span>}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
-                        {getFieldDecorator('eventCode', {
-                            rules: [{
-                                whitespace: true,
-                                message: "字母、数字组成，不多于50个字符",
-                                pattern: /^[A-Za-z0-9]{1,50}$/,
-                            }],
-                            initialValue: this.state.eventCode,
+                        {getFieldDecorator('tagLst', {
+                            initialValue: this.state.tagLst,
                         })(
-                                <Input
-                                    // disabled={this.props.isUpdate && this.props.isCopy === false}
-                                    placeholder='请输入编码名称'
-                                    onChange={this.handleEventCodeChange}
-                                />
+                            <CategoryFormItem
+                                phraseType='2'
+                                onChange={this.changeCategoryFormItem}
+                                selectedPhrases={this.state.tagLst}
+                            />
                         )}
                     </FormItem>
-		    }
-
-                    <FormItem
-                        label='标签'
-                        className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
-                    >
-                        <Select
-                            allowClear={true}
-                            showSearch
-                            optionFilterProp="children"
-                            multiple
-                            className={styles.linkSelectorRight}
-                            onChange={(tagLst) => this.setState({ tagLst })}
-                            getPopupContainer={(node) => node.parentNode}
-                            value={this.state.tagLst}
-                            size="default"
-                            dropdownClassName={`${styles.dropdown}`}
-                        >
-                            {
-                                (this.state.tagList || [])
-                                    .map((tag, index) => {
-                                        return ( <Option value={tag} key={tag}>{tag}</Option>)
-                                    })
-                            }
-                        </Select>
-                        <AddCategorys
-                            catOrtag={'tag'}
-                            resetCategorgOrTag={() => this.setState({ tagLst: [] })}
-                        />
-                    </FormItem>
-
 
                     {
                         // 渲染周期选择期
