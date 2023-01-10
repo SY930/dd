@@ -470,7 +470,7 @@ class CreateCouponContent extends Component {
         if (type === 1) { // 支付宝
             if (entranceWords.length) { datas.entranceWords = entranceWords; }
             datas.brandLogo = brandLogo;
-            datas.brandName = brandName
+            datas.brandName = brandName.slice(0, 6)
         }
         if (type === 2) { // 微信
             datas.merchantID = this.state.WXMerchantID;
