@@ -77,9 +77,9 @@ class BenefitCardBargain extends Component {
     if (itemID) {
         getEvent({ itemID }).then((obj) => {
             const { data, gifts = [{}] } = obj;
-            const { eventStartDate: sd, eventEndDate: ed } = data
+            const { eventStartDate: sd, eventEndDate: ed, defaultCardType  } = data
            const eventRange = [moment(sd), moment(ed)];
-            this.setState({ formData: { ...data, eventRange, ...gifts[0] }, loading: false });
+            this.setState({ formData: { ...data, eventRange, ...gifts[0], defaultCardType: defaultCardType == '0' ? null : defaultCardType }, loading: false });
         });
     }
   }
