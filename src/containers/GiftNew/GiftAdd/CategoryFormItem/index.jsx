@@ -79,11 +79,13 @@ class CategoryFormItem extends React.Component {
             modalVisible: false,
         });
         this.getPhraseList();
-        const { phraseType, user: { groupID }} = this.props;
-        this.props.fetchPromotionTags({
-            groupID,
-            phraseType,
-        });
+        const { phraseType, user: { groupID } = {}} = this.props;
+        if(this.props && groupID){
+            this.props.fetchPromotionTags({
+                groupID,
+                phraseType,
+            });
+        }
     }
 
     onChange = (value) => {
@@ -153,7 +155,7 @@ class CategoryFormItem extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        user: state.user.get('accountInfo').toJS()
+        user: state.user && state.user.get('accountInfo').toJS()
     };
 }
 
