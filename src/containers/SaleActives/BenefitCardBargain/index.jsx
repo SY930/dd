@@ -108,6 +108,9 @@ class BenefitCardBargain extends Component {
           ..._.omit(values, ['eventName', 'eventCode', 'eventRange', 'eventRemark', 'defaultCardType', 'defaultCardType']),
           giftID }],
       }
+      if (!defaultCardType) {
+        delete allData.event.defaultCardType
+      }
       if (giftGetRuleValue >= presentValue) {
         message.warning('底价必须小于礼品卡售价')
         return

@@ -64,6 +64,8 @@ class ActiveRules extends Component {
   getSelectedRowKey = (formData, data, itemID) => {
     if (itemID) {
       const index = data.findIndex(item => formData.giftID === item.paymentStageID);
+      const { paymentStageID, realPrice, indexName } = data[index] || {};
+      this.props.onChangeGears({ giftID: paymentStageID, presentValue: realPrice, giftName: indexName })
       return [index]
     }
     // const { paymentStageID, realPrice, indexName } = data[0] || {};

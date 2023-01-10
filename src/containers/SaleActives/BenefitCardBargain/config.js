@@ -215,7 +215,6 @@ const formItems3 = {
   defaultCardType: {
     label: '新用户注册卡类',
     type: 'custom',
-    defaultValue: '',
 },
   cardTypeTips: {
     type: 'custom',
