@@ -11,7 +11,7 @@ const getAccountInfo = () => {
     }
 }
 
-export const zhouheiyaGroupID = ['11009', '341014', '296030', '316488','267440', '344602', '267579', '317528',
+export const zhouheiyaGroupID = ['11009', '341014', '296030', '316488','267440', '344602', '267579', '259613'
 //  '11280', //lianxujian(本地调试)
 ]; // 周黑鸭集团ID:344602  魏家：98072   周黑鸭测试集团：259613  魏家测试集团：11009  零售项目测试集团：267579  魏家正式集团ID：'317528'
 export const needApprovalGroupID = ['341014', '296030', '316488','267440', '344602'];
@@ -22,7 +22,7 @@ export const zhouheiyaMarketingtype = ['69', '88', '89', '90'];
 
 export const WJLPGroupID = ['259613', '317528', '11157'] // 针对魏家凉皮 促销活动管理列表 表头顺序 259613测试集团，线上待定
 
-export const SellGroupID = ['259613', '317528', '11157'] // 零售集团ID
+export const SellGroupID = ['259613', '317528', '11157', '267579'] // 零售集团ID
 
 export const priceRulsGroupID = ['259250', '49367', '11157', '189702']
 
