@@ -2272,7 +2272,7 @@ class MySpecialActivities extends React.Component {
             opt.brandID = promotionBrands;
         }
         if (promotionShop !== "" && promotionShop !== undefined) {
-            opt.applyShopIDList = [promotionShop];
+            // opt.applyShopIDList = [promotionShop];
         }
 
         if (isActive !== "") {
@@ -2471,8 +2471,8 @@ class MySpecialActivities extends React.Component {
             return (
                 <div className="layoutsSeniorQuery">
                     <ul>
-                        <li><h5>适用店铺</h5></li>
-                        <li>{this.renderShopsInTreeSelectMode()}</li>
+                        {/* <li><h5>适用店铺</h5></li>
+                        <li>{this.renderShopsInTreeSelectMode()}</li> */}
                         {/* <li><h5>统计类别</h5></li>
                         <li>
                             <Select
