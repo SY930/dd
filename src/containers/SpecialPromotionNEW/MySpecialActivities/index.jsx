@@ -951,6 +951,7 @@ class MySpecialActivities extends React.Component {
     // The filter condition should not be save to redux, just save it to state temporarily.
     // Modify it in the future
     componentWillReceiveProps(nextProps) {
+        // console.log('_TODO_111_nextProps', nextProps);
         if (
             this.props.user.activeTabKey !== nextProps.user.activeTabKey &&
             nextProps.user.activeTabKey === "1000076003"
@@ -2271,7 +2272,7 @@ class MySpecialActivities extends React.Component {
             opt.brandID = promotionBrands;
         }
         if (promotionShop !== "" && promotionShop !== undefined) {
-            opt.applyShopIDList = promotionShop;
+            opt.applyShopIDList = [promotionShop];
         }
 
         if (isActive !== "") {

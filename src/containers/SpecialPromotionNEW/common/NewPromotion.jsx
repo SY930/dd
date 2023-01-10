@@ -19,7 +19,8 @@ import { createMemberGroup } from '../sendGifts/stepThreeHelp'
 import { connect } from 'react-redux';
 //周黑鸭新增
 import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
-export default class NewPromotion extends React.Component {
+
+class NewPromotion extends React.Component {
     constructor(props) {
         super(props);
 
@@ -36,7 +37,6 @@ export default class NewPromotion extends React.Component {
         this.handleFinish = this.handleFinish.bind(this);
         this.onUpperLimitCancel = this.onUpperLimitCancel.bind(this)
     }
-
 
     // CustomProgressBar onFinish 事件回调，当表单校验无误会调用该事件
     async onFinish(cb, flag) {
@@ -298,6 +298,7 @@ export default class NewPromotion extends React.Component {
     }
 
     handleCancel(cb, index) {
+        console.log(99999999)
         this.props.callbacktwo(3);
         // this.props.clear();
     }
@@ -320,3 +321,6 @@ export default class NewPromotion extends React.Component {
         }
     }
 }
+
+export default NewPromotion;
+

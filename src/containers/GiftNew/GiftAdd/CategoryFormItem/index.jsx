@@ -5,6 +5,10 @@ import styles from "./style.less";
 import NewAddCategorys from "./NewAddCategorys";
 import { axiosData } from 'helpers/util';
 import _ from "lodash";
+import { connect } from "react-redux";
+import {
+    fetchPromotionTagsAC,
+} from "../../../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
 
 const Option = Select.Option;
 
@@ -75,6 +79,11 @@ class CategoryFormItem extends React.Component {
             modalVisible: false,
         });
         this.getPhraseList();
+        const { phraseType, user: { groupID }} = this.props;
+        this.props.fetchPromotionTags({
+            groupID,
+            phraseType,
+        });
     }
 
     onChange = (value) => {
@@ -141,5 +150,18 @@ class CategoryFormItem extends React.Component {
     }
 }
 
-export default CategoryFormItem;
+
+function mapStateToProps(state) {
+    return {
+        user: state.user.get('accountInfo').toJS()
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        fetchPromotionTags: (opts, params) => dispatch(fetchPromotionTagsAC(opts, params)),
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryFormItem);
 
