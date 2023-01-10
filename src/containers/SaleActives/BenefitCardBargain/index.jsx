@@ -61,7 +61,15 @@ class BenefitCardBargain extends Component {
         itemID: itemID && itemID,
       },
     }
-    queryActiveList(params).then((dataSource) => {})
+    queryActiveList(params).then((dataSource) => {
+      let GearData = [];
+       dataSource.map((item) => {
+        GearData = GearData.concat(item.giftInfoList)
+      })
+      this.setState({
+        gearData: GearData,
+      })
+    })
   }
 
   getEventDetail() {
@@ -84,6 +92,10 @@ class BenefitCardBargain extends Component {
     asyncParseForm(forms).then(({ values, error }) => {
       if (error) return;
       // console.log(values, 'values')
+      if (!giftID) {
+        message.warning('请选择权益卡档位')
+        return
+      }
       const { eventName, eventCode, eventRange, eventRemark, defaultCardType, giftGetRuleValue } = values;
       const newEventRange = formatEventRange(eventRange);
       const allData = {
@@ -123,7 +135,7 @@ class BenefitCardBargain extends Component {
   }
 
   render() {
-    const { loading, formData } = this.state;
+    const { loading, formData, gearData } = this.state;
     const { isView, itemID } = this.props
 
     return (
@@ -156,6 +168,7 @@ class BenefitCardBargain extends Component {
                 onChangeGears={this.onChangeGears}
                 key="ActiveRules_1"
                 itemID={itemID}
+                gearData={gearData}
              />
               <div
                   style={{

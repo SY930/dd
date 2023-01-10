@@ -66,9 +66,9 @@ class ActiveRules extends Component {
       const index = data.findIndex(item => formData.giftID === item.paymentStageID);
       return [index]
     }
-    const { paymentStageID, realPrice, indexName } = data[0] || {};
-    this.props.onChangeGears({ giftID: paymentStageID, presentValue: realPrice, giftName: indexName })
-    return [0]
+    // const { paymentStageID, realPrice, indexName } = data[0] || {};
+    // this.props.onChangeGears({ giftID: paymentStageID, presentValue: realPrice, giftName: indexName })
+    return []
   }
 
 
@@ -130,10 +130,10 @@ class ActiveRules extends Component {
               message: '请选择权益卡',
             },
           ],
-          onChange: this.onBenefitCardSelectChange
+          onChange: this.onBenefitCardSelectChange,
         })(<Select
           allowClear={true}
-          getPopupContainer={(node) => node.parentNode}
+          getPopupContainer={node => node.parentNode}
           showSearch={true}
           notFoundContent={'未搜索到结果'}
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -145,11 +145,12 @@ class ActiveRules extends Component {
   }
 
   renderGears = (d, form) => {
-    const { dataSource } = this.state
+    const { dataSource } = this.state;
+    const { gearData } = this.props
     return (
       <div>
         {d({
-          key: 'giftID'
+          key: 'giftID',
         })(
           <Table
             bordered={true}
@@ -161,6 +162,9 @@ class ActiveRules extends Component {
               type: 'radio',
               // getCheckboxProps: record => ({ defaultChecked: record.isBind === true }),
               selectedRowKeys: this.state.selectedRowKeys,
+              getCheckboxProps: record => ({
+                disabled: gearData.some(item => item.giftID === record.paymentStageID),
+              }),
             }}
           />
         )}
