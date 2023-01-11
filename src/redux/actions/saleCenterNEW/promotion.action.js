@@ -166,11 +166,12 @@ export const fetchPromotionDetail = (opts) => {
             '/promotion/docPromotionService_queryDetail.ajax',
             opts.data,
             {},
-            {path: 'data'},
+            {path: ''},
             'HTTP_SERVICE_URL_PROMOTION_NEW'
-        ).then((result) => {
+        ).then((record) => {
+            const { data: result , promotionVersion } = record;
             let res = {...result};
-            res.data = { promotionInfo: result.promotionInfo };
+            res.data = { promotionInfo: result.promotionInfo, promotionVersion };
             try {
                 if (opts.success !== undefined && typeof opts.success === 'function') {
                     opts.success(res.data);

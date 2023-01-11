@@ -196,7 +196,7 @@ class AddGrade extends React.Component {
                                 this.setState({ maxFreeLimitType: val, maxFreeAmount: '' })
                                 this.props.onMaxFreeLimitTypeChange({ maxFreeLimitType: val, maxFreeAmount: '' })
                             }}
-                            value={this.state.maxFreeLimitType}
+                            value={String(this.state.maxFreeLimitType)}
                         >
                             <Option key={'0'} value={'0'}>不限制</Option>
                             <Option key={'1'} value={'1'}>限制</Option>
@@ -358,7 +358,7 @@ class AddGrade extends React.Component {
                                                     style={{ width: 40 }}
                                                     size="default"
                                                     placeholder=""
-                                                    value={this.state.countType}
+                                                    value={String(this.state.countType)}
                                                     onChange={(val) => {
                                                         this.setState({ countType: val })
                                                         this.props.onCountTypeChange(val)

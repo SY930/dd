@@ -45,6 +45,7 @@ class NewPromotion extends React.Component {
 
     onFinish(cb) {
         const { promotionBasicInfo, promotionScopeInfo, promotionDetailInfo, isOnline, isCopy } = this.props;
+        const menuIDs = promotionBasicInfo.get('menuID');
         const basicInfo = promotionBasicDataAdapter(promotionBasicInfo.get('$basicInfo').toJS(), true);
         const scopeInfo = promotionScopeInfoAdapter(promotionScopeInfo.get('$scopeInfo').toJS(), true);
         const _detailInfo = promotionDetailInfoAdapter(promotionDetailInfo.get('$promotionDetail').toJS(), true);
@@ -148,12 +149,11 @@ class NewPromotion extends React.Component {
                 estimatedSales: approval ? approval.estimatedSales : '',
                 activityRate: approval ? approval.activityRate : '',
                 auditRemark: approval ? approval.auditRemark : '',
-                headquartersCost: approval ? approval.headquartersCost : '',
-                storeAttribute: approval ? approval.storeAttribute : '',
+                headquartersCost: approval ? approval.headquartersCost : null,
+                storeAttribute: approval ? approval.storeAttribute : null,
                 // 魏家凉皮字段
                 executionRoleType: executionRoleType || 1,
                 shareType,
-
             },
             timeLst: opts.timeLst,
             priceLst: opts.priceLst,
@@ -172,9 +172,11 @@ class NewPromotion extends React.Component {
             ruleUseType,
             shopScopeList,
             requiredLst,
-            stageGoodsList
+            stageGoodsList,
         }
         if (this.props.isNew === false && !isCopy) {
+            const promotionVersion = promotionBasicInfo.getIn(['$basicInfo', 'promotionVersion']);
+            promotionInfo.master.sale_promotionVersion = promotionVersion ? '2.0' : '1.0'
             promotionInfo.master.promotionID = basicInfo.promotionID;
             this.props.updateNewPromotion({
                 data: { promotionInfo },
@@ -200,6 +202,14 @@ class NewPromotion extends React.Component {
                 },
             });
         } else {
+            const path = window.location.pathname.split('/') || [];
+            const pathMenuID = path[path.length - 1];
+            if(isCopy){
+                const promotionVersion = promotionBasicInfo.getIn(['$basicInfo', 'promotionVersion']);
+                promotionInfo.master.sale_promotionVersion = promotionVersion ? '2.0' : '1.0'
+            }else{
+                promotionInfo.master.sale_promotionVersion = menuIDs.includes(pathMenuID) ? '2.0' : '1.0';
+            }
             this.props.addNewPromotion({
                 data: { promotionInfo },
                 success: () => {

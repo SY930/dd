@@ -405,7 +405,7 @@ class NewAddGrade extends React.Component {
                                                     style={{ width: 40 }}
                                                     size="default"
                                                     placeholder=""
-                                                    value={this.state.countType}
+                                                    value={String(this.state.countType)}
                                                     onChange={(val) => {
                                                         this.setState({ countType: val })
                                                         this.props.onCountTypeChange(val)

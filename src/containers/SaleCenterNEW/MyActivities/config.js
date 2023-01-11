@@ -5,7 +5,7 @@ import { BASIC_LOOK_PROMOTION_QUERY,
 import { BASIC_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import Authority from '../../../components/common/Authority';
 import { isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian, isMine } from '../../../constants/projectHuatianConf';
-import { isZhouheiya, isGeneral, businessTypesList, WJLPGroupID } from '../../../constants/WhiteList';
+import { isZhouheiya, isGeneral, businessTypesList } from '../../../constants/WhiteList';
 import styles from '../ActivityPage.less';
 
 // 活动列表字段针对魏家重新排序
@@ -276,6 +276,16 @@ export const getWJLPCoulums = (_this) => {
         render: (t) => {
           return t == '0' ? '集团创建' : '门店创建';
         },
+      },
+      {
+        title: "业态",
+        className: "TableTxtCenter",
+        dataIndex: "promotionVersion",
+        key: "promotionVersion",
+        width: 80,
+        render: t => {
+            return t == "1.0" ? "餐饮" : t == '2.0' ? '零售' : '';
+        }
       },
       {
         title: 'BPM单号',

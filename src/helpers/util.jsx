@@ -9,6 +9,7 @@ import sensors from 'sa-sdk-javascript';
 import { getStore } from '@hualala/platform-base'
 
 import getApiConfig from './callserver';
+import { FoodMenuID, RetailMenuID } from '../constants/WhiteList'
 
 /* eslint-disable */
 /**
@@ -841,6 +842,21 @@ export const formatGoodsData = (goods, category) => {
         _goods,
         _category,
     }
+}
+export const getMenuID = () => {
+    const path = window.location.pathname.split('/') || [];
+    const pathMenuID = path[path.length - 1];
+    return pathMenuID
+}
+
+// 是否为零售促销活动页面
+export const isRetailMenuID = () => {
+    return RetailMenuID.includes(getMenuID())
+}
+
+
+export const isFoodMenuID = () => {
+    return FoodMenuID.includes(getMenuID())
 }
 /**
  *埋点自定义事件

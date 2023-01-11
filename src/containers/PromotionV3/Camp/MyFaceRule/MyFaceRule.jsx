@@ -22,7 +22,6 @@ const mapStateToProps = (state) => {
 }
 
 // const GROUPID_SHOW = ['130442', '11157', '189702'];
-// TODO: 合代码时把11157去掉
 const empty = [{ label: '无', value: '' }];
 const jumpApp = [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }]
 class MyFaceRule extends Component {

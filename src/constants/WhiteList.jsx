@@ -1,14 +1,17 @@
 
 import { getStore } from '@hualala/platform-base'
+import { isFoodMenuID, isRetailMenuID } from 'helpers/util';
 
 const getAccountInfo = () => {
+    const promotionBasicInfo = getStore().getState().sale_promotionBasicInfo_NEW;
     return { 
         groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']),
-        roleType: getStore().getState().user.getIn(['accountInfo', 'roleType'])
+        roleType: getStore().getState().user.getIn(['accountInfo', 'roleType']),
+        promotionVersion: promotionBasicInfo ? promotionBasicInfo.getIn(['$basicInfo', 'promotionVersion']) : '',
     }
 }
 
-export const zhouheiyaGroupID = ['11009', '341014', '296030', '316488','267440', '344602', '259613','267579', '317528'
+export const zhouheiyaGroupID = ['11009', '341014', '296030', '316488','267440', '344602', '267579'
 //  '11280', //lianxujian(本地调试)
 ]; // 周黑鸭集团ID:344602  魏家：98072   周黑鸭测试集团：259613  魏家测试集团：11009  零售项目测试集团：267579  魏家正式集团ID：'317528'
 export const needApprovalGroupID = ['341014', '296030', '316488','267440', '344602'];
@@ -17,7 +20,9 @@ export const isCheckApproval = needApprovalGroupID.includes(String(getAccountInf
 export const zhouheiyaPromotiontype = ['1060', '1070', '2020', '2010', '1030', '1050', '2050', '3010'];
 export const zhouheiyaMarketingtype = ['69', '88', '89', '90'];
 
-export const WJLPGroupID = ['259613', '317528'] // 针对魏家凉皮 促销活动管理列表 表头顺序 259613测试集团，线上待定
+export const WJLPGroupID = ['259613', '317528', '11157'] // 针对魏家凉皮 促销活动管理列表 表头顺序 259613测试集团，线上待定
+
+export const SellGroupID = ['259613', '317528', '11157', '267579'] // 零售集团ID
 
 export const priceRulsGroupID = ['259250', '49367', '11157', '189702']
 
@@ -35,7 +40,22 @@ export const businessTypesList = [
 // 是否周黑鸭集团
 export function isZhouheiya(groupID = getAccountInfo().groupID) {
     if (!groupID) return false;
-    return zhouheiyaGroupID.includes(String(groupID));
+    if (isFoodMenuID()) {
+        return false;
+    }
+    return zhouheiyaGroupID.includes(String(groupID)) || isRetailMenuID() || getAccountInfo().promotionVersion === '2.0';
+}
+
+// 是否魏家集团
+export function isWeijia(groupID = getAccountInfo().groupID) {
+    if (!groupID) return false;
+    return WJLPGroupID.includes(String(groupID));
+}
+
+// 促销列表零售商品筛选条件白名单
+export function isSellGroupID(groupID = getAccountInfo().groupID) {
+    if (!groupID) return false;
+    return SellGroupID.includes(String(groupID));
 }
 
 // 是否是集团经理角色
@@ -78,3 +98,9 @@ export function checkGoodsScopeListIsNotEmpty(goodsScopeList) {
     }
     return flag
 }
+
+// TODO: 增加线上ID——————————————
+export const RetailMenuID = ['2001431']; // 零售促销活动menuID
+
+
+export const FoodMenuID = ['2000450', '4140']; // 餐饮促销活动menuID 

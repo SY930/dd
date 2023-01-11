@@ -47,7 +47,7 @@ import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";
 import { injectIntl } from "../IntlDecor";
 import Card from "../../../assets/card.png";
 import CardSaleActive from "./CardSaleActive";
-import { isZhouheiya, isGeneral, businessTypesList, WJLPGroupID } from "../../../constants/WhiteList";
+import { isZhouheiya, isGeneral, WJLPGroupID, isWeijia, isSellGroupID } from "../../../constants/WhiteList";
 import GoodsRef from '@hualala/sc-goodsRef';
 import { getWJLPCoulums } from './config'
 
@@ -476,6 +476,7 @@ class MyActivities extends React.Component {
                 record,
                 nextActive,
                 modalTip,
+                sale_promotionVersion: record ? record.promotionVersion : '1.0',
                 cb: (val) => {
                     message.success(val);
                     this.handleQuery(this.state.pageNo);
@@ -487,6 +488,7 @@ class MyActivities extends React.Component {
                 record,
                 nextActive,
                 modalTip,
+                sale_promotionVersion: record ? record.promotionVersion : '1.0',
                 cb: () => {}
             });
         }
@@ -520,7 +522,8 @@ class MyActivities extends React.Component {
             shopID: record.shopID,
             promotionID: record.promotionIDStr,
             isActive: 2,
-            modifiedBy: getAccountInfo().userName
+            modifiedBy: getAccountInfo().userName,
+            sale_promotionVersion: record ? record.promotionVersion : '1.0',
         };
         return axiosData("/promotion/docPromotionService_setActive.ajax", params, {}, { path: "data" }, "HTTP_SERVICE_URL_PROMOTION_NEW")
             .then(() => {
@@ -628,7 +631,7 @@ class MyActivities extends React.Component {
         }
     }
     getParams = () => {
-        const { promotionType, promotionDateRange, promotionValid, promotionState, promotionCategory, promotionTags, promotionBrands, promotionOrder, channelLst, promotionShop, promotionName, promotionCode, auditStatus, selectedGoods = [], applyShopIds = []} = this.state;
+        const { promotionType, promotionDateRange, promotionValid, promotionState, promotionCategory, promotionTags, promotionBrands, promotionOrder, channelLst, promotionShop, promotionName, promotionCode, auditStatus, selectedGoods = [], applyShopIds = [], promotionVersion } = this.state;
         const opt = {};
         if (promotionType !== "" && promotionType !== undefined && promotionType !== "undefined") {
             opt.promotionType = promotionType;
@@ -670,15 +673,18 @@ class MyActivities extends React.Component {
         if (auditStatus !== '' && auditStatus !== undefined) {
             opt.auditStatus = auditStatus;
         }
+        if (promotionVersion !== "" && promotionVersion !== undefined) {
+            opt.promotionVersion = promotionVersion;
+        }
         opt.groupID = this.props.user.accountInfo.groupID;
         opt.accountID = this.props.user.accountInfo.accountID;
         opt.sourceType = +this.isOnlinePromotionPage();
-        if (isZhouheiya(opt.groupID) && selectedGoods.length > 0){
+        if (isSellGroupID(opt.groupID) && selectedGoods.length > 0){
             opt.applyGoodsList = selectedGoods.map(item => {
                 return { goodsID: item.goodsID, categoryOneID: item.categoryOneID, categoryTwoID: item.categoryTwoID, categoryID: item.categoryID}
             })
         }
-        if (isZhouheiya(opt.groupID) && applyShopIds.length > 0){
+        if (isSellGroupID(opt.groupID) && applyShopIds.length > 0){
             opt.applyShopIdList = applyShopIds
         }
         return opt;
@@ -883,7 +889,8 @@ class MyActivities extends React.Component {
             this.props.fetchFoodMenuInfo({ ...opts }, isHuaTian(), responseJSON.promotionInfo.master.subGroupID);
         }
         // 把查询到的活动信息存到redux
-        this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
+        // TODO: 添加promotionVersion
+        this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux, responseJSON.promotionVersion));
         this.props.saleCenterResetScopeInfo(promotionScopeInfoAdapter(responseJSON.promotionInfo.master, _serverToRedux));
         this.props.saleCenterResetDetailInfo(promotionDetailInfoAdapter(responseJSON.promotionInfo, _serverToRedux));
         this.setState({
@@ -922,7 +929,8 @@ class MyActivities extends React.Component {
         this.props.fetchPromotionDetail_NEW({
             data: {
                 promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
-                groupID: this.props.user.accountInfo.groupID
+                groupID: this.props.user.accountInfo.groupID,
+                sale_promotionVersion: _record ? _record.promotionVersion : '1.0'
             },
             success: this.successFn,
             fail: this.failFn
@@ -1070,7 +1078,8 @@ class MyActivities extends React.Component {
         this.props.fetchPromotionDetail_NEW({
             data: {
                 promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
-                groupID: this.props.user.accountInfo.groupID
+                groupID: this.props.user.accountInfo.groupID,
+                sale_promotionVersion:  _record ? _record.sale_promotionVersion : '1.0'
             },
             fail: this.failFn
         });
@@ -1428,11 +1437,24 @@ class MyActivities extends React.Component {
             </Modal>
         );
     };
+
+    renderTitle = () => {
+        return <div style={{display:'flex',alignItems:'center',marginRight:20}}><span style={{marginRight:20}}>批量导入活动</span><div style={{
+            backgroundColor: '#fefbe6',
+            border: '1px solid #f7e5ba',
+            borderRadius: '3px',
+            height: 30,
+            lineHeight: '30px',
+            fontSize:'14px',
+            width:'200px'
+        }}><Icon style={{ fontSize: 12, color: '#ffa22a', margin: '0 10px' }} type="exclamation-circle" />仅支持零售满减活动导入</div></div>
+    }
+
     renderImportActiveModal = () => {
         return (
             <Modal
             wrapClassName={styles.importActiveModal}
-            title={'批量导入活动'}
+            title={this.renderTitle()}
             visible={this.state.activeImportVisible}
             width={600}
             maskClosable={false}
@@ -1518,7 +1540,7 @@ class MyActivities extends React.Component {
                     )}
                     {!isHuaTian() && !this.isOnlinePromotionPage() && (
                         <Authority rightCode={AUTO_RUN_QUERY}>
-                            <Button onClick={() => this.setRunDataList()} icon="plus" className={styles.customPrimaryButton}>
+                            <Button type="ghost" onClick={() => this.setRunDataList()} icon="plus" style={{ marginRight: 10 }}>
                                 执行顺序（原自动执行）
                             </Button>
                         </Authority>
@@ -1578,7 +1600,11 @@ class MyActivities extends React.Component {
         return (
             <GoodsSelector
                 defaultValue={selectedGoods}
-                businessTypesList={businessTypesList}
+                businessTypesList={[{
+                    biz: 'ris',
+                    bizName: '零售',
+                    isDefault: true,
+                }]}
                 visible={this.state.selectGoodsVisible}
                 onCancel={() => {
                     this.setState({
@@ -1657,7 +1683,7 @@ class MyActivities extends React.Component {
         const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
         const k5dlpczr = intl.formatMessage(SALE_STRING.k5dlpczr);
         const l88f03b4 = intl.formatMessage(SALE_STRING.l88f03b4);
-        
+        const { promotionVersion = '' } = this.state
         return (
             <div>
                  <div className={`${styles.searchBox} layoutsSearch`} >
@@ -1796,6 +1822,31 @@ class MyActivities extends React.Component {
                         </li>
                         }
                         <li>
+                            <h5>业态</h5>
+                        </li>
+                        <li>
+                            <Select
+                                style={{ width: 80 }}
+                                defaultValue=""
+                                value={promotionVersion}
+                                onChange={(value) => {
+                                    this.setState({
+                                        promotionVersion: value,
+                                    });
+                                }}
+                            >
+                                <Option value={""}>
+                                    全部
+                                </Option>
+                                <Option value={"1.0"}>
+                                    餐饮
+                                </Option>
+                                <Option value={"2.0"}>
+                                    零售
+                                </Option>
+                            </Select>
+                        </li>
+                        <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}>
                                     <Icon type="search" />
@@ -1809,7 +1860,7 @@ class MyActivities extends React.Component {
                             </a>
                         </li>
                     </ul>
-                    {isZhouheiya(accountInfo.groupID) && <p>
+                    {isWeijia(accountInfo.groupID) && <p>
                         <Button type="primary" onClick={() => { this.setState({ activeImportVisible: true }) }} >导入活动</Button>
                     </p>}
 
@@ -1846,17 +1897,17 @@ class MyActivities extends React.Component {
             return (
                 <div className="layoutsSeniorQuery">
                     <ul>
-                        {isZhouheiya(accountInfo.groupID) && <li>
+                        {isSellGroupID(accountInfo.groupID) && <li>
                             <h5>零售商品</h5>
                         </li>}
-                        {isZhouheiya(accountInfo.groupID) && <li>
+                        {isSellGroupID(accountInfo.groupID) && <li>
                             {this.renderGoodsInTreeSelectMode()}
                         </li>}
                         <li>
                             <h5>{SALE_LABEL.k5dlggak}</h5>
                         </li>
                         <li>{
-                            isZhouheiya(accountInfo.groupID) ? this.renderWJShopsTreeSelectMode() :   this.renderShopsInTreeSelectMode()
+                            isWeijia(accountInfo.groupID) ? this.renderWJShopsTreeSelectMode() :   this.renderShopsInTreeSelectMode()
                         }</li>
                         <li>
                             <h5>{SALE_LABEL.k5dljb1v}</h5>
@@ -2019,7 +2070,7 @@ class MyActivities extends React.Component {
 
     renderCoulums = (originCoulums) => {
         const { user: { accountInfo }} = this.props
-        if (WJLPGroupID.includes(`${accountInfo.groupID}`)) {
+        if (isWeijia(accountInfo.groupID)) {
             return getWJLPCoulums(this)
         }
         return originCoulums
@@ -2086,7 +2137,7 @@ class MyActivities extends React.Component {
                                             }
                                             this.handleEditActive(record)(() => {
                                                 this.props.toggleIsUpdate(true);
-						                                                                                if(!isGeneral(this.props.user.accountInfo.roleType) && (record.auditStatus == 2 || record.auditStatus == 4) && isZhouheiya(this.props.user.accountInfo.groupID)) {
+                                                    if(!isGeneral(this.props.user.accountInfo.roleType) && (record.auditStatus == 2 || record.auditStatus == 4) && isZhouheiya(this.props.user.accountInfo.groupID)) {
                                                         this.setState({ onlyModifyShop: true });
                                                         this.props.saleCenterSetPromotionDetailOnlyModifyShop(true);
                                                     }
@@ -2265,6 +2316,16 @@ class MyActivities extends React.Component {
                 }
             },
             {
+                title: "业态",
+                className: "TableTxtCenter",
+                dataIndex: "promotionVersion",
+                key: "promotionVersion",
+                width: 80,
+                render: t => {
+                    return t == "1.0" ? "餐饮" : t == '2.0' ? '零售' : '';
+                }
+            },
+            {
                 title: "活动状态",
                 className: "TableTxtCenter",
                 dataIndex: "status",
@@ -2325,30 +2386,6 @@ class MyActivities extends React.Component {
                 },
             })
         }
-        if(isZhouheiya(this.props.user.accountInfo.groupID)){
-            columns.splice(13, 0,{
-                title: '适用商品',
-                className: 'TableTxtCenter',
-                dataIndex: 'applyGoodsName',
-                key: 'applyGoodsName',
-                width: 160,
-                render:  (text) => {
-                    const t = text
-                    return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
-                }
-            },
-            {
-                title: '适用店铺',
-                className: 'TableTxtCenter',
-                dataIndex: 'shopIDLst',
-                key: 'shopIDLst',
-                width: 160,
-                render:  (text) => {
-                    const t = text
-                    return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
-                }
-            })
-         }
 
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>
