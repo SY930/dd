@@ -4,6 +4,7 @@ import DateRange from "../../PromotionV3/Camp/DateRange";
 import Advance from "../../PromotionV3/Camp/Advance";
 import DateTag from "../../PromotionV3/Camp/DateTag";
 import TimeRange from "../../PromotionV3/Camp/TimeRange";
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 export const formItemLayout = {
     labelCol: { span: 5 },
@@ -130,6 +131,18 @@ export const baseFormItems = {
         placeholder: "请输入活动说明，最多1000个字符",
         rules: ["description2", { max: "1000", message: "不能超过1000个字符" }],
     },
+    tagLst: {
+        label: '标签',
+        type: 'custom',
+        render: (d, form) => d()(
+            <CategoryFormItem 
+                decorator={d}
+                form={form}
+                key='tagLst'
+                phraseType='2'
+            />
+        ),
+    }
 };
 
 export const ruleFormItem = {
@@ -306,6 +319,7 @@ export const baseFormKeys = [
     "eventType",
     "eventName",
     "eventCode",
+    'tagLst',
     "giftSendType",
     "enterPositionList",
     "autoRegister",

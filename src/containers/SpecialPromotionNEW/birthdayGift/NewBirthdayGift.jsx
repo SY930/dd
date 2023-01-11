@@ -18,8 +18,6 @@ import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo';
 import StepTwo from './stepTwo';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
-
-
 @injectIntl
 class NewBirthdayGift extends NewPromotion {
     constructor(props) {

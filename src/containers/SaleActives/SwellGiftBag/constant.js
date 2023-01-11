@@ -9,6 +9,7 @@ const {
     partInTimes,
     defaultCardType,
     eventCode,
+    tagLst,
 } = formItem;
 export const formItems1 = {
     actType: {
@@ -21,12 +22,15 @@ export const formItems1 = {
     eventCode,
     eventLimitDate,
     eventRemark,
+    tagLst
 };
 
+// _TODO
 export const formKeys1 = [
     'actType',
     'eventName',
     'eventCode',
+    'tagLst',
     'eventLimitDate',
     'eventRemark',
 ];

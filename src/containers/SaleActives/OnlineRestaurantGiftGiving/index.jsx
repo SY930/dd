@@ -155,6 +155,9 @@ class OnlineRestaurantGiftGiving extends Component {
         if (this.state.ruleForm) {
             this.state.ruleForm.setFieldsValue({ gifts: formData.gifts });
         }
+        if(formData.tagLst){
+            formData.tagLst = formData.tagLst.split(',');
+        }
         return formData;
     };
 
@@ -212,6 +215,7 @@ class OnlineRestaurantGiftGiving extends Component {
             countCycleDays: values.countCycleDays,
             autoRegister:
                 values.autoRegister != undefined ? values.autoRegister : 1,
+            tagLst: Array.isArray(values.tagLst) ? values.tagLst.join(',') : '',
         };
         let params = {
             event,

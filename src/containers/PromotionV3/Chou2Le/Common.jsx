@@ -4,6 +4,7 @@ import DateRange from '../Camp/DateRange';
 import DateTag from '../Camp/DateTag';
 import TimeRange from '../Camp/TimeRange';
 import Advance from '../Camp/Advance';
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 const imgURI = 'http://res.hualala.com/';
 const href = 'javascript:;';
@@ -103,12 +104,24 @@ const formItems1 = {
         render: d => d()(<DateTag />),
         defaultValue: [],
     },
+    tagLst: {
+        label: '标签',
+        type: 'custom',
+        render: (d, form) => d()(
+            <CategoryFormItem 
+                decorator={d}
+                form={form}
+                key='tagLst'
+                phraseType='2'
+            />
+        ),
+    }
 };
 // eventRange
 // "eventEndDate": "20220610",
 // "eventStartDate": "20200522",
 // excludedDate "20200522"
-const KEY1 = ['eventType', 'eventName', 'eventCode', 'smsGate', 'eventRange', 'advMore'];
+const KEY1 = ['eventType', 'eventName', 'eventCode', 'tagLst', 'smsGate', 'eventRange', 'advMore'];
 const KEY2 = ['eventRemark'];
 const KEY3 = ['timeList', 'cycleType'];
 const KEY4 = ['validCycle'];

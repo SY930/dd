@@ -13,8 +13,14 @@ class Step1 extends Component {
     };
 
     onChange = (key, value) => {
-        const { form, formData } = this.props;
-        
+        if(key == 'tagLst'){
+            if(this.props.form){
+                const { setFieldsValue } = this.props.form;
+                setFieldsValue({
+                    tagLst: value
+                })
+            }
+        }
     }
     
 

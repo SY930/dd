@@ -195,5 +195,9 @@ export const formItem = {
     defaultCardType: {
         type: 'custom',
         label: '',
+    },
+    tagLst: {
+        type: 'custom',
+        label: '标签',
     }
 }

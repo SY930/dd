@@ -133,7 +133,16 @@ class BasicInfoForm extends Component {
         });
     };
 
-    onChangeBasicForm = (key, value) => {};
+    onChangeBasicForm = (key, value) => {
+        if(key == 'tagLst'){
+            if(this.props.basicForm){
+                const { setFieldsValue } = this.props.basicForm;
+                setFieldsValue({
+                    tagLst: value
+                })
+            }
+        }
+    };
 
     resetFormItems = () => {
         const { shopIDList, cardTypeIDList } = baseFormItems;

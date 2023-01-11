@@ -67,8 +67,8 @@ export default class TicketBag extends Component {
     }
     /* 生成表格数据 */
     generateDataSource() {
-        const { list } = this.state;
-        return list.map((x, i) => ({
+        const { list = [] } = this.state;
+        return list.filter(item => item).map((x, i) => ({
             key: x.couponPackageID,
             type: typeMap[x.couponPackageType],
             ...x,

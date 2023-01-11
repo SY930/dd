@@ -259,7 +259,7 @@ class PromotionIndex extends Component {
                 clonedEvent.hasMutexDepend = event.hasMutexDepend ? 1 : 0
                 delete clonedEvent.NoShareBenifit;
                 delete clonedEvent.treeSelect;
-                const { eventRange, hasMutexDepend, mutexDependType, joinCount, countCycleDays, partInTimes2, partInTimes3, orderTypeList, brandList, activityRange } = clonedEvent;
+                const { eventRange, hasMutexDepend, mutexDependType, joinCount, countCycleDays, partInTimes2, partInTimes3, orderTypeList, brandList, activityRange, tagLst } = clonedEvent;
                 if (joinCount == 1) {
                     delete clonedEvent.countCycleDays;
                 } else if (joinCount == 2) {
@@ -358,6 +358,7 @@ class PromotionIndex extends Component {
                 }
                 delete clonedEvent.activityRange;
                 clonedEvent.foodScopeList = foodScopeList;
+                clonedEvent.tagLst = Array.isArray(tagLst) ? tagLst.join(',') : '';
                 delete clonedEvent.mutexDependType;
                 delete clonedEvent.cardScopeType;
                 requestPramas.eventGiftConditionList = eventGiftConditionList;

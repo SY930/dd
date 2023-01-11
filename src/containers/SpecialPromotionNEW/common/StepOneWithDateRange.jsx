@@ -45,6 +45,7 @@ import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 import TimeRange from "containers/PromotionV3/Camp/TimeRange/index";
 import _ from 'lodash';
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 const CheckboxGroup = Checkbox.Group;
 const moment = require('moment');
@@ -239,7 +240,7 @@ class StepOneWithDateRange extends React.Component {
             data: opts,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        const { eventStartDate, eventEndDate } = specialPromotion
+        const { eventStartDate, eventEndDate, tagLst } = specialPromotion
         this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
         if ((this.props.type === '31' || this.props.type === '68') && this.props.specialPromotion.getIn(['$eventInfo', 'itemID'])) {
             const itemID = specialPromotion.itemID;
@@ -259,6 +260,7 @@ class StepOneWithDateRange extends React.Component {
                 description: specialPromotion.eventRemark || this.state.description,
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 dateRange: this.props.isCopy ? Array(2) : [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')],
+                tagLst: tagLst ? tagLst.split(',') : []
             })
         } else {
             this.setState({
@@ -268,6 +270,7 @@ class StepOneWithDateRange extends React.Component {
                 name: specialPromotion.eventName || this.state.name,
                 eventCode: isCopy ? this.initEventCode : specialPromotion.eventCode || this.state.eventCode,
                 description: specialPromotion.eventRemark || this.state.description,
+                tagLst: tagLst ? tagLst.split(',') : []
             })
         }
         // 群发短信以及其它可发短信的活动，要查权益账户和短信签名
@@ -389,6 +392,22 @@ class StepOneWithDateRange extends React.Component {
         //         tagList,
         //     });
         // }
+
+        if (nextProps.promotionBasicInfo.getIn(["$tagList", "initialized"])) {
+            const tagList = nextProps.promotionBasicInfo.getIn([
+                "$tagList",
+                "data",
+            ])
+                ? nextProps.promotionBasicInfo
+                      .getIn(["$tagList", "data"])
+                      .toJS()
+                      .map((item) => item.name)
+                : [];
+            this.setState({
+                tagList,
+            });
+        }
+        
         if (TimeRangeEnabledTypes.includes(this.props.type)) {
             let isLoadingWeChatOccupiedInfo = this.state.isLoadingWeChatOccupiedInfo;
             let isAllWeChatIDOccupied = this.state.isAllWeChatIDOccupied;
@@ -467,6 +486,7 @@ class StepOneWithDateRange extends React.Component {
             this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d5g391i90j344)}`)
         }
         if (nextFlag) {
+            let tagLst = this.state.tagLst.join(',');
             if (this.props.type == '53' || this.props.type == '50') {
                 this.props.setSpecialBasicInfo({
                     startTime: this.state.startTime + this.state.timeString || '',
@@ -475,6 +495,7 @@ class StepOneWithDateRange extends React.Component {
                     eventRemark: this.state.description,
                     smsGate: this.state.smsGate,
                     signID: this.state.signID,
+                    tagLst,
                 })
             } else if (this.props.type == '61' || this.props.type == '62') {
                 this.props.setSpecialBasicInfo({
@@ -485,6 +506,7 @@ class StepOneWithDateRange extends React.Component {
                     eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                     signID: this.state.signID,
+                    tagLst,
                 });
             } else if( this.props.type == '60') {
                 const eventStartDate =  actStartDate[0] ? actStartDate[0].format('YYYYMMDD') : '';
@@ -498,6 +520,7 @@ class StepOneWithDateRange extends React.Component {
                     eventEndDate ,
                     smsGate: this.state.smsGate,
                     signID: this.state.signID,
+                    tagLst,
                 })
 
             } else  {
@@ -509,6 +532,7 @@ class StepOneWithDateRange extends React.Component {
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                     smsGate: this.state.smsGate,
                     signID: this.state.signID,
+                    tagLst,
                 })
             }
             if (ATSEnabledTypes.includes(`${this.props.type}`)) {
@@ -1187,6 +1211,11 @@ class StepOneWithDateRange extends React.Component {
         return result;
     }
 
+    changeCategoryFormItem = (value) => {
+        this.setState({
+            tagLst: value
+        })
+    }
 
     render() {
         const categorys = this.props.saleCenter.get('characteristicCategories').toJS();
@@ -1394,6 +1423,7 @@ class StepOneWithDateRange extends React.Component {
                             />
                         )}
                     </FormItem>
+                    {/* _TODO */}
 		    {
                         ['69', '89', '88'].includes(this.props.type) && 
                         <FormItem label='活动编码' className={styles.FormItemStyle} {...formItemLayout}>
@@ -1419,61 +1449,47 @@ class StepOneWithDateRange extends React.Component {
                             )}
                         </FormItem>
                     }
-		    {!['69', '89', '88'].includes(this.props.type) && 
+                    {/* _TODO */}
+                    {!['69', '89', '88'].includes(this.props.type) && 
+                            <FormItem
+                                label={<span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                {getFieldDecorator('eventCode', {
+                                    rules: [{
+                                        whitespace: true,
+                                        message: "字母、数字组成，不多于50个字符",
+                                        pattern: /^[A-Za-z0-9]{1,50}$/,
+                                    }],
+                                    initialValue: this.state.eventCode,
+                                })(
+                                        <Input
+                                            // disabled={this.props.isUpdate && this.props.isCopy === false}
+                                            placeholder='请输入编码名称'
+                                            onChange={this.handleEventCodeChange}
+                                        />
+                                )}
+                            </FormItem>
+                    }
+
                     <FormItem
-                        label={<span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>}
+                        label={<span>标签管理</span>}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
-                        {getFieldDecorator('eventCode', {
-                            rules: [{
-                                whitespace: true,
-                                message: "字母、数字组成，不多于50个字符",
-                                pattern: /^[A-Za-z0-9]{1,50}$/,
-                            }],
-                            initialValue: this.state.eventCode,
+                        {getFieldDecorator('tagLst', {
+                            initialValue: this.state.tagLst,
                         })(
-                                <Input
-                                    // disabled={this.props.isUpdate && this.props.isCopy === false}
-                                    placeholder='请输入编码名称'
-                                    onChange={this.handleEventCodeChange}
-                                />
+                            <CategoryFormItem
+                                phraseType='2'
+                                onChange={this.changeCategoryFormItem}
+                                selectedPhrases={this.state.tagLst}
+                            />
                         )}
                     </FormItem>
-		    }
-
-                    {/* <FormItem
-                        label='标签'
-                        className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
-                    >
-                        <Select
-                            allowClear={true}
-                            showSearch
-                            optionFilterProp="children"
-                            multiple
-                            className={styles.linkSelectorRight}
-                            onChange={(tagLst) => this.setState({ tagLst })}
-                            getPopupContainer={(node) => node.parentNode}
-                            value={this.state.tagLst}
-                            size="default"
-                            dropdownClassName={`${styles.dropdown}`}
-                        >
-                            {
-                                (this.state.tagList || [])
-                                    .map((tag, index) => {
-                                        return ( <Option value={tag} key={tag}>{tag}</Option>)
-                                    })
-                            }
-                        </Select>
-                        <AddCategorys
-                            catOrtag={'tag'}
-                            resetCategorgOrTag={() => this.setState({ tagLst: [] })}
-                        />
-                    </FormItem> */}
-
 
                     {
                         // 渲染周期选择期

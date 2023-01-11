@@ -31,12 +31,13 @@ import { STRING_SPE } from 'i18n/common/special';
 import moment from 'moment'
 import { setSensorsData } from '../../../helpers/util';
 import SensorsCodes from "../../../constants/SensorsCodes";
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const { RangePicker } = DatePicker;
 const format = 'YYYYMMDD'
-
 
 // 起止日期
 const showActDataType = ['51', '52']
@@ -88,7 +89,7 @@ class PromotionBasicInfo extends React.Component {
             description: eventRemark,
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: eventName,
-            // tagLst: tagLst ? tagLst.split(',') : [],
+            tagLst: tagLst ? tagLst.split(',') : [],
             eventCode: this.props.isView ? eventCode : eventCode ? eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`,
             // categoryName,
             involvementGiftAdvanceDays: involvementGiftAdvanceDays || 0,
@@ -156,7 +157,6 @@ class PromotionBasicInfo extends React.Component {
                 const { actDate } = this.state
 
                 // save state to redux
-
                 if (nextFlag) {
                     this.props.setSpecialBasicInfo({
                         giftAdvanceDays: this.state.advanceDays,
@@ -164,7 +164,7 @@ class PromotionBasicInfo extends React.Component {
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
                         eventCode: this.state.eventCode,
-                        // tagLst: this.state.tagLst.join(','),
+                        tagLst: Array.isArray(this.state.tagLst) ? this.state.tagLst.join(',') : '',
                         // categoryName: this.state.categoryName,
                         signID: this.state.signID,
                         eventStartDate: actDate[0] && moment(actDate[0]).format(format),
@@ -198,7 +198,7 @@ class PromotionBasicInfo extends React.Component {
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
                         eventCode: this.state.eventCode,
-                        // tagLst: this.state.tagLst.join(','),
+                        tagLst: Array.isArray(this.state.tagLst) ? this.state.tagLst.join(',') : '',
                         // categoryName: this.state.categoryName,
                         signID: this.state.signID,
                         eventStartDate: actDate[0] && moment(actDate[0]).format(format),
@@ -427,6 +427,13 @@ class PromotionBasicInfo extends React.Component {
         return actDate[1]
             .diff(actDate[0], 'days') + 1;
     }
+
+    changeCategoryFormItem = (value) => {
+        this.setState({
+            tagLst: value
+        })
+    }
+
     render() {
         // TODO:编码不能重复
         const { getFieldDecorator } = this.props.form;
@@ -507,36 +514,22 @@ class PromotionBasicInfo extends React.Component {
                     )}
                 </FormItem>
 
-                {/* <FormItem
-                    label='标签'
+                <FormItem
+                    label={<span>标签管理</span>}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <Select
-                        allowClear={true}
-                        showSearch
-                        optionFilterProp="children"
-                        multiple
-                        className={styles.linkSelectorRight}
-                        onChange={(tagLst) => this.setState({ tagLst })}
-                        getPopupContainer={(node) => node.parentNode}
-                        value={this.state.tagLst}
-                        size="default"
-                        dropdownClassName={`${styles.dropdown}`}
-                    >
-                        {
-                            (this.state.tagList || [])
-                                .map((tag, index) => {
-                                    return ( <Option value={tag} key={tag}>{tag}</Option>)
-                                })
-                        }
-                    </Select>
-                    <AddCategorys
-                        catOrtag={'tag'}
-                        resetCategorgOrTag={() => this.setState({ tagLst: [] })}
-                    />
-                </FormItem> */}
+                    {getFieldDecorator('tagLst', {
+                        initialValue: this.state.tagLst,
+                    })(
+                        <CategoryFormItem
+                            phraseType='2'
+                            onChange={this.changeCategoryFormItem}
+                            selectedPhrases={this.state.tagLst}
+                        />
+                    )}
+                </FormItem>
 
                 {showActDataType.includes(this.props.type) ? this.renderPeriodSelector() : null}
 

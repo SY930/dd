@@ -59,13 +59,13 @@ class PayHaveGift extends React.Component {
 
         if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
             const { formData, type } = this.props.createActiveCom
-            const { eventDate } = formData
+            const { eventDate } = formData;
             this.props.dispatch({
                 type: 'createActiveCom/getExcludeEventList',
                 payload: {
                     eventStartDate: moment(eventDate[0]).format(format),
                     eventEndDate: moment(eventDate[1]).format(format),
-                    eventWay: type
+                    eventWay: type,
                 }
             }).then(res => {
                 if(res) {

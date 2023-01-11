@@ -74,6 +74,9 @@ class SeckillInLimitedTime extends Component {
                 endTime = data.eventEndDate + '0000';
             }
         }
+        if(data.tagLst){
+            data.tagLst = data.tagLst.split(',');
+        }
         let formData = {
             ...data,
             eventRange:
@@ -125,7 +128,8 @@ class SeckillInLimitedTime extends Component {
             settleUnitID: values.settleUnitID,
             cardTypeID: values.cardTypeID,
             eventCode: values.eventCode,
-            participateRule: 2
+            participateRule: 2,
+            tagLst: Array.isArray(values.tagLst) ? values.tagLst.join(',') : '',
         };
         let params = {
             event,

@@ -6,7 +6,7 @@ import { TreeSelect } from 'antd';
 const {
     actType, eventName, eventRemark, eventLimitDate,
     consumeGiftID,afterPayJumpType, miniProgramInfo, 
-    eventDate,shopIDList,smsGate, eventCode
+    eventDate,shopIDList,smsGate, eventCode, tagLst
 } = formItem
 export const formItems1 = {
     actType: {
@@ -26,13 +26,15 @@ export const formItems1 = {
     eventLimitDate,
     shopIDList,
     eventRemark,
-    smsGate
+    smsGate,
+    tagLst
 };
 
 export const formKeys1 = [
     'actType',
     'eventName',
     'eventCode',
+    'tagLst',
     'eventLimitDate',
     'shopIDList',
     'eventRemark',

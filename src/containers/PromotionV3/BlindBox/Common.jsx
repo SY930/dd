@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tooltip, Icon } from 'antd'
 import DateRange from '../Camp/DateRange';
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 const imgURI = 'http://res.hualala.com/';
 const href = 'javascript:;';
@@ -60,9 +61,21 @@ const formItems1 = {
         label: '活动规则',
         rules: ['required', 'description'],
     },
+    tagLst: {
+        label: '标签',
+        type: 'custom',
+        render: (d, form) => d()(
+            <CategoryFormItem 
+                decorator={d}
+                form={form}
+                key='tagLst'
+                phraseType='2'
+            />
+        ),
+    }
 };
 
-const formKeys1 = ['eventType', 'eventName', 'eventCode', 'smsGate', 'eventRange', 'eventRemark'];
+const formKeys1 = ['eventType', 'eventName', 'eventCode', 'tagLst', 'smsGate', 'eventRange', 'eventRemark'];
 
 /**
  * formItem2
