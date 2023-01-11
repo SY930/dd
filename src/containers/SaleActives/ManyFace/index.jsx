@@ -73,7 +73,7 @@ class ManyFace extends Component {
             form1 && form1.setFieldsValue({ triggerSceneList: [1] })
         }
         // 21 开屏页
-        if (['2', '21'].includes(`${value}`) && key === 'sceneList') { // banner
+        if (['2', '21', '22'].includes(`${value}`) && key === 'sceneList') { // banner
             form2 && form2.setFieldsValue({ faceRule: [] })
             form1 && form1.setFieldsValue({ triggerSceneList: [] })
             setTimeout(() => {
@@ -309,7 +309,7 @@ class ManyFace extends Component {
         const newTagLst = Array.isArray(tagLst) ? tagLst.join(',') : '';
 
         let triggerSceneList = clientType === '1' ? [1, 2, 3] : values.triggerSceneList
-        if (sceneList === '21') { // 开屏页
+        if (['21', '22'].includes(sceneList)) { // 开屏页
             triggerSceneList = [sceneList]
         }
         let cycleObj = {};
@@ -391,8 +391,10 @@ class ManyFace extends Component {
         // 有投放位置的话 投放类型是1弹窗海报、2banner。否则是开屏页
         let sceneList = triggerSceneList.some(item => [1, 2, 3, 4, '1', '2', '3', '4'].includes(item)) ? '1' : '2'
         sceneList = clientType === '1' ? '1' : sceneList;
-        if ([21, '21'].includes(triggerSceneList.join())) {
-            sceneList = '21' // 开屏页
+        let leftType = sceneList;
+        if ([21, '21', '22', 22].includes(triggerSceneList.join())) {
+            sceneList = triggerSceneList.join() // 开屏页
+            leftType = '2'
         }
         let timsObj = {};
         const TF = 'HH:mm';
@@ -428,7 +430,7 @@ class ManyFace extends Component {
                 ...data, eventRange, ...timsObj, advMore, cycleType,
             },
         }
-        this.props.onChangDecorateType(sceneList)
+        this.props.onChangDecorateType(leftType)
         this.props.onChangClientype(clientType)
 
         return formData;
@@ -656,7 +658,7 @@ class ManyFace extends Component {
         const { eventStartDate, eventEndDate } = this.formatEventRange(eventRange);
         let triggerScene = triggerSceneList;
         triggerScene = clientType === '1' ? [1, 2, 3, 4] : triggerScene;
-        if (sceneList === '21') { // 开屏页
+        if (['21', '22'].includes(sceneList)) { // 开屏页 首页
             triggerScene = [sceneList]
         }
         let cycleObj = {};
@@ -678,7 +680,7 @@ class ManyFace extends Component {
                 excludedDateList: excludedDate,
             },
         }
-        if (!shopIDList && sceneList === '21') {
+        if (!shopIDList && ['21', '22'].includes(sceneList)) {
             return this.onSubmit(values, formData2)
         }
         queryActiveList(params).then((dataSource) => {

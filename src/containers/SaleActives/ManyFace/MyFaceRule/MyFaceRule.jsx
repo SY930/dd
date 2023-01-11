@@ -604,7 +604,7 @@ class MyFaceRule extends Component {
     renderAPPEvents = (v, i) => {
         const { triggerSceneList, sceneList } = this.props;
         let _eventSelectOptions = this.state.eventSelectOption
-        if (triggerSceneList.some(item => (item == 14 || item == 4)) || sceneList == '21') {
+        if (triggerSceneList.some(item => (item == 14 || item == 4)) || sceneList == '21' || sceneList == '22') {
             _eventSelectOptions = _eventSelectOptions.filter(item => item.value !== 'shoppingCartAddFood')
         }
         return (
@@ -656,10 +656,10 @@ class MyFaceRule extends Component {
                     }}
                 />
                 <div className={styles.uploaderTip}>
-                    { sceneList === '21' ? <p>* 图片建议尺寸 750 * 1624像素</p> : <p>* 图片建议尺寸 526 * 788像素 </p>}
+                    { ['21'].includes(sceneList) ? <p>* 图片建议尺寸 750 * 1624像素</p> : ['22'].includes(sceneList) ? <p>* 图片建议尺寸600 * 848像素 </p> : <p>* 图片建议尺寸526 * 788像素 </p>}
                     <p>* 大小不超过1M </p>
                     <p>* 支持png、jpg、jpeg、gif</p>
-                    { sceneList === '21' && <p>* 因手机分辨率不同，部分手机可能会有部分图片元素显示不全的情况，元素请尽量集中于图片中部位置。</p>}
+                    { ['21', '22'].includes(sceneList) && <p>* 因手机分辨率不同，部分手机可能会有部分图片元素显示不全的情况，元素请尽量集中于图片中部位置。</p>}
                 </div>
             </div>
         )

@@ -25,19 +25,16 @@ export class PhonePreview extends Component {
                                     {[
                                         { name: "弹窗海报", value: "1" },
                                         { name: "banner广告", value: "2" },
-                                    ].map((item, index) => {
-                                        const v = item.value == '21' || item.value == '2' ? '2' : item.value
-                                       return (
-                                            <div
-                                                className={`${style.platformItem} ${v === type
-                                                        ? style.selectedItem
-                                                        : ""
-                                                    }`}
-                                            >
-                                                <span>{item.name}</span>
-                                            </div>
-                                        )
-                                    })}
+                                    ].map((item) => (
+                                        <div
+                                            className={`${style.platformItem} ${item.value === type
+                                                ? style.selectedItem
+                                                : ""
+                                                }`}
+                                        >
+                                            <span>{item.name}</span>
+                                        </div>)
+                                    )}
                                 </div>
                             </div>
                         ) : null}
@@ -60,7 +57,7 @@ export class PhonePreview extends Component {
                                                 textAlign: "right",
                                             }}
                                         >
-                                            {(type == "2" || type == '21') && (
+                                            {(type == "2" || type == '21' || type == '22') && (
                                                 <img
                                                     src="http://res.hualala.com/basicdoc/f85aeeb1-6b26-439f-9a5e-00c5f935d857.png"
                                                     alt=""

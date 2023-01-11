@@ -80,7 +80,7 @@ class Step1 extends Component {
         const { clientType, sceneList, shopIDList, triggerSceneList, launchSceneList, ...other } = formItems1;
         const render = (d, form) => {
             const { sceneList: sLst } = form.getFieldsValue()
-            if (sLst != '21') {
+            if (sLst == '1' || sLst == '2') {
                 return d()(<ShopSelector
                     filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
                     occupyShopList={occupyShopList} // 被占用的店铺需要高亮显示
@@ -95,7 +95,7 @@ class Step1 extends Component {
             ) : d({
                 onChange: this.handleChangeScene,
             })(
-                <RadioGroup> <Radio value={'1'}>弹窗海报</Radio> <Radio value={'2'}>banner广告</Radio><Radio value={'21'}>开屏页</Radio></RadioGroup>
+                <RadioGroup> <Radio value={'1'}>弹窗海报</Radio> <Radio value={'2'}>banner广告</Radio><Radio value={'21'}>开屏页</Radio><Radio value={'22'}>首页</Radio></RadioGroup>
             )
         }
 
@@ -133,7 +133,7 @@ class Step1 extends Component {
     renderLaunchSceneList = (d, form) => {
         const { mpAppList } = this.state;
         const { sceneList } = form.getFieldsValue()
-        if (sceneList === '21') {
+        if (['21', '22'].includes(sceneList)) {
             return (
                 d({})(
                     <Select>
