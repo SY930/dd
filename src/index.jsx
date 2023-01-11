@@ -138,8 +138,9 @@ const registeLangPack = async () => {
     console.log("营销中心语言包加载完成:", lang);
     //神策埋点内容
     setTimeout(() => {
+        const env = HUALALA.ENVIRONMENT === 'production-release' ? "production" : "default";
         sensors.init({
-            server_url: "http://data-sc.hualala.com/sa?project=default",
+            server_url: `http://data-sc.hualala.com/sa?project=${env}`,
             show_log: true,
             is_track_single_page: false, // 单页面配置，默认开启，若页面中有锚点设计，需要将该配置删除，否则触发锚点会多触发 $pageview 事件
             use_client_time: true,
