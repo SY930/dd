@@ -7,9 +7,20 @@ export const QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_SUCCESS = 'sale center: query occup
 export const QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_FAIL = 'sale center: query occupied wei xin accounts fail';
 export const QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_RESET = 'sale center: query occupied wei xin accounts reset';
 
+export const QUERY_OCCUPIED_DOU_YIN_ACCOUNTS_START = 'sale center: query occupied dou yin accounts start';
+export const QUERY_OCCUPIED_DOU_YIN_ACCOUNTS_SUCCESS = 'sale center: query occupied dou yin accounts success';
+export const QUERY_OCCUPIED_DOU_YIN_ACCOUNTS_FAIL = 'sale center: query occupied dou yin accounts fail';
+
 export const queryOccupiedWeiXinAccountsStart = (opts) => {
     return {
         type: QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_START,
+        payload: opts,
+    }
+};
+
+export const queryOccupiedDouYinAccountsStart = (opts) => {
+    return {
+        type: QUERY_OCCUPIED_DOU_YIN_ACCOUNTS_START,
         payload: opts,
     }
 };
@@ -30,4 +41,16 @@ export const queryOccupiedWeiXinAccountsEpic = action$ =>
                                            noMpIDAvailable: !!responseJSON.noMpIDAvailable
                                        }})
                ).catch(err => {console.log(err);return Observable.of({type: QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_FAIL, payload: undefined})})
+           );
+
+export const queryOccupiedDouYinAccountsEpic = action$ =>
+    action$.ofType(QUERY_OCCUPIED_DOU_YIN_ACCOUNTS_START)
+           .switchMap(action => Observable.fromPromise(
+               axiosData('/specialPromotion/queryScopeOverlapEvents.ajax', action.payload, {}, {path: ''}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+               ).map(responseJSON => ({type: QUERY_OCCUPIED_DOU_YIN_ACCOUNTS_SUCCESS,
+                                       payload: {
+                                            mpIDList: responseJSON.mpIDList || [],
+                                           noMpIDAvailable: !!responseJSON.noMpIDAvailable
+                                       }})
+               ).catch(err => {console.log(err);return Observable.of({type: QUERY_OCCUPIED_DOU_YIN_ACCOUNTS_FAIL, payload: undefined})})
            );

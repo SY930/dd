@@ -1,6 +1,7 @@
 import { combineEpics } from 'redux-observable';
-import {queryOccupiedWeiXinAccountsEpic} from "../actions/saleCenterNEW/queryWeixinAccounts.action";
+import { queryOccupiedWeiXinAccountsEpic, queryOccupiedDouYinAccountsEpic } from "../actions/saleCenterNEW/queryWeixinAccounts.action";
 const rootEpic = combineEpics(
-    queryOccupiedWeiXinAccountsEpic
+    queryOccupiedWeiXinAccountsEpic,
+    queryOccupiedDouYinAccountsEpic
 );
 export default rootEpic;

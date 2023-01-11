@@ -19,6 +19,11 @@ import { createMemberGroup } from '../sendGifts/stepThreeHelp'
 import { connect } from 'react-redux';
 //周黑鸭新增
 import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
+
+const TimeRangeEnabledTypes = [
+    '31',
+    '21',
+]
 export default class NewPromotion extends React.Component {
     constructor(props) {
         super(props);
@@ -105,6 +110,12 @@ export default class NewPromotion extends React.Component {
             eventMutexDependRuleInfos: specialPromotion.$eventInfo.eventMutexDependRuleInfos,
             recommendEventRuleInfos: specialPromotion.$eventRecommendSettings,
         };
+        // 关注送礼
+        if(TimeRangeEnabledTypes.includes(this.props.promotionType)){
+            if(opts.event.timeList){
+                opts.timeList = opts.event.timeList;
+            }
+        }
         // 生日赠送 且 非会员群体时
         if (this.props.promotionType === '51' && specialPromotion.$eventInfo.cardLevelRangeType != 5) {
             delete opts.event.cardGroupID
