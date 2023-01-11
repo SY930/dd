@@ -10,7 +10,7 @@ import styles2 from '../SaleCenterNEW/ActivityPage.less';
 import { queryList, deactivate, audit, addCouponBatch, queryConTractList, getBoardsByGiftName, updateGiftBatch } from './Controller/index'
 import { getCardList } from '../ThirdCoupon/AxiosFactory';
 import PriceInput from '../SaleCenterNEW/common/PriceInput';
-import { timeFormat, getAccountInfo } from '../../helpers/util';
+import { timeFormat, getAccountInfo, setSensorsData } from '../../helpers/util';
 import { throttle, isNumber } from 'lodash';
 
 
@@ -80,7 +80,6 @@ class CouponBatchPage extends Component {
     componentDidMount = () => {
         this.queryTableData()
         this.queryCouponList()
-
         getCardList({ giftTypes: [10, 111, 21, 20], groupID: this.state.groupID }).then((x) => {
             this.setState({ treeData: x.map((item) => {
                 return {
@@ -94,6 +93,7 @@ class CouponBatchPage extends Component {
                 }
             }) });
         });
+        setSensorsData("券批次管理")
     }
 
 

@@ -45,7 +45,7 @@ import { GIFT_DETAILS } from '../../../constants/entryCodes';
 import { jumpPage, closePage } from '@hualala/platform-base';
 //周黑鸭新增
 import { isZhouheiya } from '../../../constants/WhiteList.jsx';
-// import { sensorsAutoTrack } from "../../../helpers/util";
+import { sensorsAutoTrack } from "../../../helpers/util";
 const TabPane = Tabs.TabPane;
 const validUrl = require('valid-url');
 class GiftDetailTable extends Component {
@@ -163,7 +163,7 @@ class GiftDetailTable extends Component {
             FetchGiftSchemaAC(parm)
         }
         this.props.queryWechatMpInfo();
-        // sensorsAutoTrack('礼品信息');
+        sensorsAutoTrack('礼品信息');
     }
 
     componentWillReceiveProps(nextProps) {

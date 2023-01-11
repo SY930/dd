@@ -6,10 +6,9 @@ import styles from './GontractInfo.less';
 import styles2 from '../SaleCenterNEW/ActivityPage.less';
 import moment from 'moment';
 import { queryList, addContract, removeContracts, contractExport } from './Controller/index'
-import { timeFormat } from '../../helpers/util';
+import { setSensorsData } from '../../helpers/util';
 import ExportModal from './ExportModal';
-
-
+ 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 
@@ -36,8 +35,8 @@ class ContractPage extends Component {
 
     componentDidMount() {
         this.queryTableData()
+        setSensorsData("合同管理")
     }
-
 
     componentWillReceiveProps(nextProps) {
     }

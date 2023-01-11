@@ -11,7 +11,7 @@ import { CARD_CREATE, } from "../../../constants/authorityCodes";
 import { SALE_GROUP_PHYSICALLNTERFACECARDS, SALE_GROUP_ELECTRONICCARDS } from "../../../constants/entryCodes";
 import registerPage from '../../../index';
 import { getCardTypeList } from './PhysicalInterfaceCards/AxiosFactory';
-
+import { sensorsAutoTrack } from "../../../helpers/util";
 @registerPage([SALE_GROUP_PHYSICALLNTERFACECARDS, SALE_GROUP_ELECTRONICCARDS])
 @connect(mapStateToProps, mapDispatchToProps)
 export default class CardPage extends Component {
@@ -31,6 +31,7 @@ export default class CardPage extends Component {
         this.setState({
             pageType: this.props.entryCode === SALE_GROUP_PHYSICALLNTERFACECARDS ? 'pCard' : 'eCard'
         })
+        sensorsAutoTrack("实体卡/电子礼品卡管理")
     }
 
     componentDidMount() {

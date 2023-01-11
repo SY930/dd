@@ -13,7 +13,7 @@ import DYCouponInfoMoldeContent from '../Modal/DYCouponInfoMoldeContent';
 import { debounce } from 'lodash'
 import styles from '../AlipayCoupon.less'
 import { columnsView, getColumns, ThirdCouponConfig } from '../config';
-import { axiosData } from '../../../helpers/util'
+import { axiosData, setSensorsData } from '../../../helpers/util'
 import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 import registerPage from '../../../../index';
 import { THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
@@ -78,6 +78,7 @@ class CouponManageList extends Component {
         this.initData();
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
+        setSensorsData("第三方券管理")
     }
 
 
