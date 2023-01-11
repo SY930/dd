@@ -45,19 +45,24 @@ class AliContent extends Component {
     handleImageChangne = ({ key, value = {} }) => {
         const { brandName } = this.state;
         const path = DOMAIN + value.url;
+        const { form } = this.props;
         if (value.url) {
             uploadImageUrl(path, 'PROMO_BRAND_LOGO').then((res) => {
                 if (res) {
                     this.props.onChangeBrand({ brandName, brandLogo: res })
                     this.setState({
                         brandLogo: res,
+                        brandUrl: value.url,
                     })
+                } else {
+                    this.setState({
+                        brandUrl: '',
+                        brandLogo: '',
+                    })
+                    form && form.setFieldsValue({ brandLogo: '' })
                 }
             })
         }
-        this.setState({
-            brandUrl: value.url,
-        })
     }
 
     render() {
