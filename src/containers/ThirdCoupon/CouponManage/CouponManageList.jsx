@@ -153,7 +153,7 @@ class CouponManageList extends Component {
     }
 
     getTreeData = (giftTypes) => {
-        const { cacheTreeData } = this.state
+        const { cacheTreeData = [] } = this.state
         let treeData = []
         if (cacheTreeData.length > 0) {
             treeData = (cacheTreeData || []).filter((item) => giftTypes.includes(item.key))

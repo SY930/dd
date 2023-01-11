@@ -21,9 +21,9 @@ function getAccountInfo() {
     return user.get('accountInfo').toJS();
 }
 
+const { groupID } = getAccountInfo();
 
 const giftTypeName = () => {
-    const { groupID } = getAccountInfo()
     return [
         { label: '全部', value: '' },
         { label: '代金券', value: '10' },
@@ -34,6 +34,7 @@ const giftTypeName = () => {
         { label: '商品劵', value: '603' },
     ];
 }
+
 
 
 function proGiftTreeData(giftTypes) {
@@ -120,7 +121,6 @@ export async function getRetailList() {
 // 直连PID
 async function getShopPid() {
     const method = 'channelAlipayPartnerService/queryAuthPidByCompanyId.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -142,7 +142,6 @@ async function getShopPid() {
 // 间连商户
 async function getIndirectList() {
     const method = 'settleUnitManagerService/querySettleBaseInfoList.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -167,7 +166,6 @@ async function getIndirectList() {
 // 获取间连商户的smid
 async function getSmid(value) {
     const method = 'channelZpayReportService/queryUnionMerchantNoBySettleID.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -190,7 +188,6 @@ async function getSmid(value) {
 // smid账号是否授权
 async function isAuth(value) {
     const method = 'alipaySpOperationInfoService/querySpOperationInfo.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -214,7 +211,6 @@ async function isAuth(value) {
 // 去授权
 async function goAuthorizeAC(value) {
     const method = 'alipaySpOperationInfoService/applySpOperation.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -240,7 +236,6 @@ async function goAuthorizeAC(value) {
 // 间连升级M4
 async function goUpdateM4AC(value) {
     const method = 'alipaySpOperationInfoService/applySpOperation.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -266,7 +261,6 @@ async function goUpdateM4AC(value) {
 // 支付宝券查询
 async function getAlipayCouponList() {
     const method = 'couponCodeBatchService/queryBatchList.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -294,7 +288,6 @@ async function getAlipayCouponList() {
 // 支付宝大促
 async function getAlipayPromotionList(datas) {
     const method = 'AlipayRecruitPlanInfoService/recruitPlanListQuery.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -320,7 +313,6 @@ async function getAlipayPromotionList(datas) {
 // 选择大促加载报名素材
 async function getAlipayRecruitPlan(datas) {
     const method = 'AlipayRecruitPlanInfoService/recruitPlanQuery.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -342,7 +334,6 @@ async function getAlipayRecruitPlan(datas) {
 // 获取券详情
 async function getBatchDetail(value) {
     const method = 'couponCodeBatchService/getBatchDetail.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -363,17 +354,17 @@ async function getBatchDetail(value) {
 }
 
 // 素材图片资源上传接口
-async function uploadImageUrl(value) {
+async function uploadImageUrl(value, fileKey) {
     const method = 'AlipayRecruitPlanInfoService/materialImageUpload.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
             imageUrl: value,
+            fileKey,
         },
-        method
+        method,
     };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
@@ -388,7 +379,6 @@ async function uploadImageUrl(value) {
 // 获取会场大促活动列表
 async function queryEventList(opts) {
     const method = 'trdEventService/queryEventList.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -411,7 +401,6 @@ async function queryEventList(opts) {
 // 成功页创建时 -> 获取渠道 ->  选择支付成功页
 async function getDeliveryChannel(opts) {
     const method = '/alipayActivityDeliveryInfoService/deliveryChannelQuery.ajax';
-    const { groupID } = getAccountInfo();
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
@@ -441,7 +430,6 @@ async function getDeliveryChannel(opts) {
 // 获取微信公众号/小程序
 async function getWeChatMpAndAppInfo() {
     const method = '/mpInfo/getAppsAndMps';
-    const { groupID } = getAccountInfo();
     const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID }, method, type };
     const response = await axios.post(url + method, params);
     const { result: { code, message: msg }, mpInfoResDataList = [] } = response;
@@ -455,7 +443,6 @@ async function getWeChatMpAndAppInfo() {
 // 获取小程序
 async function getMpAppList() {
     const method = '/miniProgramCodeManage/getApps';
-    const { groupID } = getAccountInfo();
     const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, page: { current: 1, pageSize: 1000 } }, method, type };
     const response = await axios.post(url + method, params);
     const { result: { code, message: msg }, apps = [] } = response;
@@ -469,7 +456,6 @@ async function getMpAppList() {
 // 微信财务主体
 async function getPayChannel(channelCode) {
     const method = '/wxpay/getBusinessCouponPayChannel';
-    const { groupID } = getAccountInfo();
     const params = { service: 'HTTP_SERVICE_URL_ISV_API', data: { groupID, channelCode }, method, type };
     const response = await axios.post(url + method, params);
     const { result: { code, message: msg }, payChannelList = [] } = response;
@@ -483,7 +469,6 @@ async function getPayChannel(channelCode) {
 // 获取页面路径
 async function getLinks() {
     const method = '/link/getlinks';
-    const { groupID } = getAccountInfo();
     const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, type: 'mini_menu_type' }, method, type };
     const response = await axios.post(url + method, params);
     const { result: { code, message: msg }, linkList = [] } = response;
@@ -497,7 +482,6 @@ async function getLinks() {
 // 获取抖音店铺
 async function getDouyinShop() {
     const method = 'couponCodeBatch/tiktokShopList.ajax';
-    const { groupID } = getAccountInfo();
     const params = { service, type, data: { groupID, dyShopCO: { groupID } }, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
@@ -512,7 +496,6 @@ async function getDouyinShop() {
 // 获取支付宝店铺
 async function queryAliShopsAC(ipRoleId) {
     const method = 'AlipayAntMerchantExpandService/shopPageQuery.ajax';
-    const { groupID } = getAccountInfo();
     const params = { service, type, data: { groupID, ipRoleId, pageNum: 1, pageSize: 100 }, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
@@ -527,7 +510,6 @@ async function queryAliShopsAC(ipRoleId) {
 // 获取城市列表
 async function queryCityCodeQueryAC() {
     const method = 'AlipayRecruitPlanInfoService/citiesCodeQuery.ajax';
-    const { groupID } = getAccountInfo();
     const params = { service, type, data: { groupID }, method };
     const response = await axios.post(url + method, params);
     const { code, data: { provinceInfos: obj } } = response;
@@ -547,7 +529,6 @@ async function queryCityCodeQueryAC() {
 // alipay/baseInfo/list 获取所有已授权的支付宝小程序，在商户中心展示
 async function queryAlipayListAC() {
     const method = 'alipay/baseInfo/list.ajax';
-    const { groupID } = getAccountInfo();
     const params = { service: 'HTTP_SERVICE_URL_ALIPAY_API', type, data: { groupID, pageNum: 1, pageSize: 10000000 }, method };
     const response = await axios.post(url + method, params);
     const { result: { code }, baseInfoList = [] } = response;
@@ -555,6 +536,25 @@ async function queryAlipayListAC() {
     if (code === '000') {
         return baseInfoList.map(item => ({ key: item.authAppID, label: item.appName, value: item.authAppID }));
     }
+    return [];
+}
+
+// 支付宝品牌接口
+async function getBrands() {
+    const method = '/ShopBrandInfoService/shopBrandInfoQuery.ajax';
+    const params = { service, type, data: { groupID }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: { shopBrandDetailList = [] } } = response;
+    console.log("🚀 ~ file: AxiosFactory.jsx:567 ~ getBrands ~ response", response)
+    if (code === '000') {
+        return shopBrandDetailList
+        // return [{
+        //     brandID: '4221',
+        //     brandName: '花果山',
+        //     logoImage: 'basicdoc/0edefc38-39ac-42bd-a0a1-19e071f49cc6.png',
+        // }]
+    }
+    message.error(msg);
     return [];
 }
 
@@ -581,4 +581,5 @@ export {
     goUpdateM4AC,
     queryCityCodeQueryAC,
     queryAlipayListAC,
+    getBrands,
 }
