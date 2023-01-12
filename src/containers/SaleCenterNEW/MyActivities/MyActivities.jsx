@@ -50,6 +50,7 @@ import CardSaleActive from "./CardSaleActive";
 import { isZhouheiya, isGeneral, WJLPGroupID, isWeijia, isSellGroupID } from "../../../constants/WhiteList";
 import GoodsRef from '@hualala/sc-goodsRef';
 import { getWJLPCoulums } from './config'
+import { isFormalRelease } from "../../../utils/index";
 
 const { GoodsSelector } = GoodsRef;
 const Option = Select.Option;
@@ -1205,7 +1206,11 @@ class MyActivities extends React.Component {
         this.props.openPromotionAutoRunListModal();
     }
     downLoadTemp = () => {
-        window.open(`${ENV.FILE_RESOURCE_DOMAIN}/crmexport/9456d8be-23b4-488c-bf0d-9b54ceb4a3ba.xlsx`);
+        if (isFormalRelease()) {
+            window.open(`https://res.hualala.com/crmexport/9456d8be-23b4-488c-bf0d-9b54ceb4a3ba.xlsx`);
+        } else {
+            window.open(`${ENV.FILE_RESOURCE_DOMAIN}/crmexport/9456d8be-23b4-488c-bf0d-9b54ceb4a3ba.xlsx`);
+        }
     }
 
     showModleTip = (res) => {
