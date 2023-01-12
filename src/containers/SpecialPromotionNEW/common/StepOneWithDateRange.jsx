@@ -408,7 +408,7 @@ class StepOneWithDateRange extends React.Component {
             });
         }
         
-        if (TimeRangeEnabledTypes.includes(this.props.type)) {
+        if (this.props.type == '31') {
             let isLoadingWeChatOccupiedInfo = this.state.isLoadingWeChatOccupiedInfo;
             let isAllWeChatIDOccupied = this.state.isAllWeChatIDOccupied;
             let occupiedWeChatIDs = this.state.occupiedWeChatIDs;
