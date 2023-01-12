@@ -18,14 +18,13 @@ import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
 import CreateShareRulesModal from "./CreateShareRulesModal";
 import ExpireDateNotice from '../../components/common/ExpireDateNotice';
 import { getRuleGroupList, queryShareRuleDetail, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, initShareRuleGroup, setStorageValue, getStorageValue, FetchGiftList, fetchAllPromotionList } from './AxiosFactory';
-import { fetchAllPromotionListAC } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
 import { fetchPromotionScopeInfo } from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
 import shopImg from './assets/createOriginShop.png';
-
+import { setSensorsData } from "../../helpers/util";
 const { Option, OptGroup } = Select;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
 const ALLEVENTWAY = { ...BASIC_PROMOTION_MAP, ...GIFT_MAP };
@@ -101,6 +100,7 @@ export default class ShareRules extends Component {
             }
         })
         this.props.getAllShops();
+        setSensorsData("共享规则设置");
     }
     //获取共享组列表
     queryAll = () => {
