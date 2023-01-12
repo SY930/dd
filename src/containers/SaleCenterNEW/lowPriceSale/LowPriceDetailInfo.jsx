@@ -10,23 +10,30 @@ import {
     Icon
 } from 'antd';
 import { connect } from 'react-redux'
+
+const Immutable = require('immutable');
+const ButtonGroup = Button.Group;
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
+
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
+
+const FormItem = Form.Item;
+
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
-import {saleCenterSetPromotionDetailAC} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+
+import {
+    saleCenterSetPromotionDetailAC,
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
 import { notValidDiscountNum } from "../../../containers/SaleCenterNEW/discount/discountDetailInfo.jsx";
 import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common/PriceInput';
 
-const Immutable = require('immutable');
-const ButtonGroup = Button.Group;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const FormItem = Form.Item;
-
 @injectIntl()
 class LowPriceDetailInfo extends React.Component {
     constructor(props) {
@@ -43,10 +50,7 @@ class LowPriceDetailInfo extends React.Component {
             disType: '3',
             ruleType: '1',
             targetScope: '0',
-            subRule: 1,
-            priceType: '1',
-            reduceLimitType: '1',
-            reduceLimit: undefined
+            subRule: 1
         };
 
         this.renderPromotionRule = this.renderPromotionRule.bind(this);
@@ -77,7 +81,6 @@ class LowPriceDetailInfo extends React.Component {
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         const stageType = (_rule || {}).stageType;
         const subRule = (_rule || {}).subRule;
-        const reduceLimit = (_rule || {}).reduceLimit;
         try {
             _rule = _rule.stage[0];
         } catch (e) {
@@ -90,34 +93,24 @@ class LowPriceDetailInfo extends React.Component {
         if (_scopeLstLength) {// 指定菜品
             if (stageType == 1) { // 每满
                 ruleType = '4'
-            } if (stageType == 21) {//同一菜品满
-                ruleType = '5'
             } else {
                 ruleType = '2'
             }
         } else {// 任意菜品
             if (stageType == 1) { // 每满
                 ruleType = '3'
-            } if (stageType == 21) {//同一菜品满
-                ruleType = '5'
             } else {
                 ruleType = '1'
             }
         }
-        if(reduceLimit){
-            ruleType = '5'
-        }
         this.setState({
             display,
             ruleType,
-            reduceLimit,
-            reduceLimitType: reduceLimit ? '2' : '1',
             subRule: subRule === undefined ? 1 : subRule,
             discountRate: _rule.discountRate ? Number((_rule.discountRate * 10).toFixed(3)).toString() : '',
             disType: _rule.disType ? String(_rule.disType) : '3',
             freeAmount: _rule.freeAmount ? String(_rule.freeAmount) : '',
             stageAmount: _rule.stageAmount ? String(_rule.stageAmount) : '',
-            priceType: _rule.priceType ? String(_rule.priceType) : '',
         });
     }
 
@@ -128,9 +121,7 @@ class LowPriceDetailInfo extends React.Component {
             stageAmount,
             disType,
             ruleType,
-            subRule,
-            priceType,
-            reduceLimit
+            subRule
         } = this.state;
         let rule;
         if (Number(stageAmount || 0) <= 0) {
@@ -158,13 +149,11 @@ class LowPriceDetailInfo extends React.Component {
         rule = {
             subRule,
             stageType: ruleType === '1' || ruleType === '2' ? '2' : '1',
-            reduceLimit,
-            stage: [{
+            stage:  [{
                     freeAmount,
                     disType,
                     stageAmount,
-                    discountRate: disType == 2 ? String(Number(handlerDiscountToParam(discountRate))) : '',
-                    priceType
+                    discountRate: disType == 2 ? String(Number(handlerDiscountToParam(discountRate))) : ''
                 }]
             };
             this.props.setPromotionDetail({
@@ -252,58 +241,39 @@ class LowPriceDetailInfo extends React.Component {
         const { user:{groupID} } = this.props;
         const {subRule} = this.state;
         return (
-            <FormItem
-                label={'配菜是否参与计算'}
-                className={styles.FormItemStyle}
-                labelCol={{ span: 4 }}
-            >
-                <RadioGroup value={subRule} onChange={this.handleChangeSubRule} defaultValue={1}>
-                    <Radio key={1} value={1}>参与</Radio>
-                    <Radio key={0} value={0}>不参与</Radio>
-                    <Tooltip title={'配菜包括配菜、做法加价等'}>
-                        <Icon
-                            type="question-circle-o"
-                            className={styles.question}
-                        />
-                    </Tooltip>
-                </RadioGroup>
-            </FormItem>
-        )
-    }
-    renderReduceLimit(){
-        return (
-            <FormItem
-                className={[styles.FormItemStyle, styles.explainBack, styles.pushedExplain].join(' ')}
-                wrapperCol={{span: 16}}
-                labelCol={{ span: 4 }}
-                label={'同一商品每单'}
-            >
-                <PriceInput
-                    addonBefore={
-                        <div style={{
-                            width: "200px"
-                        }}>
-                            <Select
-                                size="default"
-                                dropdownMatchSelectWidth={false}
-                                onChange={this.handleReduceLimitTypeChange}
-                                value={this.state.reduceLimitType}
-                            >
-                                <Option key="1" value='1'>不限制</Option>
-                                <Option key="2" value='2'>限制</Option>
-                            </Select>
-                        </div>
-
-                }
-                    addonAfter={"份 享受特价"}
-                    value={{number: this.state.reduceLimit}}
-                    defaultValue={{number: this.state.reduceLimit}}
-                    onChange={this.handleReduceLimitChange}
-                    disabled={this.state.reduceLimitType === "1"}
-                    maxNum={4}
-                    modal="int"
-                />
-            </FormItem>
+            // groupID == '300452' || groupID == '11157' || groupID == '189702' ? 
+            //     <FormItem
+            //         label={'配菜是否参与计算'}
+            //         className={styles.FormItemStyle}
+            //         labelCol={{ span: 4 }}
+            //     >
+            //         <RadioGroup value={subRule} onChange={this.handleChangeSubRule} defaultValue={1}>
+            //             <Radio key={1} value={1}>参与</Radio>
+            //             <Radio key={0} value={0}>不参与</Radio>
+            //             <Tooltip title={'配菜包括配菜、做法加价等'}>
+            //                 <Icon
+            //                     type="question-circle-o"
+            //                     className={styles.question}
+            //                 />
+            //             </Tooltip>
+            //         </RadioGroup>
+            //     </FormItem> : ''
+                <FormItem
+                    label={'配菜是否参与计算'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                >
+                    <RadioGroup value={subRule} onChange={this.handleChangeSubRule} defaultValue={1}>
+                        <Radio key={1} value={1}>参与</Radio>
+                        <Radio key={0} value={0}>不参与</Radio>
+                        <Tooltip title={'配菜包括配菜、做法加价等'}>
+                            <Icon
+                                type="question-circle-o"
+                                className={styles.question}
+                            />
+                        </Tooltip>
+                    </RadioGroup>
+                </FormItem>
         )
     }
     handleChangeSubRule(e){
@@ -313,24 +283,7 @@ class LowPriceDetailInfo extends React.Component {
             subRule:value
         })
     }
-    handleReduceLimitTypeChange = (value) => {
-        this.setState({
-            reduceLimitType: value
-        })
-    }
-    handlePriceTypeChange = (value) => {
-        console.log(value,'value---------->')
-        this.setState({
-            priceType: value
-        })
-    }
-    handleReduceLimitChange = (e) => {
-        const { number } = e;
-        console.log(e,'value--------handleReduceLimitChange')
-        this.setState({
-            reduceLimit: number
-        })
-    }
+
     renderPromotionRule() {
         return (
             <div>
@@ -383,7 +336,6 @@ class LowPriceDetailInfo extends React.Component {
                                 <Option key="3" value='3'>{k5ez4pdf}</Option>
                                 <Option key="2" value='2'>{k5ez4pvb}</Option>
                                 <Option key="4" value='4'>{k5ez4qew}</Option>
-                                <Option key="5" value='5'>同一菜品满</Option>
                             </Select>
                         </div>
 
@@ -410,21 +362,9 @@ class LowPriceDetailInfo extends React.Component {
         return (
             <FormItem
                 className={styles.pushedExplain}
-                wrapperCol={{span:17}}
-                labelCol={{ span: 7 }}
-                label={<div className={styles.priceTypeWrapper}>
-                    <span>对</span>
-                    <Select
-                        size="default"
-                        dropdownMatchSelectWidth={false}
-                        onChange={this.handlePriceTypeChange}
-                        value={this.state.priceType || "1"}
-                    >
-                        <Option key="1" value='1'>最低价</Option>
-                        <Option key="2" value='2'>最高价</Option>
-                    </Select>
-                    <span>菜品</span>
-                </div>}
+                wrapperCol={{span:18}}
+                labelCol={{ span: 5 }}
+                label={SALE_LABEL.k5ezdxpr}
                 validateStatus={this.state.freeAmountFlag && this.state.discountFlag ?'success':'error'}
                 help={!this.state.freeAmountFlag ? SALE_LABEL.k5ez4rmr : !this.state.discountFlag ? SALE_LABEL.k5ezcavr : null}
             >
@@ -439,7 +379,7 @@ class LowPriceDetailInfo extends React.Component {
                     </ButtonGroup>
                     <div style={{
                         flex: 1,
-                        width: '150px',
+                        width: '200px',
                         marginLeft: '5px'
                     }}>
                         {disType != 2 &&
@@ -478,7 +418,7 @@ class LowPriceDetailInfo extends React.Component {
                 className={[styles.FormItemStyle, styles.formItemForMore].join(' ')}
                 wrapperCol={{ span: 17, offset: 4 }}
             >
-                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
+    <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
                     {SALE_LABEL.k5ezdx9f} {!this.state.display &&
                 <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
@@ -490,18 +430,16 @@ class LowPriceDetailInfo extends React.Component {
 
 
     render() {
-        const { ruleType, priceType } = this.state;
+        const { ruleType } = this.state;
         return (
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
                     {this.renderFoodNeedCalc()}
-                    {ruleType === '2' || ruleType === '4' || ruleType === '5' ? <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
+                    {ruleType === '2' || ruleType === '4' ? <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     : null}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
-                    {ruleType === '5' && priceType === '1' ? <div className={styles.logoGroupHeader} >基本信息</div> : null}
-                    {ruleType === '5' && priceType === '1' ? this.renderReduceLimit() : null}
                 </Form>
             </div>
         )
