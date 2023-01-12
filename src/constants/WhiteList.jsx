@@ -20,9 +20,9 @@ export const isCheckApproval = needApprovalGroupID.includes(String(getAccountInf
 export const zhouheiyaPromotiontype = ['1060', '1070', '2020', '2010', '1030', '1050', '2050', '3010'];
 export const zhouheiyaMarketingtype = ['69', '88', '89', '90'];
 
-export const WJLPGroupID = ['259613', '317528', '11157'] // 针对魏家凉皮 促销活动管理列表 表头顺序 259613测试集团，线上待定
+export const WJLPGroupID = ['259613', '317528', '11157', '189702'] // 针对魏家凉皮 促销活动管理列表 表头顺序 259613测试集团，线上待定
 
-export const SellGroupID = ['259613', '317528', '11157', '267579'] // 零售集团ID
+export const SellGroupID = ['259613', '317528', '11157', '267579','189702'] // 零售集团ID
 
 export const priceRulsGroupID = ['259250', '49367', '11157', '189702']
 
@@ -100,7 +100,7 @@ export function checkGoodsScopeListIsNotEmpty(goodsScopeList) {
 }
 
 // TODO: 增加线上ID——————————————
-export const RetailMenuID = ['2001431']; // 零售促销活动menuID
+export const RetailMenuID = ['2001431','2003582']; // 零售促销活动menuID
 
 
-export const FoodMenuID = ['2000450', '4140']; // 餐饮促销活动menuID 
+export const FoodMenuID = ['2000450', '4140', '2001670']; // 餐饮促销活动menuID 
