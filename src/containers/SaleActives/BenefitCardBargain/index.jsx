@@ -64,7 +64,7 @@ class BenefitCardBargain extends Component {
     queryActiveList(params).then((dataSource) => {
       let GearData = [];
        dataSource.map((item) => {
-        GearData = GearData.concat(item.giftInfoList)
+        GearData = GearData.concat(item.giftInfoList || {})
       })
       this.setState({
         gearData: GearData,

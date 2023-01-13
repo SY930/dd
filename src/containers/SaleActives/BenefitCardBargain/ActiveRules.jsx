@@ -148,7 +148,7 @@ class ActiveRules extends Component {
 
   renderGears = (d, form) => {
     const { dataSource } = this.state;
-    const { gearData } = this.props
+    const { gearData = [] } = this.props
     return (
       <div>
         {d({
