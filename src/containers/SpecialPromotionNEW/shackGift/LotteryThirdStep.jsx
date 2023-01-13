@@ -148,7 +148,7 @@ class LotteryThirdStep extends React.Component {
                     });
                 }
                 //与优惠券相关的，在与优惠券相关的数据都有值的时候才进行赋值，否则初始化为空
-                if(gift.giftTotalCount && gift.giftName && gift.giftID != '0' && gift.presentType === 1){
+                if(gift.giftTotalCount && gift.giftName && gift.giftID != '0'){
                     //有效期限 如果为小时是 1 如果为天是 3 如果是固定有效期是 2
                     infos[index].giveCoupon.value.effectType = `${gift.effectType}`;
                     //在相对有效期被选中的情况下，的维持有效时间 。在固定有效期的时候这个值为0
@@ -169,6 +169,7 @@ class LotteryThirdStep extends React.Component {
                         // infos[index].giveCoupon.value.giftInfo.giftName = null;
                         // infos[index].giveCoupon.value.giftInfo.giftItemID = null;
                     // }
+                    infos[index].giveCoupon.value.isOn = true;
                 }else{
                     infos[index].giveCoupon.value = _.cloneDeep(defaultGiveCoupon);
                     infos[index].giveCoupon.value.isOn = false;
@@ -203,7 +204,7 @@ class LotteryThirdStep extends React.Component {
                     infos[index].giveRedPacket.isOn = false;
                 }
                 infos[index].giftTotalCount.value = gift.giftTotalCount
-                infos[index].presentType = gift.presentType
+                infos[index].presentType = gift.presentType;
                 infos[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
                 // infos[index].shareTitle.value = gift.shareTitle;
                 // infos[index].giftConfImagePath.value = gift.giftConfImagePath || 'basicdoc/f75ed282-4d1c-4f5d-ab29-a92529cbadcf.png' ;
@@ -214,7 +215,6 @@ class LotteryThirdStep extends React.Component {
 
             })
         }
-        
         return {
             infos: infos.filter(gift => gift.sendType === 0)
             .sort((a, b) => a.needCount - b.needCount),
@@ -231,9 +231,59 @@ class LotteryThirdStep extends React.Component {
         let temparr = [];
         if(!prizeArr.length){
             return prizeArr;
-        }else{
-            prizeArr.map((item, index) => {
-                if(index == 0){
+        }
+        prizeArr.map((item, index) => {
+            if(index == 0){
+                const obj = item;
+                if (item.presentType == 3){
+                    obj.redPacketID = item.giftID;
+                    obj.redPacketValue = item.presentValue;
+                }
+                if (item.presentType == 4){
+                    obj.couponPackageID = item.giftID;
+                }
+                if (item.presentType == 5) {
+                    obj.cardValueTypeID = item.cardTypeID;
+                    obj.giveCardValue = item.presentValue;
+                }
+                if (item.presentType == 2) {
+                    obj.cardPointsTypeID = item.cardTypeID;
+                    obj.givePointsValue = item.presentValue;
+                }
+                temparr.push(obj);
+            }else{
+                let flag = true;
+                temparr.map((every,num) => {
+                    if(every.sortIndex == item.sortIndex){
+                        flag = false
+                        //进行合并
+                        if(item.presentType == 1 || item.presentType == 8){
+                            temparr[num].effectType = item.effectType;
+                            temparr[num].giftValidUntilDayCount = item.giftValidUntilDayCount;
+                            if(item.effectType != '2'){
+                                temparr[num].giftEffectTimeHours = item.giftEffectTimeHours;
+                            }else{
+                                temparr[num].effectTime = item.effectTime;
+                                temparr[num].validUntilDate = item.validUntilDate;
+                            }
+                            temparr[num].giftTotalCount = item.giftTotalCount;
+                            temparr[num].giftName = item.giftName;
+                            temparr[num].giftID = item.giftID;
+                        }else if (item.presentType == 2){
+                            temparr[num].cardPointsTypeID = item.cardTypeID;
+                            temparr[num].givePointsValue = item.presentValue;
+                        } else if (item.presentType == 3){
+                            temparr[num].redPacketID = item.giftID;
+                            temparr[num].redPacketValue = item.presentValue;
+                        } else if (item.presentType == 4){
+                            temparr[num].couponPackageID = item.giftID;
+                        } else if (item.presentType == 5){
+                            temparr[num].cardValueTypeID = item.cardTypeID;
+                            temparr[num].giveCardValue = item.presentValue;
+                        }
+                    }
+                });
+                if(flag){
                     const obj = item;
                     if (item.presentType == 3){
                         obj.redPacketID = item.giftID;
@@ -251,62 +301,10 @@ class LotteryThirdStep extends React.Component {
                         obj.givePointsValue = item.presentValue;
                     }
                     temparr.push(obj);
-                }else{
-                    let flag = true;
-                    temparr.map((every,num) => {
-                        if(every.sortIndex == item.sortIndex){
-                            flag = false
-                            //进行合并
-                            if(item.presentType == 1 ||item.presentType === 8){
-                                temparr[num].effectType = item.effectType;
-                                temparr[num].giftValidUntilDayCount = item.giftValidUntilDayCount;
-                                if(item.effectType != '2'){
-                                    temparr[num].giftEffectTimeHours = item.giftEffectTimeHours;
-                                }else{
-                                    temparr[num].effectTime = item.effectTime;
-                                    temparr[num].validUntilDate = item.validUntilDate;
-                                }
-                                temparr[num].giftTotalCount = item.giftTotalCount;
-                                temparr[num].giftName = item.giftName;
-                                temparr[num].giftID = item.giftID;
-                            }else if (item.presentType == 2){
-                                temparr[num].cardPointsTypeID = item.cardTypeID;
-                                temparr[num].givePointsValue = item.presentValue;
-                                // temparr[num].givePointsValue = item.presentType;
-                            } else if (item.presentType == 3){
-                                temparr[num].redPacketID = item.giftID;
-                                temparr[num].redPacketValue = item.presentValue;
-                            } else if (item.presentType == 4){
-                                temparr[num].couponPackageID = item.giftID;
-                            } else if (item.presentType == 5){
-                                temparr[num].cardValueTypeID = item.cardTypeID;
-                                temparr[num].giveCardValue = item.presentValue;
-                            }
-                        }
-                    });
-                    if(flag){
-                        const obj = item;
-                        if (item.presentType == 3){
-                            obj.redPacketID = item.giftID;
-                            obj.redPacketValue = item.presentValue;
-                        }
-                        if (item.presentType == 4){
-                            obj.couponPackageID = item.giftID;
-                        }
-                        if (item.presentType == 5) {
-                            obj.cardValueTypeID = item.cardTypeID;
-                            obj.giveCardValue = item.presentValue;
-                        }
-                        if (item.presentType == 2) {
-                            obj.cardPointsTypeID = item.cardTypeID;
-                            obj.givePointsValue = item.presentValue;
-                        }
-                        temparr.push(obj);
-                    }
                 }
-            })
-            return temparr;
-        }
+            }
+        })
+        return temparr;
     }
 
     handleGiftChange = (value, index) => {
