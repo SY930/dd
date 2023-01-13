@@ -133,6 +133,7 @@ class LowPriceDetailInfo extends React.Component {
             reduceLimit
         } = this.state;
         let rule;
+        let stageType;
         if (Number(stageAmount || 0) <= 0) {
             this.setState({
                 stageAmountFlag: false
@@ -154,11 +155,20 @@ class LowPriceDetailInfo extends React.Component {
                 return
             }
         }
-
+        console.log(ruleType,'ruleType--0--0--')
+        if(ruleType == "5"){
+            stageType = "21";
+        }else{
+            if(ruleType === '1' || ruleType === '2'){
+                stageType = "2";
+            }else{
+                stageType = "1";
+            }
+        }
         rule = {
             subRule,
-            stageType: ruleType === '1' || ruleType === '2' ? '2' : '1',
-            reduceLimit,
+            stageType: stageType,
+            reduceLimit: ruleType !== '5' ? '' : reduceLimit,
             stage: [{
                     freeAmount,
                     disType,
@@ -184,7 +194,7 @@ class LowPriceDetailInfo extends React.Component {
         this.setState({
             ruleType: val,
         })
-        if (val == 1 || val == 3) {
+        if (val == 1 || val == 3 || val == 5) {
             this.props.setPromotionDetail({
                 categoryOrDish: 0,
                 dishes: [],
@@ -500,8 +510,8 @@ class LowPriceDetailInfo extends React.Component {
                     : null}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
-                    {ruleType === '5' && priceType === '1' ? <div className={styles.logoGroupHeader} >基本信息</div> : null}
-                    {ruleType === '5' && priceType === '1' ? this.renderReduceLimit() : null}
+                    {ruleType === '5' ? <div className={styles.logoGroupHeader} >点单限制</div> : null}
+                    {ruleType === '5' ? this.renderReduceLimit() : null}
                 </Form>
             </div>
         )
