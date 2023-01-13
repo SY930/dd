@@ -215,7 +215,6 @@ class LotteryThirdStep extends React.Component {
 
             })
         }
-        console.log('_infos__111', infos);
         return {
             infos: infos.filter(gift => gift.sendType === 0)
             .sort((a, b) => a.needCount - b.needCount),
