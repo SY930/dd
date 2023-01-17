@@ -200,6 +200,9 @@ class SendMsgInfo extends React.Component {
                                     value={accountNo || undefined}
                                     placeholder={this.props.intl.formatMessage(STRING_SPE.db60b40190a02137)}
                                     getPopupContainer={(node) => node.parentNode}
+                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                    notFoundContent={'未搜索到结果'}
+                                    showSearch={true}
                                 >
                                     {(specialPromotion.equityAccountInfoList || []).map((accountInfo) => {
                                         return (
