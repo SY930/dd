@@ -548,12 +548,12 @@ class StepTwo extends React.Component {
                                 rules: [
                                     {
                                         validator: (rule, v, cb) => {
-                                            if( !isNaN(v) && /^\+?\d{0,4}$/.test(v) &&  v <= 1500){
+                                            if( !isNaN(v) && /^\+?\d{0,4}$/.test(v) &&  v <= 4500){
                                                 cb();
                                             }
                                             cb(rule.message)
                                         },
-                                        message: '请输入0-1500的整数',
+                                        message: '请输入0-4500的整数',
                                     },
                                 ],
                             })(
