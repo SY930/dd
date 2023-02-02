@@ -79,6 +79,8 @@ class StepTwo extends React.Component {
             filters:[],
             selectedTags:[],
             tagIncludes:[],
+            amountType: '1', // 消费次数规则
+            consumeRuleAmountStatus: 'success', // 消费次数状态
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -659,6 +661,15 @@ class StepTwo extends React.Component {
             },
             dropdownStyle: { maxHeight: 275, overflow: 'auto' },
         };
+        const amountTypeSelect = (
+            <Select 
+                value={this.state.amountType}
+                getPopupContainer={(node) => node.parentNode}
+            >
+                <Option key="1">账单金额不足</Option>
+                <Option key="2">实收金额不足</Option>
+            </Select>
+        );
         return (
             <Form>
                 {
@@ -765,6 +776,30 @@ class StepTwo extends React.Component {
                                 />)
                                 }
                             </FormItem>
+                            {
+                                this.state.consumeType % 2 != 0 && 
+                                <FormItem
+                                    label='消费次数规则'
+                                    className={styles.FormItemStyle}
+                                    labelCol={{ span: 4 }}
+                                    wrapperCol={{ span: 17 }}
+                                    validateStatus={this.state.consumeRuleAmountStatus}
+                                    help={this.state.consumeRuleAmountStatus == 'success' ? null : '2222'}
+                                >
+                                    {
+                                        this.props.form.getFieldDecorator('consumeRuleAmount', {
+                                            rules: [{
+                                                required: true,
+                                                message: '1111',
+                                            }],
+                                            initialValue: this.state.numberValue,
+                                        })(<PriceInput
+                                            addonBefore={amountTypeSelect}
+                                            addonAfter='不累计为消费次数'
+                                        />)
+                                    }
+                                </FormItem>
+                            }
                         </div> 
                         : 
                         (this.props.type == '70' || this.props.type == '64' ? null :
