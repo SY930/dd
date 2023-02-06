@@ -327,6 +327,11 @@ class LowPriceDetailInfo extends React.Component {
         this.setState({
             reduceLimitType: value
         })
+        if(value === "1"){
+            this.setState({
+                reduceLimit: undefined
+            })
+        }
     }
     handlePriceTypeChange = (value) => {
         console.log(value,'value---------->')
