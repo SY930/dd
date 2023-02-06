@@ -96,9 +96,10 @@ class LowPriceDetailInfo extends React.Component {
                 ruleType = '2'
             }
         } else {// 任意菜品
+            console.log(stageType,'stageTypestageTypestageTypestageType')
             if (stageType == 1) { // 每满
                 ruleType = '3'
-            } if (stageType == 21) {//同一菜品满
+            } else if (stageType == 21) {//同一菜品满
                 ruleType = '5'
             } else {
                 ruleType = '1'
@@ -107,6 +108,7 @@ class LowPriceDetailInfo extends React.Component {
         if(reduceLimit){
             ruleType = '5'
         }
+
         this.setState({
             display,
             ruleType,
@@ -376,6 +378,7 @@ class LowPriceDetailInfo extends React.Component {
         const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
         const k5ez4qew = intl.formatMessage(SALE_STRING.k5ez4qew);
         const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+        console.log(this.state.ruleType,'ruleType>>>>>>>>>>>>>>>>')
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.explainBack, styles.pushedExplain].join(' ')}
