@@ -81,6 +81,7 @@ class StepTwo extends React.Component {
             tagIncludes:[],
             amountType: '1', // 消费次数规则
             consumeRuleAmountStatus: 'success', // 消费次数状态
+            consumeRuleAmountValue: '', 
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -91,6 +92,8 @@ class StepTwo extends React.Component {
         this.renderShopsOptions = this.renderShopsOptions.bind(this);
         this.editBoxForShopsChange = this.editBoxForShopsChange.bind(this);
         this.handleCountCycleDaysChange = this.handleCountCycleDaysChange.bind(this);
+        this.handleConsumeRuleAmountChange = this.handleConsumeRuleAmountChange.bind(this);
+        this.handleAmountTypeChange = this.handleAmountTypeChange.bind(this);
     }
 
     componentDidMount() {
@@ -365,6 +368,15 @@ class StepTwo extends React.Component {
             this.props.form.setFieldsValue({ 'give': this.state.numberValue })
         });
     }
+    handleAmountTypeChange(value){
+        console.log('_TODO 1', value);
+         this.setState({
+            amountType: value,
+            consumeRuleAmountValue: 0,
+        }, () => {
+            this.props.form.setFieldsValue({ 'consumeRuleAmount': this.state.consumeRuleAmountValue })
+        });
+    }
     handleNumberChange(value) {
         const consumeType = this.state.consumeType;
         if (consumeType % 2 === 0) { // 消费累计金额满 每满
@@ -393,6 +405,20 @@ class StepTwo extends React.Component {
             }
         }
     }
+    handleConsumeRuleAmountChange(value){
+        console.log('_TODO value', value);
+        let pattern = /^((([1-9]\d{0,4}))(\.\d{0,2})?$)|(0\.\d{0,2}?$)/;
+        if (pattern.test(value.number) || value.number == 0) {
+            this.setState({
+                consumeRuleAmountStatus: 'success',
+                consumeRuleAmountValue: value.number
+            })
+        }else{
+            this.setState({
+                consumeRuleAmountStatus: 'error',
+            })
+        }
+    }
     handleSubmit() {
         let flag = true;
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
@@ -401,6 +427,9 @@ class StepTwo extends React.Component {
             }
         });
         if (this.state.giveStatus == 'error') {
+            flag = false;
+        }
+        if (this.state.consumeRuleAmountStatus == 'error') {
             flag = false;
         }
         const opts = this.props.type == '70' || this.props.type == '64' ?
@@ -431,8 +460,11 @@ class StepTwo extends React.Component {
             }
         }
         if (this.props.type == '62') {
-            const { consumeType, numberValue,selectedTags,localType } = this.state;
+            console.log('_TODO 111', this.state);
+            const { consumeType, numberValue,selectedTags,localType, amountType, consumeRuleAmountValue } = this.state;
             opts.consumeType = consumeType;
+            opts.amountType = amountType;
+            opts.consumeRuleAmount = consumeRuleAmountValue;
             if(localType == 7){
                 opts.customerRangeConditionIDs = selectedTags.map(item => item.tagRuleID)
             }else{
@@ -443,6 +475,7 @@ class StepTwo extends React.Component {
                 flag = false;
                 this.setState({ giveStatus: 'error' })
             }
+            // _TODO
         }
         const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
         if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
@@ -663,11 +696,12 @@ class StepTwo extends React.Component {
         };
         const amountTypeSelect = (
             <Select 
+                onChange={this.handleAmountTypeChange}
                 value={this.state.amountType}
                 getPopupContainer={(node) => node.parentNode}
             >
-                <Option key="1">账单金额不足</Option>
-                <Option key="2">实收金额不足</Option>
+                <Option key="1" value='1'>账单金额不足</Option>
+                <Option key="2" value='2'>实收金额不足</Option>
             </Select>
         );
         return (
@@ -784,7 +818,7 @@ class StepTwo extends React.Component {
                                     labelCol={{ span: 4 }}
                                     wrapperCol={{ span: 17 }}
                                     validateStatus={this.state.consumeRuleAmountStatus}
-                                    help={this.state.consumeRuleAmountStatus == 'success' ? null : '2222'}
+                                    help={this.state.consumeRuleAmountStatus == 'success' ? null : '支持正数，小数点后2位，数值范围0~99999元'}
                                 >
                                     {
                                         this.props.form.getFieldDecorator('consumeRuleAmount', {
@@ -792,8 +826,9 @@ class StepTwo extends React.Component {
                                                 required: true,
                                                 message: '1111',
                                             }],
-                                            initialValue: this.state.numberValue,
+                                            initialValue: this.state.consumeRuleAmountValue,
                                         })(<PriceInput
+                                            onChange={this.handleConsumeRuleAmountChange}
                                             addonBefore={amountTypeSelect}
                                             addonAfter='不累计为消费次数'
                                         />)
