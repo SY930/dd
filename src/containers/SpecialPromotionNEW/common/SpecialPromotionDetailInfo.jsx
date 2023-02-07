@@ -408,6 +408,29 @@ class SpecialDetailInfo extends Component {
             const shareTitle = "送您一份心意，共享美食优惠！";
             const shareTitlePL = shareTitle;
             const shareSubtitlePL = "选填，请输入副标题";
+            
+            const b = this.props.specialPromotion.get("$giftInfo").toJS();
+            const { giftTotalCount, stockType } = b[0] || [{}];
+            console.log('=========stockType', stockType, giftTotalCount);
+            let { freeGetLimit } = this.state;
+            if(giftTotalCount){
+                if(stockType == 1){
+                    if(giftTotalCount == 2147483647){
+                        freeGetLimit = '0';
+                    }
+                    if(giftTotalCount != 2147483647){
+                        freeGetLimit = '1';
+                    }
+                }
+                if(stockType == 2){
+                    freeGetLimit = '2'
+                }
+                this.setState({
+                    freeGetLimit
+                })
+            }
+
+
             if (this.props.isNew) {
                 this.setState({ shareTitle });
             }
@@ -772,8 +795,9 @@ class SpecialDetailInfo extends Component {
     componentWillReceiveProps(np) {
         if (!this.props.isNew) {
             const b = np.specialPromotion.get("$giftInfo").toJS();
-            const { presentType = "", giftID, giftTotalCount } = b[0] || [{}];
-            const { freeGetLimit, couponPackageInfos = [] } = this.state;
+            const { presentType = "", giftID, giftTotalCount, stockType } = b[0] || [{}];
+            let { freeGetLimit, couponPackageInfos = [] } = this.state;
+            // console.log(`stockType: ${stockType}, freeGetLimit: ${freeGetLimit}`);
             if (this.props.type == "30" && presentType === 4 && this.__bagFlag__ && couponPackageInfos.length) {
                 const bag = (couponPackageInfos || []).filter(
                     (x) => x.couponPackageID === giftID
@@ -785,16 +809,33 @@ class SpecialDetailInfo extends Component {
                     giftTotalCountBag: giftTotalCount == '0' ? '不限制' : giftTotalCount
                 });
             }
-            if (
-                this.props.type == "21" &&
-                giftTotalCount &&
-                freeGetLimit == "0"
-            ) {
-                if (giftTotalCount !== 2147483647) {
-                    this.setState({
-                        freeGetLimit: "1",
-                    });
-                }
+            // _TODO
+            // if (
+            //     this.props.type == "21" &&
+            //     giftTotalCount &&
+            //     freeGetLimit == "0"
+            // ) {
+            //     if (giftTotalCount !== 2147483647) {
+            //         this.setState({
+            //             freeGetLimit: "1",
+            //         });
+            //     }
+            // }
+            if(this.props.type == "21" && giftTotalCount){
+                // if(stockType == 1){
+                //     if(giftTotalCount == 2147483647){
+                //         freeGetLimit = '0';
+                //     }
+                //     if(giftTotalCount != 2147483647){
+                //         freeGetLimit = '1';
+                //     }
+                // }
+                // if(stockType == 2){
+                //     freeGetLimit = '2'
+                // }
+                // this.setState({
+                //     freeGetLimit
+                // })
             }
         }
         if(this.props.type == 69 && this.props.isNew) {
@@ -1458,6 +1499,7 @@ class SpecialDetailInfo extends Component {
             giftGetRule,
             perfectReturnGiftCheckBoxStatus,
             upGradeReturnGiftCheckBoxStatus,
+            freeGetLimit,
             ...instantDiscountState
         } = this.state;
 
@@ -1823,6 +1865,7 @@ class SpecialDetailInfo extends Component {
                 giftInfo.forEach((v) => {
                     v.giftTotalCount = giftTotalCount;
                     v.giftTotalCopies = giftTotalCopies;
+                    v.stockType = freeGetLimit == 2 ? 2 : 1;
                 });
             }
             let giftIdsArr = [];

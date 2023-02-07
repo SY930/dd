@@ -15,7 +15,7 @@ const FormItem = Form.Item;
 const Option = Select.Option
 
 const SelectEl = function SelectEl() {
-    const { form: { resetFields } } = this.props;
+    const { form: { resetFields }, type } = this.props;
     const { freeGetLimit } = this.state;
     return (
         <Select
@@ -29,35 +29,44 @@ const SelectEl = function SelectEl() {
             }}
         >
             <Option value="0" key="0">不限制</Option>
-            <Option value="1" key="1">限制为</Option>
+            <Option value="1" key="1">总限制</Option>
+            <Option value="2" key="2">每天限制</Option>
         </Select>
     )
-}
+}   
 
 //免费领取模块在这
 export const freeGetStep3Render = function freeGetStep3Render() {
     const { type, isNew, form: { getFieldDecorator } } = this.props;
     const { data, freeGetLimit } = this.state;
-
     //礼品个数控制，这次放开限制，允许编辑
     // data.forEach((v) => {
     //     v.giftCount.disabled = true,
     //     v.giftCount.value = 1
     // })
 
-
     const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS();
     const dataInfo = this.props.specialPromotion.get('$eventInfo').toJS();
     const { userCount = 0 }  = dataInfo;
-    
-
+    const { giftTotalCount, stockType } =  giftInfo[0] && giftInfo[0] || [{}];
+    let prevFreeGetLimit = '0';
+    if(stockType == 1){
+        if(!giftTotalCount || giftTotalCount == 2147483647){
+            prevFreeGetLimit = '0';
+        }
+        if(giftTotalCount && giftTotalCount != 2147483647){
+            prevFreeGetLimit = '1';
+        }
+    }
+    if(stockType == 2){
+        prevFreeGetLimit = '2'
+    }
     return (
         <div>
             <FormItem
-                wrapperCol={{ span: 16 }}
-                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 20 }}
+                labelCol={{ span: 3 }}
                 className={styles.FormItemSecondStyle}
-                style={{ width: '400px' }}
                 label="礼品份数"
                 required={freeGetLimit === '1' && true}
             >
@@ -91,8 +100,10 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                                     } else if (v.number >= 100000000) {
                                         return cb('请输入大于0的8位以内的整数');
                                     }
-                                    if (v.number <= userCount) {
-                                        return cb('礼品份数不能小于用户已参与次数');
+                                    if((prevFreeGetLimit == 0 && freeGetLimit == 1) || (prevFreeGetLimit == 2 && freeGetLimit == 1)){
+                                        if (v.number <= userCount) {
+                                            return cb('礼品份数不能小于用户已参与次数');
+                                        }
                                     }
                                     cb();
                                 },
@@ -109,6 +120,11 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                             style={{ paddingLeft: '70px' }}
                         />
                     )}
+                  <div style={{marginLeft: '10px'}}>
+                        {
+                            freeGetLimit == 1 && userCount && `活动已发出了${userCount}份`
+                        }
+                    </div>
                 </div>
             </FormItem>
             <Row>
