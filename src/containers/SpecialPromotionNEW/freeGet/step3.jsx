@@ -122,7 +122,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                     )}
                   <div style={{marginLeft: '10px'}}>
                         {
-                            freeGetLimit == 1 && userCount && `活动已发出了${userCount}份`
+                            freeGetLimit == 1 && +userCount > 0 && `活动已发出了${userCount}份`
                         }
                     </div>
                 </div>

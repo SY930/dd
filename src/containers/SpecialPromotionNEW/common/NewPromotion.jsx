@@ -45,7 +45,6 @@ export default class NewPromotion extends React.Component {
     // CustomProgressBar onFinish 事件回调，当表单校验无误会调用该事件
     async onFinish(cb, flag) {
         const { specialPromotion, user } = this.props;
-        console.log('_TODO  this', this);
         const smsGate = specialPromotion.$eventInfo.smsGate;
         if (specialPromotion.$eventInfo.eventWay == '50'
             || (smsGate == '1' || smsGate == '3' || smsGate == '4')) {
