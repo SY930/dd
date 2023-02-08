@@ -1206,11 +1206,7 @@ class MyActivities extends React.Component {
         this.props.openPromotionAutoRunListModal();
     }
     downLoadTemp = () => {
-        if (isFormalRelease()) {
-            window.open(`https://res.hualala.com/crmexport/9456d8be-23b4-488c-bf0d-9b54ceb4a3ba.xlsx`);
-        } else {
-            window.open(`${ENV.FILE_RESOURCE_DOMAIN}/crmexport/9456d8be-23b4-488c-bf0d-9b54ceb4a3ba.xlsx`);
-        }
+        window.open(`${window.location.protocol}//res.hualala.com/crmexport/ba2efa40-19d5-4755-9992-0a6eb8adf0c2.xlsx`);
     }
 
     showModleTip = (res) => {
