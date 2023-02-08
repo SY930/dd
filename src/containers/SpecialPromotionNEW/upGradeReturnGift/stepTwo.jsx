@@ -162,6 +162,10 @@ class StepTwo extends React.Component {
                         },
                     }
                 }
+                addUpOpts.amountType = specialPromotion.amountType;
+                addUpOpts.consumeRuleAmount = specialPromotion.consumeRuleAmount;
+                addUpOpts.consumeRuleAmountValue = specialPromotion.consumeRuleAmount;
+                console.log('_TODO specialPromotion', specialPromotion);
             }
             const opts = {
                 message: specialPromotion.smsTemplate,
@@ -700,8 +704,8 @@ class StepTwo extends React.Component {
                 value={this.state.amountType}
                 getPopupContainer={(node) => node.parentNode}
             >
-                <Option key="1" value='1'>账单金额不足</Option>
-                <Option key="2" value='2'>实收金额不足</Option>
+                <Option key="1" value={1}>账单金额不足</Option>
+                <Option key="2" value={2}>实收金额不足</Option>
             </Select>
         );
         return (
