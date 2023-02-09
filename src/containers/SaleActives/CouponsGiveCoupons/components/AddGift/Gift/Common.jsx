@@ -67,7 +67,7 @@ const formItems = {
         ],
     },
     countType: {
-        type: 'radio',
+        type: 'custom',
         label: '相对有效期',
         defaultValue: '0',
         options: [
