@@ -720,6 +720,7 @@ class MyActivities extends React.Component {
         const opt = {
             usageMode: -1,
             sourceType: +this.isOnlinePromotionPage(),
+            operator: this.props.user.accountInfo.userName,
             ..._opt,
         }
         axiosData('/promotionExport/export.ajax', opt, {}, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((res) => {
