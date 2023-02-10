@@ -2101,6 +2101,7 @@ class MySpecialActivities extends React.Component {
                                 stylesChange={this.stylesChange}
                                 stylesShow={stylesShow}
                                 tabKeys={tabKeys}
+                                openExportHistory={() => this.setState({ exportVisible: true })}
                             />
                         </TabPane>
                     </Tabs>
@@ -2756,8 +2757,11 @@ class MySpecialActivities extends React.Component {
                                 </Select>
                             </li>
                         }
-                        
-			
+                         <li>
+                            <a onClick={this.toggleExpandState}>
+                                高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+                            </a>
+                        </li>
                         <li>
                             <Authority
                                 rightCode={SPECIAL_PROMOTION_QUERY}
@@ -2772,11 +2776,6 @@ class MySpecialActivities extends React.Component {
                                     {COMMON_LABEL.query}
                                 </Button>
                             </Authority>
-                        </li>
-                        <li>
-                            <a onClick={this.toggleExpandState}>
-                                高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-                            </a>
                         </li>
                     </ul>
                 </div>

@@ -85,14 +85,9 @@ export default class ExportModal extends Component {
     }
 
     componentDidMount() {
-        //查询条件应该在第一步导出动作的时候就上传过滤，第二步查询全部导出任务应该是
         if (this.props.basicPromotion) {
-            return axiosData('/crmimport/crmExportService_doExportPromotionInfo.ajax', {}, null, { path: 'data' })
-            .then(_records => {
-                setTimeout(() => {
-                    this.getExportRecords();
-                }, 500)
-            })
+            this.getExportRecords();
+            return
         }
         if (this.props.specialPromotion) {
             return axiosData('/crmimport/crmExportService_doExportEventInfo.ajax', {}, null, { path: 'data' })
