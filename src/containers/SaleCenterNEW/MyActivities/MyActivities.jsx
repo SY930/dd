@@ -725,7 +725,7 @@ class MyActivities extends React.Component {
         axiosData('/promotionExport/export.ajax', opt, {}, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((res) => {
             if(res.code == '000') {
                 message.success('导出成功')
-                this.props.openExportHistory()
+                this.setState({ exportVisible: true })
             }
         }).catch((err) => {
             console.log(err)

@@ -2101,7 +2101,6 @@ class MySpecialActivities extends React.Component {
                                 stylesChange={this.stylesChange}
                                 stylesShow={stylesShow}
                                 tabKeys={tabKeys}
-                                openExportHistory={() => this.setState({ exportVisible: true })}
                             />
                         </TabPane>
                     </Tabs>
