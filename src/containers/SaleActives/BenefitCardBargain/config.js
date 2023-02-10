@@ -187,7 +187,6 @@ const formItems2 = {
     label: '发起次数限制',
     surfix: '次',
     prefix: '活动期限内可发起',
-    defaultValue: '0',
     rules: [{
       required: true,
       validator: (rule, value, callback) => {
@@ -197,8 +196,8 @@ const formItems2 = {
         if (!/^\d+$/.test(value)) {
           return callback('请输入数字');
         }
-        if (value > 99) {
-          return callback('最大可配置99次');
+        if (value > 99 || value < 1) {
+          return callback('请输入1-99的数字');
         }
         return callback();
       },
