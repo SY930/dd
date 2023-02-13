@@ -58,7 +58,7 @@ class MutliGift extends Component {
                 {
                     value.map((x, i)=>{
                         return (
-                            <div key={x.id} className={css.giftBox}>
+                            <div key={x.itemID} className={css.giftBox}>
                                 <em>礼品{i+1}</em>
                                 { i>0 &&
                                    <a data-idx={i} href={href} onClick={this.onDel}>
