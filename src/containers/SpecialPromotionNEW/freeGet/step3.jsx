@@ -49,6 +49,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
     const dataInfo = this.props.specialPromotion.get('$eventInfo').toJS();
     const { userCount = 0 }  = dataInfo;
     const { giftTotalCount, stockType } =  giftInfo[0] && giftInfo[0] || [{}];
+    console.log(giftInfo, 'giftInfo============');
     let prevFreeGetLimit = '0';
     if(stockType == 1){
         if(!giftTotalCount || giftTotalCount == 2147483647){
@@ -59,7 +60,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
         }
     }
     if(stockType == 2){
-        prevFreeGetLimit = '2'
+        prevFreeGetLimit = '2';
     }
     return (
         <div>
@@ -90,6 +91,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         rules: [
                             {
                                 validator: (rule, v, cb) => {
+                                    console.log(prevFreeGetLimit,freeGetLimit, v,'prevFreeGetLimit=======')
                                     if (v.number === '' || v.number === undefined) {
                                         return cb(
                                             '请输入大于0的8位以内的整数'
@@ -101,8 +103,8 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                                         return cb('请输入大于0的8位以内的整数');
                                     }
                                     if((prevFreeGetLimit == 0 && freeGetLimit == 1) || (prevFreeGetLimit == 2 && freeGetLimit == 1)){
-                                        if (v.number <= userCount) {
-                                            return cb('礼品份数不能小于用户已参与次数');
+                                        if (v.number < userCount) {
+                                            return cb('礼品份数不能小于活动已发出次数');
                                         }
                                     }
                                     cb();
