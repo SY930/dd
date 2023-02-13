@@ -1458,7 +1458,7 @@ class SpecialDetailInfo extends Component {
     handleSubmitOld = (isPrev) => {
         console.log('999999999')
         if (isPrev) return true;
-        const { type } = this.props;
+        const { type, userCount } = this.props;
         let giftTotalCount = "";
         let giftTotalCopies = "";
         let flag = true;
@@ -1864,8 +1864,8 @@ class SpecialDetailInfo extends Component {
 
             if (type == "21" && giftTotalCount) {
                 if(freeGetLimit == 1 && giftTotalCopies != 2147483647 && giftTotalCopies < userCount){
-                    this.props.form.validateFields(['giftTotalCopies']);
                     message.warning("礼品份数不能小于活动已发出次数");
+                    this.props.form.validateFields(['giftTotalCopies']);
                     return 
                 }
                 giftInfo.forEach((v) => {
@@ -1886,7 +1886,7 @@ class SpecialDetailInfo extends Component {
             this.props.setSpecialGiftInfo(giftInfo);//发起action
             //H5领券
             if (["69"].includes(type)) {
-                const { approvalInfo, userCount } = this.state;
+                const { approvalInfo } = this.state;
                 if(!approvalInfo.activityCost || !approvalInfo.activityRate || !approvalInfo.estimatedSales || !approvalInfo.auditRemark) {
                     return;
                 }
@@ -4839,6 +4839,7 @@ function mapStateToProps(state) {
         rightPackageList: state.sale_mySpecialActivities_NEW.get('$rightPackageList').toJS(),
         rightCardList: state.sale_mySpecialActivities_NEW.get('$rightCardList').toJS(),
         disabled: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']) > 0,
+        userCount: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']),
         isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
     }
 }
