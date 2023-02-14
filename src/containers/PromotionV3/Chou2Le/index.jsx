@@ -112,8 +112,8 @@ class Chou2Le extends Component {
                 const { effectType, effectTime, validUntilDate, giftEffectTimeHours: hours, giftID, ...others } = x;
                 let rangeDate = [];
                 if(effectTime) {
-                    const st = moment(effectTime, DF);
-                    const et = moment(validUntilDate, DF);
+                    const st = effectTime != '0' ? moment(effectTime, DF) : moment(new Date());
+                    const et = validUntilDate != '0' ? moment(validUntilDate, DF) : moment(new Date());
                     rangeDate = [ st, et ];
                 }
                 let countType = '0';
