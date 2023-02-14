@@ -89,8 +89,16 @@ class CategoryFormItem extends React.Component {
     render() {
         const { decorator, key } = this.props;
         const { modalVisible, phraseList, selectedPhrases } = this.state;
+        const adminTag = {
+            width: 30,
+            display: 'inline-block',
+            color: '#108ee9',
+            lineHeight: '13px',
+            marginLeft: 5,
+            cursor: 'pointer',
+        }
         return (
-            <Col span={24} className={styles.CategoryFormItem}>
+            <Col span={24} style={{ display: 'flex', alignItems: 'center' }}>
                 {
                     decorator ? 
                         decorator({
@@ -99,7 +107,7 @@ class CategoryFormItem extends React.Component {
                             <Select
                                 size="default"
                                 notFoundContent='暂无数据'
-                                placeholder=""
+                                placeholder="可输入中文、英文、数字"
                                 multiple
                                 showSearch
                             >
@@ -114,7 +122,7 @@ class CategoryFormItem extends React.Component {
                         <Select
                             size="default"
                             notFoundContent='暂无数据'
-                            placeholder=""
+                            placeholder="可输入中文、英文、数字"
                             multiple
                             showSearch
                             onChange={this.onChange}
@@ -129,7 +137,7 @@ class CategoryFormItem extends React.Component {
                 }
                 {
                     !this.props.hideBtn &&
-                    <span className={styles.adminTag} onClick={() => this.setState({ modalVisible: true })}>管理标签</span>
+                    <span style={adminTag} onClick={() => this.setState({ modalVisible: true })}>管理标签</span>
                 }
                 {
                     modalVisible &&

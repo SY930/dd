@@ -94,7 +94,7 @@ class GiftList extends Component {
             if (err) return;
             const params = { 
                 ...values,
-                tagLst: this.state.tagLst.join(','),
+                tags: this.state.tagLst.join(','),
             };
             this.setState({
                 queryParams: { 
@@ -194,7 +194,7 @@ class GiftList extends Component {
             if (err) return;
             const params = {
                 ...values,
-                tagLst: this.state.tagLst.join(','),
+                tags: this.state.tagLst.join(','),
             };
             this.setState({
                 queryParams: { pageNo: 1, pageSize: queryParams.pageSize || 1, action, ...params },
@@ -252,8 +252,8 @@ class GiftList extends Component {
         return (
             <div className={styles2.pageContentWrapper}>
                 <div style={{ padding: '0' }} className="layoutsHeader">
-                    <div className="layoutsSearch">
-                        <ul>
+                    <div>
+                        <ul style={{ display: 'flex' }}>
                             <li className={styles.formWidth}>
                                 {/* _TODO */}
                                 <BaseForm
@@ -269,20 +269,6 @@ class GiftList extends Component {
                                 <a style={{ margin: '0 10px' }} onClick={this.toggleExpandState}>
                                     高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
                                 </a>
-                                {
-                                    this.state.expand && 
-                                    <Form inline>
-                                        <FormItem label='标签'>
-                                            <CategoryFormItem 
-                                                onChange={this.changeCategoryFormItem}
-                                                key='tagLst'
-                                                phraseType='3'
-                                                selectedPhrases={this.state.tagLst}
-                                                hideBtn={true}
-                                            />
-                                        </FormItem>
-                                    </Form>
-                                }
                             </li>
                             <li>
                                 <Authority rightCode={GIFT_LIST_QUERY}>
@@ -293,6 +279,20 @@ class GiftList extends Component {
                                 </Authority>
                             </li>
                         </ul>
+                        {
+                            this.state.expand && 
+                            <Form inline>
+                                <FormItem label='标签' style={{ width: 220 }} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                                    <CategoryFormItem 
+                                        onChange={this.changeCategoryFormItem}
+                                        key='tagLst'
+                                        phraseType='3'
+                                        selectedPhrases={this.state.tagLst}
+                                        hideBtn={true}
+                                    />
+                                </FormItem>
+                            </Form>
+                        }
                     </div>
                     <div className={styles2.rightBtnBox}>
                         <Button onClick={this.onExport} loading={this.state.exportLoading} disabled={this.state.exportLoading}>导出</Button>
