@@ -1025,12 +1025,17 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'EGiftSingleCount',
                 key: 'EGiftSingleCount',
                 className: 'TableTxtRight',
-                render(text) {
+                render(text, record) {
                     if (way == '30') {
                         return text == 0 ? '' : text
                     }
                     if (way == '21' && text == 2147483647) {
-                        text = '不限制'
+                        if(text == 2147483647){
+                            text = '不限制'
+                        }
+                        if(record.stockType == "2"){
+                            text = '不限制'
+                        }
                     }
                     return text
                 }
@@ -1109,7 +1114,8 @@ class SpecialPromotionDetail extends React.Component {
                 EGfitValidUntilDayCount: gift.giftValidUntilDayCount > 0 ? gift.giftValidUntilDayCount : days,
                 resumeGiftsCount: gift.resumeGiftsCount || 0,
                 resumeGiftsCountPercent: gift.giftSendCount == 0 ? '0%' : `${Math.round((gift.resumeGiftsCount || 0) / (gift.giftSendCount) * 10000) / 100}%`,
-                giftIncome: gift.giftIncome ? gift.giftIncome : 0
+                giftIncome: gift.giftIncome ? gift.giftIncome : 0,
+                stockType: gift.stockType
             }
         });
         if (this.props.record.eventInfo.data.eventWay == 68) {
