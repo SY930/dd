@@ -99,10 +99,16 @@ class LowPriceDetailInfo extends React.Component {
         } else {// 任意菜品
             if (stageType == 1) { // 每满
                 ruleType = '3'
+            } else if (stageType == 21) {//同一菜品满
+                ruleType = '5'
             } else {
                 ruleType = '1'
             }
         }
+        if(reduceLimit){
+            ruleType = '5'
+        }
+
         this.setState({
             display,
             ruleType,
@@ -124,6 +130,7 @@ class LowPriceDetailInfo extends React.Component {
             subRule
         } = this.state;
         let rule;
+        let stageType;
         if (Number(stageAmount || 0) <= 0) {
             this.setState({
                 stageAmountFlag: false
@@ -145,11 +152,20 @@ class LowPriceDetailInfo extends React.Component {
                 return
             }
         }
-
+        if(ruleType == "5"){
+            stageType = "21";
+        }else{
+            if(ruleType === '1' || ruleType === '2'){
+                stageType = "2";
+            }else{
+                stageType = "1";
+            }
+        }
         rule = {
             subRule,
-            stageType: ruleType === '1' || ruleType === '2' ? '2' : '1',
-            stage:  [{
+            stageType: stageType,
+            reduceLimit: ruleType !== '5' ? '' : reduceLimit,
+            stage: [{
                     freeAmount,
                     disType,
                     stageAmount,
@@ -173,7 +189,7 @@ class LowPriceDetailInfo extends React.Component {
         this.setState({
             ruleType: val,
         })
-        if (val == 1 || val == 3) {
+        if (val == 1 || val == 3 || val == 5) {
             this.props.setPromotionDetail({
                 categoryOrDish: 0,
                 dishes: [],
@@ -283,7 +299,27 @@ class LowPriceDetailInfo extends React.Component {
             subRule:value
         })
     }
-
+    handleReduceLimitTypeChange = (value) => {
+        this.setState({
+            reduceLimitType: value
+        })
+        if(value === "1"){
+            this.setState({
+                reduceLimit: undefined
+            })
+        }
+    }
+    handlePriceTypeChange = (value) => {
+        this.setState({
+            priceType: value
+        })
+    }
+    handleReduceLimitChange = (e) => {
+        const { number } = e;
+        this.setState({
+            reduceLimit: number
+        })
+    }
     renderPromotionRule() {
         return (
             <div>
@@ -440,6 +476,8 @@ class LowPriceDetailInfo extends React.Component {
                     : null}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+                    {ruleType === '5' ? <div className={styles.logoGroupHeader} >点单限制</div> : null}
+                    {ruleType === '5' ? this.renderReduceLimit() : null}
                 </Form>
             </div>
         )
