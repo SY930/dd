@@ -79,20 +79,20 @@ const formItems2 = {
     required: true,
     render: () => { },
   },
-  giftGetRule: {
-    type: 'radio',
-    label: '砍价方式',
-    defaultValue: 6,
-    options: [
-      { label: '砍至指定价格', value: 6 },
-    ],
-  },
-  bargainTip: {
-    type: 'custom',
-    label: '',
-    wrapperCol,
-    render: () => (<p className={styles.tips}>“砍至指定价格”砍价到指定的价格才可以购买</p>),
-  },
+  // giftGetRule: {
+  //   type: 'radio',
+  //   label: '砍价方式',
+  //   defaultValue: 6,
+  //   options: [
+  //     { label: '砍至指定价格', value: 6 },
+  //   ],
+  // },
+  // bargainTip: {
+  //   type: 'custom',
+  //   label: '',
+  //   wrapperCol,
+  //   render: () => (<p className={styles.tips}>“砍至指定价格”砍价到指定的价格才可以购买</p>),
+  // },
   giftGetRuleValue: {
     type: 'text',
     label: '礼品底价',
