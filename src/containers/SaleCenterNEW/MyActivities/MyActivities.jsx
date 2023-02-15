@@ -715,6 +715,23 @@ class MyActivities extends React.Component {
         opt.cb = this.showNothing;
         this.props.query(opt);
     }
+    handleExport = () => {
+        const _opt = this.getParams();
+        const opt = {
+            usageMode: -1,
+            sourceType: +this.isOnlinePromotionPage(),
+            operator: this.props.user.accountInfo.userName,
+            ..._opt,
+        }
+        axiosData('/promotionExport/export.ajax', opt, {}, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((res) => {
+            if(res.code == '000') {
+                message.success('导出成功')
+                this.setState({ exportVisible: true })
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
 
     showNothing(data) {
         if (data == undefined) {
@@ -1848,6 +1865,11 @@ class MyActivities extends React.Component {
                             </Select>
                         </li>
                         <li>
+                            <a onClick={this.toggleExpandState}>
+                                {SALE_LABEL.k5dldshc} {this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+                            </a>
+                        </li>
+                        <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}>
                                     <Icon type="search" />
@@ -1855,11 +1877,7 @@ class MyActivities extends React.Component {
                                 </Button>
                             </Authority>
                         </li>
-                        <li>
-                            <a onClick={this.toggleExpandState}>
-                                {SALE_LABEL.k5dldshc} {this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-                            </a>
-                        </li>
+                        <li><Button onClick={this.handleExport}>导出</Button></li>
                     </ul>
                     {isWeijia(accountInfo.groupID) && <p>
                         <Button type="primary" onClick={() => { this.setState({ activeImportVisible: true }) }} >导入活动</Button>

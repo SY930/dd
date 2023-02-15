@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Modal, Button, Table, message } from 'antd';
+import { Row, Col, Modal, Button, Table, message, Tooltip } from 'antd';
 import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
 import { axiosData } from '../../../helpers/util';
@@ -68,6 +68,70 @@ const COLUMNS = [{
     },
 },
 ];
+const BASICCOLUMNS = [{
+    title: COMMON_LABEL.serialNumber,
+    dataIndex: 'index',
+    width: 20,
+    className: styles.tdCenter,
+    render: (text, record, index) => {
+        return (
+            <span>{index + 1}</span>
+        );
+    },
+}, {
+    title: COMMON_GIFT.doj9y10hl09,
+    dataIndex: 'recordName',
+    className: 'TableTxtCenter',
+    width: 200,
+    render: (text) => {
+        return <span style={{ whiteSpace: 'pre-wrap' }}>{text || '--'}</span>
+    },
+}, {
+    title: COMMON_GIFT.doj9y10hl132,
+    dataIndex: 'createStamp',
+    className: 'TableTxtCenter',
+    width: 110,
+}, {
+    title: '操作人',
+    dataIndex: 'operator',
+    key: 'operator',
+    className: 'TableTxtCenter',
+    width: 100,
+    render: (text) => (
+        <Tooltip title={text}>{text}</Tooltip>
+    )
+}, {
+    title: '业态',
+    dataIndex: 'promotionVersion',
+    key: 'promotionVersion',
+    width: 80,
+}, {
+    title: COMMON_LABEL.status,
+    dataIndex: 'exportStatus',
+    className: 'TableTxtCenter',
+    width: 40,
+    render: (text, record, index) => {
+        return <span>{mapValueToLabel(ExportStatus, String(text))}</span>
+    },
+}, {
+    title: COMMON_LABEL.actions,
+    dataIndex: 'payType',
+    className: 'TableTxtCenter',
+    width: 40,
+    render(text, record) {
+        return (
+            <span>
+                {
+                    record.exportStatus == '1' ?
+                        <a href="#" className="linkColor" onClick={this.handleDownLoad.bind(this, record)}>{ COMMON_LABEL.download }</a>
+                        :
+                        null
+                }
+                <a href="#" className="linkColor" onClick={this.handleDelete.bind(this, record)}>{ COMMON_LABEL.delete }</a>
+            </span>
+        )
+    },
+}];
 @injectIntl
 export default class ExportModal extends Component {
     constructor(props) {
@@ -85,14 +149,14 @@ export default class ExportModal extends Component {
     }
 
     componentDidMount() {
-        //查询条件应该在第一步导出动作的时候就上传过滤，第二步查询全部导出任务应该是
+        if(this.props.basicPromotion) {
+            this.columns = BASICCOLUMNS
+        } else {
+            this.columns = COLUMNS
+        }
         if (this.props.basicPromotion) {
-            return axiosData('/crmimport/crmExportService_doExportPromotionInfo.ajax', {}, null, { path: 'data' })
-            .then(_records => {
-                setTimeout(() => {
-                    this.getExportRecords();
-                }, 500)
-            })
+            this.getExportRecords();
+            return
         }
         if (this.props.specialPromotion) {
             return axiosData('/crmimport/crmExportService_doExportEventInfo.ajax', {}, null, { path: 'data' })
@@ -268,7 +332,7 @@ export default class ExportModal extends Component {
                             <Table
                                 className={styles.rightAlignedPagination}
                                 key={Math.random()}
-                                scroll={{ y: this.state.tableHeight }}
+                                scroll={{ y: this.state.tableHeight, x: this.props.basicPromotion ? 1000 : 0 }}
                                 bordered={true}
                                 loading={this.state.loading}
                                 columns={this.columns.map(c => (c.render ? ({
