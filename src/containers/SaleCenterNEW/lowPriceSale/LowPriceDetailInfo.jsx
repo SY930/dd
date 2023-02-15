@@ -73,7 +73,6 @@ class LowPriceDetailInfo extends React.Component {
         if (_rule === null || _rule === undefined) {
             return null;
         }
-
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         const stageType = (_rule || {}).stageType;
         const subRule = (_rule || {}).subRule;
@@ -90,7 +89,7 @@ class LowPriceDetailInfo extends React.Component {
         if (_scopeLstLength) {// 指定菜品
             if (stageType == 1) { // 每满
                 ruleType = '4'
-            } if (stageType == 21) {//同一菜品满
+            } else if (stageType == 21) {//同一菜品满
                 ruleType = '5'
             } else {
                 ruleType = '2'
@@ -107,7 +106,6 @@ class LowPriceDetailInfo extends React.Component {
         if(reduceLimit){
             ruleType = '5'
         }
-
         this.setState({
             display,
             ruleType,
