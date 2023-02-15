@@ -219,7 +219,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '91',
         right: 17,
         bottom: 0,
-        isNew: new Date('2022/12/04').getTime(), // 该字段新营销活动展示【新】活动的标识，日期为上线日期
+        isNew: new Date('2023/02/15').getTime(), // 该字段新营销活动展示【新】活动的标识，日期为上线日期
     },
     {
         title: 'H5领券',
