@@ -46,7 +46,7 @@ class ActiveRules extends Component {
     if (value) {
       queryCardDetail(value).then((data) => {
         this.setState({
-          dataSource: data,
+          dataSource: !itemID ? data : this.getDataSource(formData, data),
           selectedRowKeys: this.getSelectedRowKey(formData, data, itemID),
         })
       })
@@ -59,6 +59,16 @@ class ActiveRules extends Component {
         benefitCardLst: list,
       })
     })
+  }
+
+  getDataSource = (formData, data) => {
+    let dataSource = [];
+    const index = data.findIndex(item => formData.giftID === item.paymentStageID)
+    if (data[index]) {
+      data[index].realPrice = formData.presentValue;
+    }
+    dataSource = data;
+    return dataSource
   }
 
   getSelectedRowKey = (formData, data, itemID) => {
