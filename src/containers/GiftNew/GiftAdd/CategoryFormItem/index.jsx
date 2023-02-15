@@ -2,13 +2,9 @@
 import React from 'react';
 import { Col, Select } from 'antd';
 import styles from "./style.less";
+import _ from "lodash";
 import NewAddCategorys from "./NewAddCategorys";
 import { axiosData } from 'helpers/util';
-import _ from "lodash";
-import { connect } from "react-redux";
-import {
-    fetchPromotionTagsAC,
-} from "../../../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
 
 const Option = Select.Option;
 
@@ -16,8 +12,8 @@ class CategoryFormItem extends React.Component {
     state = {
         phraseList: [], // 标签列表
         modalVisible: false,
-        loading: false,
         selectedPhrases: [],
+        loading: false
     }
 
     componentDidMount() {
@@ -51,12 +47,14 @@ class CategoryFormItem extends React.Component {
             const phraseList = res.phraseList || [];
             if(this.props.form){
                 // BaseForm组件使用
-                const { getFieldsValue } = this.props.form;
-                let { tagLst = [] } = getFieldsValue();
-                if(tagLst.length > 0){
-                    tagLst = tagLst.filter(id => phraseList.map(item => item.name).includes(id));
+                const { getFieldsValue, setFieldsValue } = this.props.form;
+                let { tagLst: newTagLst = [] } = getFieldsValue();
+                if(newTagLst.length > 0){
+                    newTagLst = newTagLst.filter(id => phraseList.map(item => item.name).includes(id));
                 }
-                this.props.onChange(tagLst);
+                setFieldsValue({
+                    tagLst: newTagLst
+                })
             }else{
                 let selectedPhrases = this.state.selectedPhrases.filter(id => phraseList.map(item => item.name).includes(id));
                 this.props.onChange(selectedPhrases);
@@ -65,7 +63,7 @@ class CategoryFormItem extends React.Component {
                 })
             }
             this.setState({
-                phraseList,
+                phraseList
             })
         }).catch((error) => {
             this.setState({
@@ -79,13 +77,6 @@ class CategoryFormItem extends React.Component {
             modalVisible: false,
         });
         this.getPhraseList();
-        const { phraseType, user: { groupID } = {}} = this.props;
-        if(this.props && groupID){
-            this.props.fetchPromotionTags({
-                groupID,
-                phraseType,
-            });
-        }
     }
 
     onChange = (value) => {
@@ -160,18 +151,5 @@ class CategoryFormItem extends React.Component {
     }
 }
 
-
-function mapStateToProps(state) {
-    return {
-        user: state.user && state.user.get('accountInfo').toJS()
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        fetchPromotionTags: (opts, params) => dispatch(fetchPromotionTagsAC(opts, params)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryFormItem);
+export default CategoryFormItem;
 
