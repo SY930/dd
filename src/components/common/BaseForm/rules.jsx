@@ -15,6 +15,11 @@ const RULES_CONFIG = {
         max: 50,
         message: '[label]长度必须在[min]到[max]个字符之间',
     },
+    stringLength2: {
+        min: 1,
+        max: 20,
+        message: '[label]长度必须在[min]到[max]个字符之间',
+    },
     // 编码：编码统一20个字符，数字、英文输入
     code: {
         pattern: /^[0-9a-zA-Z]{0,20}$/,

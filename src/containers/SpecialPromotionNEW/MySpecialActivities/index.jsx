@@ -475,6 +475,7 @@ class MySpecialActivities extends React.Component {
                 { value: "85", label: "千人千面" },
                 { value: '87', label: '消费送礼' },
                 { value: '95', label: '限时秒杀' },
+                { value: '91', label: '权益卡砍价' },
             ],
             auditStatus: [
                     { value: '', label: '全部' },
@@ -1082,7 +1083,7 @@ class MySpecialActivities extends React.Component {
             })
             return;
         }
-        if ([85, 23, 95].includes(key)) {
+        if ([85, 23, 95, 91].includes(key)) {
             setTimeout(() => {
                 jumpPage({
                     menuID: SALE_ACTIVE_NEW_PAGE,
@@ -2756,8 +2757,11 @@ class MySpecialActivities extends React.Component {
                                 </Select>
                             </li>
                         }
-                        
-			
+                         <li>
+                            <a onClick={this.toggleExpandState}>
+                                高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+                            </a>
+                        </li>
                         <li>
                             <Authority
                                 rightCode={SPECIAL_PROMOTION_QUERY}
@@ -2772,11 +2776,6 @@ class MySpecialActivities extends React.Component {
                                     {COMMON_LABEL.query}
                                 </Button>
                             </Authority>
-                        </li>
-                        <li>
-                            <a onClick={this.toggleExpandState}>
-                                高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-                            </a>
                         </li>
                     </ul>
                 </div>
@@ -3357,12 +3356,7 @@ class MySpecialActivities extends React.Component {
                                                 );
                                                 return;
                                             }
-                                            if (
-                                                record.eventWay === 78 ||
-                                                record.eventWay === 79 ||
-                                                record.eventWay === 83 ||
-                                                record.eventWay === 85
-                                            ) {
+                                            if ([78, 79, 83, 85].includes(record.eventWay)) {
                                                 this.onV3Click(
                                                     record.itemID,
                                                     true,
@@ -3475,7 +3469,7 @@ class MySpecialActivities extends React.Component {
                                             );
                                             return;
                                         }
-                                        if ([78, 79, 83, 85, 23, 95].includes(record.eventWay)) {
+                                        if ([78, 79, 83, 85, 23, 95, 91].includes(record.eventWay)) {
                                             this.handleEditActive(record)(() =>
                                                 this.onV3Click(
                                                     record.itemID,
@@ -3556,7 +3550,7 @@ class MySpecialActivities extends React.Component {
                                             return;
                                         }
                                         if (
-                                            [78, 79, 83, 85, 23, 89, 95].includes(record.eventWay)
+                                            [78, 79, 83, 85, 23, 89, 95, 91].includes(record.eventWay)
                                         ) {
                                             this.onV3Click(
                                                 record.itemID,

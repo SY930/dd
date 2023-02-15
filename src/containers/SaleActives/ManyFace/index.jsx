@@ -14,7 +14,7 @@ import {
     saleCenterSetSpecialBasicInfoAC,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 import { getEvent, searchAllActivity, searchAllMallActivity, postEvent, putEvent, queryActiveList, putRule, getAppCoustomPage } from './AxiosFactory';
-import { asyncParseForm } from '../../../helpers/util'
+import { asyncParseForm, formatEventRange } from '../../../helpers/util'
 import { getItervalsErrorStatus } from './Common'
 import styles from './ManyFace.less'
 
@@ -304,7 +304,7 @@ class ManyFace extends Component {
     onSubmit = (values, formData2) => {
         const { itemID } = this.props
         const { eventRange, timeList, validCycle = [], cycleType, clientType, sceneList, tagLst,  ...others1 } = values;
-        const newEventRange = this.formatEventRange(eventRange);
+        const newEventRange = formatEventRange(eventRange);
         const newTimeList = this.formatTimeList(timeList);
         const newTagLst = Array.isArray(tagLst) ? tagLst.join(',') : '';
 
@@ -614,13 +614,6 @@ class ManyFace extends Component {
         return times;
     }
 
-    formatEventRange = (eventRange) => {
-        const [sd, ed] = eventRange;
-        const eventStartDate = moment(sd).format(DF);
-        const eventEndDate = moment(ed).format(DF);
-        return { eventStartDate, eventEndDate };
-    }
-
     viewRule = () => {
         const { accountInfo } = this.props;
         axios.post('/api/v1/universal', {
@@ -655,7 +648,7 @@ class ManyFace extends Component {
     preSubmit = (values, formData2) => {
         const { clientType, eventRange, shopIDList, triggerSceneList = [], timeList, validCycle, cycleType, excludedDate, sceneList, } = values;
         const { itemID } = this.props
-        const { eventStartDate, eventEndDate } = this.formatEventRange(eventRange);
+        const { eventStartDate, eventEndDate } = formatEventRange(eventRange);
         let triggerScene = triggerSceneList;
         triggerScene = clientType === '1' ? [1, 2, 3, 4] : triggerScene;
         if (['21', '22'].includes(sceneList)) { // 开屏页 首页

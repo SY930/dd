@@ -73,7 +73,8 @@ const exportablePromotionTypes = [
     '69',
     '79',
     '83',
-    '95'
+    '95',
+    '91'
 ];
 const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 import {
@@ -1002,7 +1003,49 @@ class SpecialPromotionDetail extends React.Component {
                 giftCountText = `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}`;
             }
         }
-        const columns = [
+        const columns = way == 91 ? [
+            {
+                title: '序号',
+                dataIndex: 'idx',
+                key: 'idx',
+                className: 'TableTxtCenter',
+                render: (text) => {
+                    return Number(text) + 1
+                },
+            },
+            {
+                title: '权益卡名称',
+                dataIndex: 'benefitCardName',
+                key: 'benefitCardName',
+                render: (text, record) => {
+                    return <span title={record.benefitCardName}>{record.benefitCardName}</span>
+                }
+            },
+            {
+                title: '档位名称',
+                dataIndex: 'EGiftName',
+                key: 'EGiftName',
+                render: (text, record) => {
+                    return <span title={record.EGiftName}>{record.EGiftName}</span>
+                }
+            },
+            {
+                title: '发起数量',
+                dataIndex: 'launchEventCount',
+                key: 'launchEventCount',
+                render: (text, record) => {
+                    return <span title={text}>{text}</span>
+                }
+            },
+            {
+                title: '砍价人数',
+                dataIndex: 'helpEventCount',
+                key: 'helpEventCount',
+                render: (text, record) => {
+                    return <span title={text}>{text}</span>
+                }
+            },
+        ] : [
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
                 dataIndex: 'idx',
@@ -1115,7 +1158,10 @@ class SpecialPromotionDetail extends React.Component {
                 resumeGiftsCount: gift.resumeGiftsCount || 0,
                 resumeGiftsCountPercent: gift.giftSendCount == 0 ? '0%' : `${Math.round((gift.resumeGiftsCount || 0) / (gift.giftSendCount) * 10000) / 100}%`,
                 giftIncome: gift.giftIncome ? gift.giftIncome : 0,
-                stockType: gift.stockType
+                stockType: gift.stockType,
+                benefitCardName: gift.cardTypeName,  
+                helpEventCount: gift.helpEventCount,
+                launchEventCount: gift.launchEventCount,
             }
         });
         if (this.props.record.eventInfo.data.eventWay == 68) {
@@ -1791,14 +1837,14 @@ class SpecialPromotionDetail extends React.Component {
                 }
             })
         }
-        if (eventWay == 66) { // 膨胀大礼包
+        if (eventWay == 66 || eventWay == 91) { // 膨胀大礼包
             columns.push({
                 title: `助力人数`,
                 dataIndex: 'joinCount',
                 key: 'joinCount',
                 className: 'TableTxtCenter',
                 render: (text, record) => {
-                    if (text > 0) {
+                    if (text > 0 && eventWay == 66) {
                         return (<a onClick={() => this.handleInviteeModalOpen(record)} title={text}>{text}</a>)
                     }
                     return text
@@ -1913,7 +1959,7 @@ class SpecialPromotionDetail extends React.Component {
                 joinTime: moment(new Date(parseInt(user.createTime))).format('YYYY-MM-DD HH:mm:ss'),
                 joinCount: user.joinCount || 0,
                 giftName: user.giftName || '',
-                orderNo: user.orderNo || ''
+                orderNo: user.orderNo || '',
             }
         });
         let len = null;
