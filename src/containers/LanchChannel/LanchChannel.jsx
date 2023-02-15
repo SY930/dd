@@ -125,8 +125,8 @@ class LanchChannel extends React.Component {
                             this.getChannelList({
                                 pageNo: 1,
                                 pageSize: 10,
-                                channelGroupItemID: this.state
-                                    .channelGroupItemID,
+                                channelGroupItemID:
+                                    this.state.channelGroupItemID,
                                 ...this.state.formData,
                             });
                         }
@@ -256,12 +256,12 @@ class LanchChannel extends React.Component {
                         }成功`
                     );
                     this.onCancel();
-                    this.modalForm.resetFields();
                     this.getGroupList();
                     this.getChannelList(resetParams);
                 }
             })
             .catch((err) => {
+                console.log(err)
                 // empty catch
             });
     };
@@ -310,6 +310,16 @@ class LanchChannel extends React.Component {
                         </Tooltip>
                     </div>
                     <div>
+                        <Button
+                            onClick={() => {
+                                this.openModal("group", false, {});
+                            }}
+                            style={{ marginRight: 20 }}
+                            type="ghost"
+                            icon="plus"
+                        >
+                            新增分组
+                        </Button>
                         <Button
                             onClick={() =>
                                 this.openModal("channel", false, {

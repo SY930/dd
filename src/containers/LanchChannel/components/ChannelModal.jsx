@@ -39,6 +39,7 @@ class ChannelModal extends React.Component {
           params.channelItemID = isEdit ? this.state.formData.itemID : undefined
         }
         handleSubmit(url, params)
+        this.handleCancel()
       } else {
         console.log(errs)
       }
@@ -70,6 +71,9 @@ class ChannelModal extends React.Component {
         render: (decorator) => (
           decorator({
             key: 'channelGroupItemID',
+            rules: [
+                { required: true, message: '请选择分组' },
+            ]
           })(
             <Select placeholder='请选择分组' showSearch allowClear filterOption={(value, option) => option.props.children.indexOf(value) > -1}>
               {
@@ -121,4 +125,4 @@ class ChannelModal extends React.Component {
   }
 }
 
-export default Form.create()(ChannelModal);
+export default ChannelModal;
