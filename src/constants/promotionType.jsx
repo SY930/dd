@@ -210,6 +210,18 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         bottom: 0,
     },
     {
+        title: '权益卡砍价',
+        isSpecial: true,
+        tags: ['小程序'],
+        signs: ['wx'],
+        text: '邀请好友帮忙砍价，超低价格获得产品',
+        example: '',
+        key: '91',
+        right: 17,
+        bottom: 0,
+        isNew: new Date('2022/12/04').getTime(), // 该字段新营销活动展示【新】活动的标识，日期为上线日期
+    },
+    {
         title: 'H5领券',
         isSpecial: true,
         tags: [SALE_LABEL.k5krn6z9],

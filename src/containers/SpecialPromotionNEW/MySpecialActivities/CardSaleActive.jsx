@@ -108,7 +108,7 @@ class CardSaleActive extends Component {
             message.warning('该活动已下线');
             return;
         }
-        if ([78, 79, 83, 85, 23, 89, 95].includes(record.eventWay)) {
+        if ([78, 79, 83, 85, 23, 89, 95, 91].includes(record.eventWay)) {
             this.props.onV3Click(record.itemID, true, record.eventWay, record.isActive, 'view');
             return;
         }
@@ -132,7 +132,7 @@ class CardSaleActive extends Component {
             message.warning('该活动已下线');
             return;
         }
-        if ([78, 79, 83, 85, 23, 95].includes(record.eventWay)) {
+        if ([78, 79, 83, 85, 23, 95, 91].includes(record.eventWay)) {
             this.props.handleEditActive(record)(() => this.props.onV3Click(record.itemID, false, record.eventWay, record.isActive))
             return;
         }

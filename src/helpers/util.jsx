@@ -6,11 +6,15 @@ import _ from 'lodash';
 import $ from 'jquery';
 import uuid from 'uuid/v4';
 import sensors from 'sa-sdk-javascript';
+import moment from 'moment'
 import { getStore } from '@hualala/platform-base'
 
 import getApiConfig from './callserver';
 import { FoodMenuID, RetailMenuID } from '../constants/WhiteList'
 
+
+const DF = 'YYYYMMDD';
+const TF = 'HHmm';
 /* eslint-disable */
 /**
  * 将fetch函数的response转化为json格式
@@ -885,4 +889,11 @@ export function getCookie(name) {
     } else {
         return null;
     }
+}
+
+export const formatEventRange = (eventRange) => {
+    const [sd, ed] = eventRange;
+    const eventStartDate = moment(sd).format(DF);
+    const eventEndDate = moment(ed).format(DF);
+    return { eventStartDate, eventEndDate };
 }
