@@ -1,9 +1,12 @@
+
 import React, { PureComponent as Component } from 'react';
-import { TreeSelect } from 'antd';
+import { TreeSelect, Radio } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import { timeOpts, dayOpts, formKeys1, formItems, formKeys2, formItemLayout } from './Common';
 
 import css from './style.less';
+
+const { Button: RadioButton, Group: RadioGroup } = Radio;
 
 export default class Gift extends Component {
     /* 页面需要的各类状态属性 */
@@ -13,6 +16,21 @@ export default class Gift extends Component {
         countType: '0',
         giftIDNumber:''
     };
+
+    onChangeCountType = ({ target }) => {
+        const { idx, onChange } = this.props;
+        const { value } = target
+        if (value == '1') {
+            onChange({ 'giftEffectTimeHours': '1' }, this.form);
+            this.form.setFieldsValue({ 'giftEffectTimeHours': '1' });
+        }
+        const options = (value === '0') ? timeOpts : dayOpts;
+        this.setState({
+            options,
+            countType: value
+        });
+        onChange({ countType: value }, this.form);
+    }
 
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
@@ -52,7 +70,7 @@ export default class Gift extends Component {
     resetFormItems() {
         const { options, countType } = this.state;
         const { treeData } = this.props;
-        const { giftID, giftEffectTimeHours } = formItems;
+        const { giftID, giftEffectTimeHours, countType: countTypeform } = formItems;
         const render = d => d()(
             <TreeSelect
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -70,6 +88,18 @@ export default class Gift extends Component {
                 options,
                 defaultValue: countType == 0 ? '0' : '1',
             },
+            countType: {
+                ...countTypeform,
+                render: (d, form) => {
+                    return d({
+                        onChange:this.onChangeCountType
+                    })(
+                        <RadioGroup>
+                            {countTypeform.options.map((item, key) => (<Radio key={key} value={item.value}>{item.label}</Radio>))}
+                        </RadioGroup>
+                    )
+                }
+            }
         }
     }
     render() {

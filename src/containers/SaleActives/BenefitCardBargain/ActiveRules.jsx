@@ -13,7 +13,7 @@ import { formItems2, formItemLayout, columns } from './config'
 import { getBenefitCards, queryCardDetail } from './AxiosFactory'
 import styles from './styles.less'
 
-const formKeys = ['cardTypeID', 'gears', 'giftGetRule', 'bargainTip',
+const formKeys = ['cardTypeID', 'gears',
   'giftGetRuleValue', 'giftCountTip', 'needCount', 'bargainCountTip', 'ratio', 'ratioTip', 'eventDuration', 'bargainValidityTip', 'buyLimit', 'countLimitTip'];
 
 const Option = Select.Option
@@ -46,7 +46,7 @@ class ActiveRules extends Component {
     if (value) {
       queryCardDetail(value).then((data) => {
         this.setState({
-          dataSource: data,
+          dataSource: !itemID ? data : this.getDataSource(formData, data),
           selectedRowKeys: this.getSelectedRowKey(formData, data, itemID),
         })
       })
@@ -59,6 +59,16 @@ class ActiveRules extends Component {
         benefitCardLst: list,
       })
     })
+  }
+
+  getDataSource = (formData, data) => {
+    let dataSource = [];
+    const index = data.findIndex(item => formData.giftID === item.paymentStageID)
+    if (data[index]) {
+      data[index].realPrice = formData.presentValue;
+    }
+    dataSource = data;
+    return dataSource
   }
 
   getSelectedRowKey = (formData, data, itemID) => {
@@ -150,27 +160,32 @@ class ActiveRules extends Component {
     const { dataSource } = this.state;
     const { gearData = [] } = this.props
     return (
-      <div>
-        {d({
-          key: 'giftID',
-        })(
-          <Table
-            bordered={true}
-            pagination={false}
-            columns={columns}
-            dataSource={dataSource}
-            rowSelection={{
-              onChange: (selectedRowKeys, selectedRows) => this.handleSelected(selectedRowKeys, selectedRows),
-              type: 'radio',
-              // getCheckboxProps: record => ({ defaultChecked: record.isBind === true }),
-              selectedRowKeys: this.state.selectedRowKeys,
-              getCheckboxProps: record => ({
-                disabled: gearData.some(item => item.giftID === record.paymentStageID),
-              }),
-            }}
-          />
-        )}
-      </div>
+      <Row>
+        <Col>
+          {d({
+            key: 'giftID',
+          })(
+            <Table
+              bordered={true}
+              pagination={false}
+              columns={columns}
+              dataSource={dataSource}
+              rowSelection={{
+                onChange: (selectedRowKeys, selectedRows) => this.handleSelected(selectedRowKeys, selectedRows),
+                type: 'radio',
+                // getCheckboxProps: record => ({ defaultChecked: record.isBind === true }),
+                selectedRowKeys: this.state.selectedRowKeys,
+                getCheckboxProps: record => ({
+                  disabled: gearData.some(item => item.giftID === record.paymentStageID),
+                }),
+              }}
+            />
+          )}
+        </Col>
+        <Col>
+          <p className={styles.tips} style={{ marginTop: 7 }}>活动创建成功后，不能修改权益卡价格；如需变更权益卡价格，请重新创建活动</p>
+        </Col>
+      </Row>
     )
   }
 
