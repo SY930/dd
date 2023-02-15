@@ -437,6 +437,9 @@ class MyActivitiesShop extends React.Component {
     }
 
     confirmDelete = (record) => {
+        if(record.maintenanceLevel == '0' || record.isActive != 0 || !isMine(record)) {
+            return
+        }
         confirm({
         title: <span style={{color: '#434343'}}>{SALE_LABEL.k5dnw1q3}</span>,
             content: (

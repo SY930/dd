@@ -11,13 +11,15 @@ class GroupTree extends Component {
     total: 0
   }
 
-  componentDidUpdate(prevProps) {
-    const { groupData = [] } = this.props
-    if(prevProps.groupData != groupData) {
+  componentWillReceiveProps(nextProps) {
+    const { groupData = [] } = nextProps
+    if(this.props.groupData != groupData) {
       let total = 0
-      groupData.map(item => {
-        total += Number(item.count)
-      })
+      if(groupData.length) {
+          groupData.map(item => {
+            total += Number(item.count)
+          })
+      }
       this.setState({
         total,
       })
@@ -46,7 +48,7 @@ class GroupTree extends Component {
         </div>
         {isExpand && <div className={styles.groupList}>
           {
-            groupData.map((item, index) => (
+            groupData.length ? groupData.map((item, index) => (
               <div
                 className={classnames(styles.groupItem, { [styles.active]: item.itemID === currentGroup })}
                 onClick={() => changeGroup(item, index)}
@@ -57,14 +59,14 @@ class GroupTree extends Component {
                   <Menu.Item key="0">
                     <a onClick={() => editGroup('group', true, item)}>编辑分组</a>
                   </Menu.Item>
-                  {groupData.length > 1 && <Menu.Item key="1">
+                  <Menu.Item key="1">
                     <a onClick={() => delGroup(item)}>删除分组</a>
-                  </Menu.Item>}
+                  </Menu.Item>
                 </Menu>} trigger={['hover']}>
                   <img src={operationImg} style={{ width: 16, height: 16 }} />
                 </Dropdown>
               </div>
-            ))
+            )) : null
           }
         </div>}
       </div>
