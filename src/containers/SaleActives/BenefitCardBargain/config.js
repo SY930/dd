@@ -169,8 +169,8 @@ const formItems2 = {
         if (!/^\d+$/.test(value)) {
           return callback('请输入数字');
         }
-        if (value > 240) {
-          return callback('最大可配置240小时');
+        if (value > 240 || value < 1) {
+          return callback('请输入1-240的数字');
         }
         return callback();
       },

@@ -991,7 +991,6 @@ class SpecialPromotionDetail extends React.Component {
     }
     // 礼品信息表格
     renderGiftInfoTable(records, type) {
-        console.log("🚀 ~ file: specialPromotionDetail.jsx:993 ~ SpecialPromotionDetail ~ renderGiftInfoTable ~ records", records)
         const way = this.state.eventInfo.data.eventWay;
         const { intl } = this.props;
         let giftCountText = '';
