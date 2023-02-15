@@ -553,7 +553,7 @@ class StepTwo extends React.Component {
                                             }
                                             cb(rule.message)
                                         },
-                                        message: '请输入0-4500的整数',
+                                        message: '请输入0-4500的整数', 
                                     },
                                 ],
                             })(
@@ -563,7 +563,7 @@ class StepTwo extends React.Component {
                             )
                         }
                         <span>分钟内重复评价不触发送礼</span>
-                        <Tooltip  title="只能输入0-4500的整数，0代表不限制">
+                        <Tooltip  title="只能输入0-4500的整数，0代表不限制"> 
                             <Icon
                                 type={'question-circle'}
                                 style={{ color: '#787878',marginLeft:5 }}
