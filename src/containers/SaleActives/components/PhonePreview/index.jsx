@@ -8,8 +8,8 @@
 import React, { Component } from "react";
 import { Icon } from "antd";
 import style from "./styles.less";
-import OnlineRestaurantGiftGivingPng from "../../asssets/OnlineRestaurantGiftGiving.png";
-
+import onlineRestaurantGiftGivingPng from "../../asssets/OnlineRestaurantGiftGiving.png";
+import miaoshaSnapPng from "../../asssets/miaoshaSnap.png";
 export class PhonePreview extends Component {
     static propTypes = {};
 
@@ -25,17 +25,16 @@ export class PhonePreview extends Component {
                                     {[
                                         { name: "弹窗海报", value: "1" },
                                         { name: "banner广告", value: "2" },
-                                    ].map((item, index) => (
+                                    ].map((item) => (
                                         <div
-                                            className={`${style.platformItem} ${
-                                                item.value === type
-                                                    ? style.selectedItem
-                                                    : ""
-                                            }`}
+                                            className={`${style.platformItem} ${item.value === type
+                                                ? style.selectedItem
+                                                : ""
+                                                }`}
                                         >
                                             <span>{item.name}</span>
-                                        </div>
-                                    ))}
+                                        </div>)
+                                    )}
                                 </div>
                             </div>
                         ) : null}
@@ -58,7 +57,7 @@ export class PhonePreview extends Component {
                                                 textAlign: "right",
                                             }}
                                         >
-                                            {type == "2" && (
+                                            {(type == "2" || type == '21' || type == '22') && (
                                                 <img
                                                     src="http://res.hualala.com/basicdoc/f85aeeb1-6b26-439f-9a5e-00c5f935d857.png"
                                                     alt=""
@@ -94,12 +93,23 @@ export class PhonePreview extends Component {
                                     style={{ top: 16, left: 16 }}
                                 >
                                     <img
-                                        src={OnlineRestaurantGiftGivingPng}
+                                        src={onlineRestaurantGiftGivingPng}
                                         alt=""
                                         style={{ width: 290 }}
                                     />
                                 </div>
-                            ) : null}
+                            ) : typeKey == "95" ? (
+                                <div
+                                    className={style.simpleDisplayBlock}
+                                    style={{ top: 16, left: 16 }}
+                                >
+                                    <img
+                                        src={miaoshaSnapPng}
+                                        alt=""
+                                        style={{ width: 290 }}
+                                    />
+                                </div>
+                            ): null}
                         </div>
                     </div>
                 </div>

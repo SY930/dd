@@ -80,6 +80,7 @@ class GiveGiftsToNewFollowersWrapper extends NewPromotion {
                 onFinish={this.handleFinish}
                 onPrev={this.handlePrev}
                 onCancel={this.handleCancel}
+                promotionType={this.props.promotionType}
             />
         );
     }

@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Form, Icon, message, Row } from 'antd';
+import { Button, Checkbox, Col, Form, Icon, message, Row, Radio, ToolTip } from 'antd';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -18,8 +18,16 @@ import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
+const RadioGroup = Radio.Group;
 const ButtonGroup = Button.Group;
 const Immutable = require('immutable');
+
+
+//周黑鸭需求
+import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
+import { isCheckApproval, checkGoodsScopeListIsNotEmpty, isZhouheiya, businessTypesList, WJLPGroupID } from '../../../constants/WhiteList';
+import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+import GoodsRef from '@hualala/sc-goodsRef';
 
 @injectIntl()
 class CompositeDetailInfo extends React.Component {
@@ -44,6 +52,7 @@ class CompositeDetailInfo extends React.Component {
                     discountStatus: 'success', // 验证信息
                 },
             ],
+            disCountShare: 1,
         };
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
@@ -63,6 +72,8 @@ class CompositeDetailInfo extends React.Component {
         this.handleDiscountChange = this.handleDiscountChange.bind(this);
         this.handleRadioChange = this.handleRadioChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
+        this.renderConditionsZhy = this.renderConditionsZhy.bind(this);
     }
 
     componentDidMount() {
@@ -83,6 +94,11 @@ class CompositeDetailInfo extends React.Component {
         }, () => {
             this.sortRuleJson(this.state.rule);
         });
+
+        if (isZhouheiya(this.props.user.groupID)) {
+            let goodsScopeList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'goodsScopeList']).toJS();
+            this.goodsScopeList = goodsScopeList
+        }
     }
 
     sortScopeLst(scopeLst) {
@@ -131,6 +147,7 @@ class CompositeDetailInfo extends React.Component {
             return
         }
         const conditions = [];
+        const { user } = this.props;
         rule.stage.map((ruleStage, index) => {
             if (!conditions[index]) {
                 conditions[index] = {
@@ -150,35 +167,140 @@ class CompositeDetailInfo extends React.Component {
             conditions[index].discount = ruleStage.discountRate * 1;
         })
         this.setState({ conditions })
+        if (isZhouheiya(user.groupID)) {
+            const { stageType, shareRatioList = [], shareType } = rule;
+            this.setState({
+                stageType,
+                condition1: shareRatioList[0],
+                condition2: shareRatioList[1],
+                shareType: shareType || 1,
+            })
+        }
+
     }
 
     handleSubmit() {
         let nextFlag = true;
-        const { data, conditions } = this.state;
+        const { data, conditions, stageType, condition1, condition2, shareType } = this.state;
         const { intl } = this.props;
-        const k5hkj1ef = intl.formatMessage(SALE_STRING.k5hkj1ef);
-        this.props.form.validateFieldsAndScroll((err, values) => {
-            if (err) {
-                nextFlag = false;
-            } else {
-                data.map((value, idx) => {
-                    if (value.scopeLst.length == 0) {
-                        const foodIdx = `food${idx}`;
-                        this.props.form.setFields({
-                            [foodIdx]: {
-                                value: {},
-                                errors: [new Error(k5hkj1ef)],
-                            },
-                        });
-                        nextFlag = false;
-                    }
-                })
+
+        if (isZhouheiya(this.props.user.groupID)) {
+
+            let goodsScopeList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'goodsScopeList']).toJS();
+            goodsScopeList = goodsScopeList.length > 0 ? goodsScopeList : [undefined, undefined];
+
+            let flag = false
+            goodsScopeList.map((i) => {
+                if (!checkGoodsScopeListIsNotEmpty([i])) {
+                    flag = true
+                }
+                if (!i.count) {
+                    flag = true
+                }
+            })
+            if (flag) {
+                nextFlag = false
             }
-        })
-        let scopeLst = [],
-            rule = {
+
+            let rule = {
                 stageType: 2,
                 stage: [
+
+                ],
+            };
+
+            if(conditions&&conditions.length>0){
+                conditions[0].groupCount = goodsScopeList.length == 2 ? [0, 1] : goodsScopeList.length == 3 ? [0, 1, 2] : [0, 1, 2, 3]
+            }
+            let groupCountFlag = true;
+            conditions.forEach((condition) => {
+                // 校验
+                if (condition.flag == '1' && (condition.discount == null || condition.discount == '' || condition.discount > 100)) {
+                    condition.discountStatus = 'error';
+                    nextFlag = false;
+                }
+                if (condition.flag == '0' && (condition.cut == null || condition.cut == '')) {
+                    condition.cutStatus = 'error';
+                    nextFlag = false;
+                }
+
+                if (condition.flag == '2' && (condition.cut == null || condition.cut == '')) {
+                    condition.cutToStatus = 'error';
+                    nextFlag = false;
+                }
+
+                if (condition.groupCount.length < 2) {
+                    // message.warning('至少选择两个组合条件!');
+                    groupCountFlag = false;
+                    nextFlag = false;
+                }
+            });
+            if (!groupCountFlag) {
+                message.warning(this.props.intl.formatMessage(SALE_STRING.k5hkj1mr));
+            }
+            if ((this.validateDiscountShare() === 'error' || this.validateDiscountShareTwo() === 'error') && shareType === 2) {
+                nextFlag = false;
+            }
+            if (nextFlag) {
+                // 拼出ruleJson
+                conditions.forEach((condition) => {
+                    if (condition.flag == '0') {
+                        rule.stage.push({
+                            disType: 1,
+                            combineStageNo: condition.groupCount,
+                            freeAmount: condition.cut,
+                        })
+                    } else if (condition.flag == '2') {
+                        rule.stage.push({
+                            disType: 3,
+                            combineStageNo: condition.groupCount,
+                            freeAmount: condition.cut,
+                        })
+                    } else {
+                        rule.stage.push({
+                            disType: 2,
+                            combineStageNo: condition.groupCount,
+                            discountRate: condition.discount,
+                        })
+                    }
+                });
+
+                rule.stageType = stageType;
+                rule.shareRatioList = [condition1, condition2]
+                rule.shareType = shareType
+
+                this.props.setPromotionDetail({
+                    rule,
+                });
+            } else {
+                this.setState({ conditions });
+            }
+
+
+        } else {
+            const k5hkj1ef = intl.formatMessage(SALE_STRING.k5hkj1ef);
+            this.props.form.validateFieldsAndScroll((err, values) => {
+                if (err) {
+                    nextFlag = false;
+                } else {
+                    data.map((value, idx) => {
+                        if (value.scopeLst.length == 0) {
+                            const foodIdx = `food${idx}`;
+                            this.props.form.setFields({
+                                [foodIdx]: {
+                                    value: {},
+                                    errors: [new Error(k5hkj1ef)],
+                                },
+                            });
+                            nextFlag = false;
+                        }
+                    })
+                }
+            })
+            let scopeLst = [],
+                rule = {
+                    stageType: 2,
+                    stage: [
 
                 ],
             };
@@ -269,6 +391,16 @@ class CompositeDetailInfo extends React.Component {
             this.setState({ conditions, data });
         }
 
+        }
+        if (isZhouheiya(this.props.user.groupID)) {
+            //周黑鸭需求
+            this.props.setPromotionDetail({
+                approval: this.state.approvalInfo,
+            });
+            if (isCheckApproval && (!this.state.approvalInfo.activityCost || !this.state.approvalInfo.estimatedSales || !this.state.approvalInfo.auditRemark)) {
+                return
+            }
+        }
         return nextFlag
     }
 
@@ -471,6 +603,111 @@ class CompositeDetailInfo extends React.Component {
         this.setState({ data });
     }
 
+    validateDiscountShareTwo = () => {
+        const { condition1, condition2 } = this.state
+        const reg = /^([0-9][0-9]{0,1}|100)$/
+        const sum = (condition1 ? +condition1 : 0) + (+condition2);
+        let status = 'success';
+        if (sum !== 100) { status = 'error' }
+        if (!reg.test(condition2)) { status = 'error' }
+        return status
+    }
+
+    // validateDiscountShare 校验条件
+    validateDiscountShare = () => {
+        const { condition1, condition2 } = this.state
+        const reg = /^([0-9][0-9]{0,1}|100)$/
+        const sum = (+condition1) + (condition2 ? +condition2 : 0);
+        let status = 'success';
+        if (sum !== 100) { status = 'error' }
+        if (!reg.test(condition1)) { status = 'error' }
+        return status;
+    }
+
+
+    renderGoodRef() {
+
+        const { intl } = this.props;
+        const k5hkj1v3 = intl.formatMessage(SALE_STRING.k5hkj1v3);
+        const k5gfsuon = intl.formatMessage(SALE_STRING.k5gfsuon);
+        let goodsScopeList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'goodsScopeList']).toJS();
+        goodsScopeList = goodsScopeList.length > 0 ? goodsScopeList : [{
+            containData: { goods: [] },
+            containType: 1,
+            exclusiveData: {},
+            participateType: 1
+        }, {
+            containData: { goods: [] },
+            containType: 1,
+            exclusiveData: {},
+            participateType: 1
+        }];
+        return (
+            goodsScopeList.map((item, idx) => {
+                const count = item.count;
+                return (
+                    <Form style={{ margin: '0 0 30px 10px' }}>
+                        <FormItem
+                            key={`group${idx}`}
+                            label={`${k5hkj1v3}${idx + 1}`}
+                            className={[styles.FormItemStyle, styles.inputWrappers].join(' ')}
+                            style={{ padding: '0' }}
+                            wrapperCol={{ span: 17 }}
+                            labelCol={{ span: 4 }}
+                            validateStatus={item.count ? "success" : "error"}
+                            help={item.count ? null : '输入菜品数量'}
+                        >
+                            <div className={styles.inputWrapper}>
+                                <span>{SALE_LABEL.k5hkj23f}</span>
+                                <PriceInput
+                                    key={`price${idx}`}
+                                    type="text"
+                                    modal="int"
+                                    value={{ number: count }}
+                                    onChange={(val) => {
+                                        item.count = val.number
+                                        this.props.setPromotionDetail({
+                                            goodsScopeList
+                                        });
+                                    }}
+                                />
+                                <span>{k5gfsuon}</span>
+                                {!WJLPGroupID.includes(this.props.user.groupID) && this.renderGroupIconZhy(idx)}
+
+                            </div>
+                        </FormItem>
+                        <FormItem
+                            key={`food${idx}`}
+                            label={'活动范围'}
+                            style={{ marginLeft: '60px', marginBottom: '16px', marginTop: '-6px' }}
+                            className={styles.forErrorExplain}
+                            validateStatus={!checkGoodsScopeListIsNotEmpty([item]) ? "error" : "success"}
+                            help={!checkGoodsScopeListIsNotEmpty([item]) ? '不得为空' : null}
+                        >
+                            {
+                                this.props.form.getFieldDecorator(`food${idx}`, {})(
+                                    <GoodsRef
+                                        defaultValue={this.goodsScopeList && this.goodsScopeList.length > 0 ? this.goodsScopeList[idx] : undefined}
+                                        businessTypesList={businessTypesList}
+                                        onChange={(goods) => {
+                                            let count = item.count
+                                            goods.count = count
+                                            goodsScopeList[idx] = goods
+                                            this.props.setPromotionDetail({
+                                                goodsScopeList,
+                                            });
+                                        }} ></GoodsRef>
+                                )
+                            }
+                        </FormItem>
+                    </Form>
+
+                )
+            })
+        )
+
+    }
+
     renderPromotionSetting() {
         const { isShopFoodSelectorMode } = this.props;
         const { intl } = this.props;
@@ -595,6 +832,105 @@ class CompositeDetailInfo extends React.Component {
         return resultArrs.length;
     }
 
+    renderConditionsZhy() {
+        let goodsScopeList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'goodsScopeList']).toJS();
+        if(goodsScopeList.length ==0){
+            goodsScopeList = [undefined,undefined]
+        }
+        const { intl } = this.props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+        const k5hkj1v3 = intl.formatMessage(SALE_STRING.k5hkj1v3);
+        const k5ezdc19 = intl.formatMessage(SALE_STRING.k5ezdc19);
+        const k5ezdckg = intl.formatMessage(SALE_STRING.k5ezdckg);
+
+        const options = goodsScopeList.map((dataItem, dataIndex) => {
+            return {
+                label: `${k5hkj1v3}${dataIndex + 1}`,
+                value: dataIndex,
+            }
+        });
+        let groupCount = goodsScopeList.length == 2 ? [0, 1] : goodsScopeList.length == 3 ? [0, 1, 2] : [0, 1, 2, 3]
+        return (
+            this.state.conditions.map((item, idx) => {
+                return (
+                    <div key={`${idx}`} className={styles.moreFormItem}>
+                        <Col span={6} offset={2}>
+                            <li className={checkStyle.checkBoxStyles}>
+                                <FormItem>
+                                    <CheckboxGroup
+                                        value={groupCount}
+                                        options={options}
+                                    />
+                                </FormItem>
+                            </li>
+                        </Col>
+                        <Col span={14}>
+                            <FormItem className={styles.radioInLine}>
+                                <ButtonGroup size="small" >
+                                    <Button value="0" type={item.flag == '0' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '0') }}>{SALE_LABEL.k5ezcd0f}</Button>
+                                    <Button value="2" type={item.flag == '2' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '2') }}>{SALE_LABEL.k5hkj2k3}</Button>
+                                    <Button value="1" type={item.flag == '1' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '1') }}>{SALE_LABEL.k5ezcu1b}</Button>
+                                </ButtonGroup>
+                                <FormItem
+                                    validateStatus={
+                                        item.flag == '0' ? item.cutStatus : item.flag == '1' ? item.discountStatus : item.cutToStatus
+                                    }
+                                    help={
+                                        item.flag == '1' && item.discountStatus == 'error' ? SALE_LABEL.k5gez9pw : ''
+                                    }
+                                    style={{ paddingTop: '0px' }}
+                                >
+                                    {
+                                        item.flag == '0' &&
+                                        <PriceInput
+                                            addonAfter={k5ezdbiy}
+                                            key={`cut${idx}`}
+                                            type="text"
+                                            modal="float"
+                                            value={{ number: item.cut }}
+                                            onChange={(val) => {
+                                                this.handleCutChange(idx, val);
+                                            }}
+                                        />}
+                                    {
+                                        item.flag == '2' &&
+                                        <PriceInput
+                                            addonAfter={k5ezdbiy}
+                                            key={`cut${idx}`}
+                                            type="text"
+                                            modal="float"
+                                            value={{ number: item.cut }}
+                                            onChange={(val) => {
+                                                this.handleCutToChange(idx, val);
+                                            }}
+                                        />}
+                                    {
+                                        item.flag == '1' &&
+                                        <PriceInput
+                                            addonAfter={k5ezdc19}
+                                            key={`discunt${idx}`}
+                                            type="text"
+                                            modal="float"
+                                            placeholder={k5ezdckg}
+                                            discountMode={true}
+                                            value={{ number: item.discount }}
+                                            onChange={(val) => {
+                                                this.handleDiscountChange(idx, val);
+                                            }}
+                                            style={{ width: '113px' }}
+                                        />
+                                    }
+                                </FormItem>
+                                {this.renderConditionIcon(idx)}
+                            </FormItem>
+                        </Col>
+                    </div>
+                )
+            })
+
+        )
+    }
+
     renderConditions() {
         const { intl } = this.props;
         const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
@@ -691,6 +1027,84 @@ class CompositeDetailInfo extends React.Component {
 
         )
     }
+
+    // 组合 + -图标
+    renderGroupIconZhy(idx) {
+        let goodsScopeList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'goodsScopeList']).toJS();
+        if(goodsScopeList.length ==0){
+            goodsScopeList = [{
+                containData: { goods: [] },
+                containType: 1,
+                exclusiveData: {},
+                participateType: 1
+            },{
+                containData: { goods: [] },
+                containType: 1,
+                exclusiveData: {},
+                participateType: 1
+            }]
+        }
+        if (idx == 1 && goodsScopeList.length == 2) {
+            return (
+                <span className={styles.iconsLeftStyle}>
+                    <Icon className={styles.pulsIcon} disabled={false} type="plus-circle-o" onClick={() => {
+                        goodsScopeList.push({
+                            containData: { goods: [] },
+                            containType: 1,
+                            exclusiveData: {},
+                            participateType: 1
+                        })
+                        this.props.setPromotionDetail({
+                            goodsScopeList
+                        });
+                    }} />
+                </span>
+            );
+        } else if (goodsScopeList.length > 2 && goodsScopeList.length < 4 && idx == goodsScopeList.length - 1) {
+            return (
+                <span className={styles.iconsLeftStyle}>
+                    <Icon className={styles.pulsIcon} disabled={false} type="plus-circle-o" onClick={() => {
+                        goodsScopeList.push({
+                            containData: { goods: [] },
+                            containType: 1,
+                            exclusiveData: {},
+                            participateType: 1
+                        })
+                        this.props.setPromotionDetail({
+                            goodsScopeList
+                        });
+                    }} />
+                    <Icon
+                        className={styles.deleteIcon}
+                        type="minus-circle-o"
+                        onClick={() => {
+                            goodsScopeList.splice(idx, 1)
+                            this.props.setPromotionDetail({
+                                goodsScopeList
+                            });
+                        }}
+                    />
+                </span>
+            );
+        } else if (idx == 3 && goodsScopeList.length == 4) {
+            return (
+                <span className={styles.iconsLeftStyle}>
+                    <Icon
+                        className={styles.deleteIcon}
+                        type="minus-circle-o"
+                        onClick={() => {
+                            goodsScopeList.splice(idx, 1)
+                            this.props.setPromotionDetail({
+                                goodsScopeList
+                            });
+                        }}
+                    />
+                </span>
+            );
+        }
+        return null;
+    }
+
     // 组合 + -图标
     renderGroupIcon(idx) {
         if (idx == 1 && this.state.data.length == 2) {
@@ -772,13 +1186,72 @@ class CompositeDetailInfo extends React.Component {
         return null;
     }
 
+     // 优惠分摊
+    renderDiscountShare = () => {
+        const { shareType = 1, condition1, condition2 } = this.state
+        return (
+            <Row>
+                <p>优惠分摊比例</p>
+                <FormItem
+                    label={''}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+
+                    <RadioGroup value={shareType} onChange={(e) => { this.setState({ shareType: e.target.value }) }}>
+                        <Radio value={1}>按菜品价格均摊</Radio>
+                        <Radio value={2}>按比例价格均摊</Radio>
+                    </RadioGroup>
+                </FormItem>
+                <Col span={9}>
+                    {shareType == 2 &&
+                        <FormItem
+                            label="条件1"
+                            className={styles.disCountFormItemStyle}
+                            validateStatus={this.validateDiscountShare('condition1')}
+                        >
+                            <PriceInput
+                                modal="int"
+                                addonAfter="%"
+                                maxLength={3}
+                                value={{ number: condition1 }}
+                                onChange={(val) => {
+                                    this.setState({ condition1: val.number })
+                                }} />
+                        </FormItem>}
+                </Col>
+                <Col span={9}>
+                    {shareType == 2 &&
+                        <FormItem
+                            label="条件2"
+                            className={styles.disCountFormItemStyle}
+                            validateStatus={this.validateDiscountShareTwo('condition2')}
+                        // validateStatus={item.flag == '0' ? item.cutStatus : item.flag == '1' ? item.discountStatus : item.cutToStatus}
+                        >
+                            <PriceInput
+                                modal="int"
+                                addonAfter="%"
+                                maxLength={3}
+                                value={{ number: condition2 }}
+                                onChange={(val) => {
+                                    this.setState({ condition2: val.number })
+                                }} />
+                        </FormItem>}
+                </Col>
+            </Row>
+        )
+    }
+
+
     render() {
         const { intl } = this.props;
         const k5hkj1v3 = intl.formatMessage(SALE_STRING.k5hkj1v3);
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
-                    {this.renderPromotionSetting()}
+                    {!isZhouheiya(this.props.user.groupID) && this.renderPromotionSetting()}
+                    {isZhouheiya(this.props.user.groupID) && this.renderGoodRef()}
                     <Row>
                         <Col span={5} offset={2}>
                             {k5hkj1v3}:
@@ -790,10 +1263,10 @@ class CompositeDetailInfo extends React.Component {
                                 }}
                                 content={
                                     <div>
-                                <p style={{ textIndent: '2em' }}>1、{SALE_LABEL.k5hl5wkk}</p>
-                                        <br/>
+                                        <p style={{ textIndent: '2em' }}>1、{SALE_LABEL.k5hl5wkk}</p>
+                                        <br />
                                         <p style={{ textIndent: '2em' }}>2、{SALE_LABEL.k5hl5wsw}</p>
-                                        <br/>
+                                        <br />
                                         <p>{SALE_LABEL.k5hl5x18}</p>
                                     </div>
                                 }
@@ -802,9 +1275,20 @@ class CompositeDetailInfo extends React.Component {
                         </Col>
 
                     </Row>
-                    {this.renderConditions()}
+                    {isZhouheiya(this.props.user.groupID) ? this.renderConditionsZhy() : null}
+                    {!isZhouheiya(this.props.user.groupID) ? this.renderConditions() : null}
                     {this.renderAdvancedSettingButton()}
-                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+
+                    {this.state.display && !isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+                    {this.state.display && isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSettingNew bizType={1} /> : null}
+                    {isZhouheiya(this.props.user.groupID) && this.renderDiscountShare()}
+                    {isZhouheiya(this.props.user.groupID) ? <Approval onApprovalInfoChange={(val) => {
+                        this.setState({
+                            approvalInfo: {
+                                ...val
+                            }
+                        })
+                    }} /> : null}
                 </Form>
             </div>
         )
@@ -815,7 +1299,7 @@ function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
-        user: state.user,
+        user: state.user.get('accountInfo').toJS()
     }
 }
 

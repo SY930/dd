@@ -34,6 +34,10 @@ import InstantDiscount from './instantDiscount';
 import RecommendGifts from './recommendGifts';
 import AccumulateGift from './accumulateGift';
 import PayAfter from './PayAfter/PayAfter'; // 摇奖
+import FreeGetCoupon from './h5Get/FreeGetCoupon'; // H5领券
+import NewScoreConvertGift from './scoreConvertGift/NewScoreConvertGift'; // 积分换礼
+import NewConsumeGiveGift from './consumeGiveGift/NewConsumeGiveGift'; // 消费送礼
+import NewSendGiftsZhy from './sendGiftsZhy/NewSendGifts'; // 群发礼品（周黑鸭）
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
 import {
@@ -42,6 +46,7 @@ import {
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
+// _TODO_入口文件
 const _pages = [
     NewBirthdayGift, // 生日赠送
     NewCardGive, // 开卡赠送
@@ -66,6 +71,11 @@ const _pages = [
     AccumulateGift,//集点卡
     PayAfter,//支付后广告
     NewCheckGift,//签到
+    null,null,null,null,null,null,null,null,
+    FreeGetCoupon, // H5领券
+    NewScoreConvertGift, //积分换礼
+    NewConsumeGiveGift, //消费送礼
+    NewSendGiftsZhy, //群发礼品（周黑鸭）
 ];
 
 // 模态框内容组件， 左边为SideBar, 内容区域为 CustomProgressBar
@@ -102,6 +112,7 @@ class ActivityMain extends React.Component {
                 return (
                     <div className={styles.promotionTip}>
                         <div style={{ marginBottom: 20 }}>{this.props.eventWay ? CHARACTERISTIC_CATEGORIES.find(type => type.key == this.props.eventWay).text || '' : ''}</div>
+                        <div>{this.props.eventWay ? CHARACTERISTIC_CATEGORIES.find(type => type.key == this.props.eventWay).example || '' : ''}</div>
                     </div>
                 );
         }
@@ -123,13 +134,14 @@ class ActivityMain extends React.Component {
             key: index,
             isNew: this.props.isNew,
             isCopy: this.props.isCopy,
+            onlyModifyShop: this.props.onlyModifyShop,
             promotionType: activityCategories[index].key,
             component: _pages[index],
             isView: !this.props.isUpdate
         });
     }
     render() {
-        const index = this.props.index;
+        const { index, onlyModifyShop } = this.props;
         return (
             <div className={[styles.activityMain, styles.activityModal].join(' ')} style={{ padding: '0' }}>
                 <Row>
@@ -144,7 +156,7 @@ class ActivityMain extends React.Component {
                     <Col span={18} className={styles.activityMainRight}>
                         <div style={{position:'relative'}}>
                             {
-                                !this.props.isUpdate && index != '13' ?  //放过‘评价有礼’
+                                (!this.props.isUpdate && index != '13') || onlyModifyShop ?  //放过‘评价有礼’
                                     <div className={styles.stepOneDisabled}></div> : null
                             }
                             {this.renderActivityTags()}

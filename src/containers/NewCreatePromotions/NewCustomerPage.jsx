@@ -397,7 +397,7 @@ class NewCustomerPage extends Component {
             }
             return true;
         }
-        message.error(msg);
+        console.log(msg);
     }
 
     onClickOpen = async (eventWay) => {

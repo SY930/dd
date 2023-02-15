@@ -12,6 +12,8 @@ import { loadShopSchema } from './utils';
 
 import './assets/ShopSelector.less';
 
+import { isZhouheiya, isGeneral } from "../../constants/WhiteList";
+
 class ShopSelector extends Component {
     state = {
         showModal: false,
@@ -81,8 +83,30 @@ class ShopSelector extends Component {
     }
     loadShops2(brandList = []) {
         const { alloptions, allfilters } = this.state;
+        const { eventWay, canUseShops } = this.props
         if (!allfilters[0]) { return }
         const newFilter = JSON.parse(JSON.stringify(allfilters));
+
+        // 减免配送费禁用店铺单独处理
+        if (eventWay === '2090') {
+            const leftShops = alloptions.map((x) => {
+                if (!canUseShops.includes(x.shopID)) {
+                    return { ...x, disabled: true }
+                }
+                return x;
+            });
+            if (brandList[0]) {
+                const brands = allfilters[0];
+                const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
+                newFilter[0].options = leftBrands;
+                const _leftShops = leftShops.filter(x => brandList.includes(x.brandID));
+                this.setState({ options: _leftShops, filters: newFilter });
+            } else {
+                this.setState({ options: leftShops, filters: allfilters });
+            }
+            return
+        }
+
         if (brandList[0]) {
             const brands = allfilters[0];
             const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
@@ -90,11 +114,11 @@ class ShopSelector extends Component {
             const leftShops = alloptions.filter(x => brandList.includes(x.brandID));
             this.setState({ options: leftShops, filters: newFilter });
             return;
-        } 
+        }
         this.setState({ options: alloptions, filters: allfilters });
     }
     loadShops3(canUseShops = []) {
-
+        const { eventWay } = this.props
         const { alloptions } = this.state;
         if (canUseShops[0]) {
             const leftShops = alloptions.map((x) => {
@@ -103,7 +127,21 @@ class ShopSelector extends Component {
                 }
                 return x;
             });
-            this.setState({ options: leftShops });
+            this.setState({ options: leftShops }, () => {
+                if (eventWay === '2090') {
+                    const { brandList } = this.props;
+                    const { allfilters } = this.state
+                    const newFilter = JSON.parse(JSON.stringify(allfilters));
+                    const brands = allfilters[0] || {};
+                    if (brandList[0] && brands.options && newFilter[0]) {
+                        const leftBrands = (brands.options || []).filter(x => brandList.includes(x.brandID));
+                        newFilter[0].options = leftBrands || [];
+                        const _leftShops = leftShops.filter(x => brandList.includes(x.brandID));
+                        this.setState({ filters: newFilter, options: _leftShops });
+                    }
+                    return
+                }
+            });
             return;
         }
         this.setState({ options: alloptions });
@@ -139,6 +177,10 @@ class ShopSelector extends Component {
         const { value = [], onChange, size, placeholder, extendShopList, eventWay, disabled, occupyShopList = [], ...otherProps, } = this.props;
         const { showModal } = this.state;
         let options = this.props.options || this.state.options || [];
+        //当权限为区域经理，增加数据权限
+        if(isZhouheiya(this.props.groupID)&&!isGeneral()&&this.props.permissionShopsData){
+            options = options.filter(item=>this.props.permissionShopsData.some((shopData)=>shopData == item.shopID))
+        }
         if (Array.isArray(extendShopList)) {
             options = [...extendShopList, ...options]
         }
@@ -193,7 +235,7 @@ class ShopSelector extends Component {
                 }
 
                 <div style={{ color: 'orange', fontSize: '12' }}>
-                    {eventWay && eventWay == '82' ? `不选默认全部店铺可用` : null}
+                    {eventWay && ['82'].includes(eventWay) ? `不选默认全部店铺可用` : null}
                 </div>
             </div>
         );

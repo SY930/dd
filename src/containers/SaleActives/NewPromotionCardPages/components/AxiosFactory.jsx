@@ -3,8 +3,11 @@ import { axios, getStore } from '@hualala/platform-base';
 import { giftTypeName } from '../common/giftConfig';
 import _ from 'lodash';
 import { fetchData } from '../../../../helpers/util';
+import { BASIC_PROMOTION_MAP } from "../../../../constants/promotionType";
 
 const [service, type, api, url] = ['HTTP_SERVICE_URL_CRM', 'post', 'alipay/', '/api/v1/universal?'];
+
+const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
 
 
 function getAccountInfo() {
@@ -133,9 +136,39 @@ async function httpGetPromotionDetail(data) {
     return false;
 }
 
+//请求获取所有基础营销活动
+async function fetchAllPromotionList(data) {
+    const { groupID } = getAccountInfo();
+    const method = '/promotion/docPromotionService_query.ajax';
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type: 'post',
+        data,
+        method,
+    };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        if(obj && obj.promotionLst && obj.promotionLst.length > 0){
+            return obj.promotionLst.map(promotion => ({
+                value: promotion.promotionIDStr,
+                label: `${promotion.promotionName}`,
+                type: `${promotion.promotionType}`,
+                activityType: '10',
+                activitySource: '1',
+                basicType: `${promotion.promotionType}`,
+              })).filter(item => AVAILABLE_PROMOTIONS.includes(item.type))
+        } else{
+            return []
+        }
+    }
+    message.error(msg);
+    return [];
+}
 export {
     getCardList,
     httpCreatePromotion,
     httpGetPromotionDetail,
-    httpGetGroupCardTypeList
+    httpGetGroupCardTypeList,
+    fetchAllPromotionList
 }

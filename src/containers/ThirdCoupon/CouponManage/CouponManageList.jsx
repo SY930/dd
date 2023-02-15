@@ -13,7 +13,8 @@ import DYCouponInfoMoldeContent from '../Modal/DYCouponInfoMoldeContent';
 import { debounce } from 'lodash'
 import styles from '../AlipayCoupon.less'
 import { columnsView, getColumns, ThirdCouponConfig } from '../config';
-import { axiosData } from '../../../helpers/util'
+import { axiosData, setSensorsData } from '../../../helpers/util'
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 import registerPage from '../../../../index';
 import { THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
 import { getCardList, getShopPid, getIndirectList, getMpAppList, getPayChannel, getRetailList } from '../AxiosFactory';
@@ -77,6 +78,7 @@ class CouponManageList extends Component {
         this.initData();
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
+        setSensorsData("第三方券管理")
     }
 
 
@@ -105,13 +107,18 @@ class CouponManageList extends Component {
     }
 
     initData = () => {
+        const { user: {accountInfo}} = this.props;
+        const { groupID } = accountInfo || {}
         getCardList({ giftTypes: [10, 111, 21] }).then(x => {
             this.setState({ cacheTreeData: x });
         });
-        // 抖音
-        getRetailList().then(v => {
-            this.setState({ treeDataX: v });
-        })
+        // 抖音 周黑鸭不调零售接口
+        if(!isZhouheiya(groupID)){
+            getRetailList().then(v => {
+                this.setState({ treeDataX: v });
+            })
+        }
+        
         getShopPid().then((res) => {
             this.setState({
                 shopPid: res,
@@ -146,7 +153,7 @@ class CouponManageList extends Component {
     }
 
     getTreeData = (giftTypes) => {
-        const { cacheTreeData } = this.state
+        const { cacheTreeData = [] } = this.state
         let treeData = []
         if (cacheTreeData.length > 0) {
             treeData = (cacheTreeData || []).filter((item) => giftTypes.includes(item.key))
@@ -615,6 +622,16 @@ class CouponManageList extends Component {
 
 
     render() {
+      
+        const { user: {accountInfo}} = this.props;
+
+        const { groupID } = accountInfo || {}
+        
+         let newThirdCouponConfig = [...ThirdCouponConfig];
+        if(isZhouheiya(groupID)){
+            newThirdCouponConfig = ThirdCouponConfig.filter((item) => ![1,3,5,7].includes(item.params.type))
+        }
+
         return (
             <div className={['layoutsContainer', styles.CouponManageListBox].join(' ')} ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>
@@ -656,7 +673,7 @@ class CouponManageList extends Component {
                     >
                         <ul className={styles.createCouponModal__flex__ul}>
                             {
-                                ThirdCouponConfig.map((item, index) => (
+                                newThirdCouponConfig.map((item, index) => (
                                     <li
                                         onClick={() => {
                                             this.handleCreateCouponContentModal(item.params, `新建第三方${item.subTitle}`)
@@ -682,6 +699,7 @@ class CouponManageList extends Component {
                         editData={this.state.editData}
                         type={this.state.type}
                         title={this.state.title}
+                        groupID={groupID}
                         platformType={this.state.platformTypeCreate}
                         channelID={this.state.channelID}
                         onParentCancel={this.handleCloseThirdCouponModal}

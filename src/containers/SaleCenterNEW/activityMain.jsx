@@ -81,12 +81,17 @@ import NewAddMoneyUpgradeActivity from './addMoneyUpgrade/NewAddMoneyUpgradeActi
 import AddMoneyUpgradeDetailInfo from './addMoneyUpgrade/AddMoneyUpgradeDetailInfo';
 import LowPriceSaleActivity from "./lowPriceSale/LowPriceSaleActivity";
 import LowPriceDetailInfo from "./lowPriceSale/LowPriceDetailInfo";
+
+import ReducedShippingFees from './reducedShippingFees'; // 减免配送费
+import ShippingFeesInfo from './reducedShippingFees/ShippingFeesInfo';
+
 import { ONLINE_PROMOTION_TYPES } from '../../constants/promotionType';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
 import returnGift from './returnGift/returnGift';
 import { jumpPage } from '@hualala/platform-base';
+import { getAuthLicenseData } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 
 // 这里是内部内容的框架组件，分为 左边 和右边。
 @injectIntl()
@@ -157,6 +162,7 @@ class ActivityMain extends React.Component {
     }
 
     componentDidMount() {
+        this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' })
         const pagesArr = [
             {
                 wrapper: NewFullCutActivity,
@@ -233,6 +239,10 @@ class ActivityMain extends React.Component {
                 child: MemberExclusiveDetailInfo,
             },
             {
+                wrapper: ReducedShippingFees,
+                child: ShippingFeesInfo,
+            },
+            {
                 wrapper: GroupSaleActivity,
                 child: SettingInfo,
             },
@@ -259,6 +269,7 @@ class ActivityMain extends React.Component {
                 key: index,
                 isNew: this.props.isNew,
                 isCopy: this.props.isCopy,
+                onlyModifyShop: this.props.onlyModifyShop,
                 component: promotion.child,
                 isOnline: this.isOnline(),
                 data,
@@ -275,6 +286,7 @@ class ActivityMain extends React.Component {
         return ONLINE_PROMOTION_TYPES.map(item => `${item.key}`).includes(`${this.props.promotionType}`)
     }
     render() {
+        const { onlyModifyShop } = this.props;
         const activityCategories = this.props.saleCenter.get('activityCategories').toJS();
         const index = activityCategories.findIndex(item => item.key == this.props.promotionType);
 
@@ -294,7 +306,7 @@ class ActivityMain extends React.Component {
                     </Col>
                     <Col span={18} className={styles.activityMainRight}>
                         {
-                            !this.props.isUpdate ?  //放过‘评价有礼’
+                            !this.props.isUpdate || onlyModifyShop ?  //放过‘评价有礼’
                                 <div className={styles.stepOneDisabled}></div> : null
                         }
                         {this.renderActivityTags()}
@@ -314,7 +326,11 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {};
+    return {
+        getAuthLicenseData: (opts) => {
+            return dispatch(getAuthLicenseData(opts))
+        },
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityMain);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Table, Tooltip } from 'antd';
+import { Button, Table, Tooltip, Modal } from 'antd';
 import styles from './Crm.less';
 import GiftModal from './GiftModal';
 import { getCardList } from './AxiosFactory';
@@ -165,8 +165,8 @@ export default class GiftInfo extends Component {
         const { onChange, value } = this.props;
         onChange({
             ...value,
-            chooseCoupon:  [item],
-            presentType: value.presentType
+            chooseCoupon: [item],
+            presentType: value.presentType,
         });
         this.handleCloseCoupon()
     }
@@ -203,15 +203,11 @@ export default class GiftInfo extends Component {
             }
             return (<span>{text}</span>);
         };
-        const render3 = (v, o) => {
-            const val = (v === -1) ? '不限制' : v;
-            return (<span>{val}</span>);
-        };
         // 表格头部的固定数据
         return [
             { title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
             { width: 100, title: '券包类型', dataIndex: 'type' },
-            { width: 100, title: '库存', dataIndex: 'couponPackageStock', render: render3, className: tc },
+            // { width: 100, title: '库存', dataIndex: 'couponPackageStock', render: render3, className: tc },
             { width: 200, title: '有效期', dataIndex: 'postTime', className: tc, render: render2 },
             { width: 80, title: '操作', dataIndex: 'op', className: tc, render },
         ];

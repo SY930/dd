@@ -15,7 +15,7 @@ import moment from 'moment';
 import Immutable from 'immutable';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import { connect } from 'react-redux';
-import { axiosData, checkAuthLicense } from '../../helpers/util'
+import { axiosData, checkAuthLicense, setSensorsData } from '../../helpers/util'
 import registerPage from '../../../index';
 import ShopSelector from "../../components/common/ShopSelector";
 import EmptyPage from "../../components/common/EmptyPage";
@@ -294,6 +294,7 @@ export default class EntryPage extends Component {
             let {authPluginStatus} = checkAuthLicense(res, 'HLL_CRM_Marketingbox')
             this.setState({authStatus, authPluginStatus})
         });
+        setSensorsData("营销日历")
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {

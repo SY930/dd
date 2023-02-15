@@ -41,7 +41,7 @@ class AddGifts extends Component {
             treeData: this.props.treeData,
             formItems: {
                 ...formItems,
-                ...this.renderGiftCount(giftCount),
+                ...this.renderGiftCount(giftCount, this.props.stageType),
             }
         }, () => {
             let { giftList = [] } = this.props;

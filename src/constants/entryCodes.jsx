@@ -63,12 +63,24 @@ export const SALE_CENTER_PAYHAVEGIFT = 'promotion_active_payHaveGift' // 营销�
 
 export const THIRD_VOUCHER_MANAGEMENT = '100008992' // 第三方券管理
 export const ACTIVITY_LAUNCH = '100008993' // 投放活动
+export const SALE_GROUP_PHYSICALLNTERFACECARDS = 'sale.group.physicalInterfaceCards' // 集团视角 实体卡
+export const SALE_GROUP_ELECTRONICCARDS = 'sale.group.electronicCards' // 集团视角 电子卡
 
 export const SALE_LANCH_CHANNEL = '10000730099' //活动投放渠道管理
+export const SHARE_RULES_GROUP_NEW = '1000080004'; // 周黑鸭共享群组页面
+export const CREATE_SHARE_RULES_NEW = 'create_share_rules_new' // 创建周黑鸭共享规则
 
 export const SALE_ACTIVE_NEW_PAGE = 'sale_active_new_page' // 营销活动跳转页面
+export const CONTRACT_MANAGEMENT = '100008995' //合同管理
 
 export const GIFT_DETAILS = 'giftDetails' //礼品信息详情页面
 export const SALE_DISTRIBUTION_ADMIN = 'sale.distribution.admin' // 分销管理
 
 export const CONSUME_GIFT_GIVING = 'CONSUME_GIFT_GIVING' // 营销活动-消费送礼
+
+export const COUPON_BATCH_MANAGEMENT = '100008994' //券批次管理
+export const SALE_AUTOMATED_SALE = 'sale_automated_sale' // 自动化营销
+export const SALE_AUTOMATED_SALE_DETAIL = 'sale_automated_sale_detail' // 自动化营销详情
+export const SALE_AUTOMATED_STAT_DETAIL = 'sale_automated_stat_detail' // 自动化营销统计页面
+export const SALE_AUTOMATED_ACTIVITY_RECORD_LIST = '10000740000' // 自动化营销活动记录
+export const SALE_AUTOMATED_ACTIVITY_PROCESS = '10000740001' // 自动化营销活动过程

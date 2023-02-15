@@ -6,7 +6,7 @@ import { axios, getStore } from '@hualala/platform-base';
 import FoodSelectModal from '../../../../components/common/FoodSelector/FoodSelectModal'
 import ImageUploader from '../../components/ImageUploader/ImageUploader';
 import styles from './styles.less';
-import { programList, faceDefVal, eventSelectOptionCopy, triggerEventInfoVal } from './Commom'
+import { faceDefVal, eventSelectOptionCopy, triggerEventInfoVal } from './Commom'
 import {
     memoizedExpandCategoriesAndDishes,
 } from '../../../../utils';
@@ -22,8 +22,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-// const GROUPID_SHOW = ['130442', '11157', '189702'];
-// TODO: 合代码时把11157去掉
 const empty = [{ label: '无', value: '' }];
 const jumpApp = [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }]
 class MyFaceRule extends Component {
@@ -52,6 +50,7 @@ class MyFaceRule extends Component {
         this.searchCrmTag();
         this.getGroupListAll()
         this.initEventSelectOption();
+        // this.getAppCoustomPage(); // 获取小程序自定义页面
     }
 
     componentWillReceiveProps(nextProps) {
@@ -59,6 +58,12 @@ class MyFaceRule extends Component {
             this.setState({
                 allActivityList: nextProps.allActivityList,
                 allMallActivity: nextProps.allMallActivity,
+                customPageLst: nextProps.customPageLst.map(item => ({
+                    ...item,
+                    eventName: item.pageName,
+                    eventID: item.pageID,
+                    eventWay: 1000,
+                })),
             }, () => {
                 this.initEventSelectOption(nextProps.clientType);
             })
@@ -181,14 +186,22 @@ class MyFaceRule extends Component {
 
     // 活动数据格式 {"eventID", 1111111111, "eventWay": 20,"eventName": "摇一摇吧"}
     onEventsLinkValue = (idx, key, value, parentData) => {
+        let data = {
+            eventID: value,
+            eventWay: parentData.triggerEventValue1.split('_')[1],
+            eventName: parentData.triggerEventName1,
+            shopID: value,
+        }
+        if (parentData.triggerEventValue1 === 'miniAppCustomPage') {
+            data = {
+                pageID: value,
+                pageName: parentData.triggerEventName1,
+                eventID: value,
+            }
+        }
         this.onChange(idx, {
             parentId: parentData.parentId,
-            [key]: {
-                eventID: value,
-                eventWay: parentData.triggerEventValue1.split('_')[1],
-                eventName: parentData.triggerEventName1,
-                shopID: value,
-            },
+            [key]: data,
         })
     }
 
@@ -208,8 +221,9 @@ class MyFaceRule extends Component {
         this.onChange(idx, { parentId: parent.parentId, [key]: parent.triggerEventCustomInfoApp1 })
     }
 
-    // onEvantsImage = (idx, key, value) => {
-
+    // onChangePageInfo = (idx, key, data, parent, index) => {
+    //     parent.triggerEventCustomInfoApp1[index].pageInfo = { pageName: data.label, pageID: data.key };
+    //     this.onChange(idx, { parentId: parent.parentId, [key]: parent.triggerEventCustomInfoApp1 })
     // }
 
     getGroupListAll = () => {
@@ -220,10 +234,6 @@ class MyFaceRule extends Component {
             type: 'post',
             data: {
                 groupID: accountInfo.get('groupID'),
-                // groupMembersName: '',
-                // pageNo: 1,
-                // pageSize: 25,
-                // _groupID: accountInfo.get('groupID'),
             },
         }).then((res) => {
             const { code, data: { memberParams = [] } } = res;
@@ -239,7 +249,7 @@ class MyFaceRule extends Component {
 
     // 获取活动
     getAvtivity = (params) => {
-        const { allActivityList = [], allMallActivity = [] } = this.state;
+        const { allActivityList = [], allMallActivity = [], customPageLst = [] } = this.state;
         let newActivityList = [];
         if (params === 'event_65') { // 分享裂变
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 65);
@@ -260,6 +270,8 @@ class MyFaceRule extends Component {
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 76);
         } else if (params === 'event_79') {
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 79);
+        } else if (params === 'miniAppCustomPage') {
+            newActivityList = customPageLst && customPageLst.filter((item = []) => item.eventWay === 1000);
         } else {
             newActivityList = [];
         }
@@ -466,16 +478,16 @@ class MyFaceRule extends Component {
                 <p>
                     <span>微信小程序ID </span>
                     <Input
-                        style={{ maxWidth: 220, marginTop: '10px', marginBottom: '10px' }}
+                         style={{ maxWidth: 220, marginTop: '10px', marginBottom: '10px' }}
                         placeholder="请输入微信小程序ID"
                         defaultValue={_.isArray(v.triggerEventCustomInfoApp1) ? v.triggerEventCustomInfoApp1[0].appID : ''}
                         onChange={(_v) => { this.onChangeAppID(i, 'triggerEventCustomInfoApp1', _v, v, 0) }}
                     />
                 </p>
-                <p style={{ marginBottom: '10px' }}>
+                <p>
                     <span>支付宝小程序ID </span>
                     <Input
-                        style={{ maxWidth: 220 }}
+                        style={{ maxWidth: 220, marginRight: 5 }}
                         placeholder="请输入支付宝小程序ID"
                         defaultValue={_.isArray(v.triggerEventCustomInfoApp1) ? v.triggerEventCustomInfoApp1[1].appID : ''}
                         onChange={(_v) => { this.onChangeAppID(i, 'triggerEventCustomInfoApp1', _v, v, 1) }}
@@ -488,8 +500,7 @@ class MyFaceRule extends Component {
     // 选择菜品
     renderFoods = (i, item, key) => {
         return (
-            <FormItem style={{ display: 'inlineBlock', width: '262px', marginLeft: 8, marginTop: 2 }}
-            >
+            <FormItem style={{ display: 'inlineBlock', width: '262px', marginLeft: 8, marginTop: 2 }}>
                 <Input
                     type="text"
                     style={{ width: 159, height: 32 }}
@@ -591,47 +602,50 @@ class MyFaceRule extends Component {
     }
 
     renderAPPEvents = (v, i) => {
-        const { triggerSceneList } = this.props;
+        const { triggerSceneList, sceneList } = this.props;
         let _eventSelectOptions = this.state.eventSelectOption
-        if (triggerSceneList.includes('4')) {
+        if (triggerSceneList.some(item => (item == 14 || item == 4)) || sceneList == '21' || sceneList == '22') {
             _eventSelectOptions = _eventSelectOptions.filter(item => item.value !== 'shoppingCartAddFood')
         }
         return (
-            <div style={{ display: 'flex' }}>
-                <div style={{ display: 'flex', height: '35px' }}>
-                    <FormItem
-                    // key={unionId}
-                    >
-                        <Select style={{ width: '120px' }} value={v.triggerEventValue1 || ''} onChange={(_v) => { this.onEventsApp(i, 'triggerEventValue1', _v, v) }}>
-                            {
-                                (_eventSelectOptions || []).map(({ value: key, label }) => {
-                                    return <Select.Option key={key} value={`${key}`}>{label}</Select.Option>
-                                })
-                            }
-                        </Select>
-                    </FormItem>
-                    {/* jumpToMiniApp 跳转小程序和 speedDial 一键拨号 单独处理 */}
-                    {v.triggerEventValue1 == 'miniAppPage' && this.renderSelectApp(i, v)}
-                    {/* 营销活动 */}
-                    {v.triggerEventValue1
-                    && v.triggerEventValue1 != 'speedDial'
-                    && v.triggerEventValue1 != 'jumpToMiniApp'
-                    && v.triggerEventValue1 !== 'miniAppPage'
-                    && v.triggerEventValue1 !== 'customLink'
-                    && v.triggerEventValue1 !== 'shoppingCartAddFood'
-                    && v.triggerEventValue1 !== 'toOpenCard'
-                    && this.renderSelect(i, v)}
-                    {v.triggerEventValue1 == 'speedDial' && this.renderInputApp(i, v)}
+            <div>
+                <div style={{ display: 'flex' }}>
+                    <div style={{ display: 'flex', height: '35px' }}>
+                        <FormItem
+                        // key={unionId}
+                        >
+                            <Select style={{ width: '120px' }} value={v.triggerEventValue1 || ''} onChange={(_v) => { this.onEventsApp(i, 'triggerEventValue1', _v, v) }}>
+                                {
+                                    (_eventSelectOptions || []).map(({ value: key, label }) => {
+                                        return <Select.Option key={key} value={`${key}`}>{label}</Select.Option>
+                                    })
+                                }
+                            </Select>
+                        </FormItem>
+                        {/* jumpToMiniApp 跳转小程序和 speedDial 一键拨号 单独处理 */}
+                        {v.triggerEventValue1 == 'miniAppPage' && this.renderSelectApp(i, v)}
+                        {/* 营销活动 */}
+                        {v.triggerEventValue1
+                            && v.triggerEventValue1 != 'speedDial'
+                            && v.triggerEventValue1 != 'jumpToMiniApp'
+                            && v.triggerEventValue1 !== 'miniAppPage'
+                            && v.triggerEventValue1 !== 'customLink'
+                            && v.triggerEventValue1 !== 'shoppingCartAddFood'
+                            && v.triggerEventValue1 !== 'toOpenCard'
+                            && this.renderSelect(i, v)}
+                        {v.triggerEventValue1 == 'speedDial' && this.renderInputApp(i, v)}
+                    </div>
+                    {v.triggerEventValue1 == 'jumpToMiniApp' && this.renderJumpApp(i, v)}
+                    {v.triggerEventValue1 == 'customLink' && this.renderInput(i, v, 'triggerEventCustomInfo1')}
+                    {v.triggerEventValue1 === 'shoppingCartAddFood' && this.renderFoods(i, v, 'triggerEventCustomInfo1')}
                 </div>
-                {v.triggerEventValue1 == 'jumpToMiniApp' && this.renderJumpApp(i, v)}
-                {v.triggerEventValue1 == 'customLink' && this.renderInput(i, v, 'triggerEventCustomInfo1')}
-                {v.triggerEventValue1 === 'shoppingCartAddFood' && this.renderFoods(i, v, 'triggerEventCustomInfo1')}
             </div>
         )
     }
 
 
     renderAcitveImage = (v, i) => {
+        const { sceneList } = this.props;
         return (
             <div className={styles.activeImageBox}>
                 <ImageUploader
@@ -642,9 +656,10 @@ class MyFaceRule extends Component {
                     }}
                 />
                 <div className={styles.uploaderTip}>
-                    <p>* 图片建议尺寸 526 * 788像素 </p>
+                    { ['21'].includes(sceneList) ? <p>* 图片建议尺寸 750 * 1624像素</p> : ['22'].includes(sceneList) ? <p>* 图片建议尺寸600 * 848像素 </p> : <p>* 图片建议尺寸526 * 788像素 </p>}
                     <p>* 大小不超过1M </p>
                     <p>* 支持png、jpg、jpeg、gif</p>
+                    { ['21', '22'].includes(sceneList) && <p>* 因手机分辨率不同，部分手机可能会有部分图片元素显示不全的情况，元素请尽量集中于图片中部位置。</p>}
                 </div>
             </div>
         )
@@ -674,7 +689,7 @@ class MyFaceRule extends Component {
 
     render() {
         const { value = [], form, clientType, sceneList } = this.props;
-        // triggerSceneList 支付成功的海报和banner点击触发事件 菜品加入购物车不能有
+        // triggerSceneList 支付成功的海报和banner、开屏页点击触发事件 菜品加入购物车不能有
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {

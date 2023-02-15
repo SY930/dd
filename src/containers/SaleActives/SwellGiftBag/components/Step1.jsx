@@ -5,10 +5,8 @@ import {formItems1,formKeys1} from '../constant'
 import styles from '../swellGiftBag.less'
 import {connect} from 'react-redux';
 import moment from 'moment'
-import {renderEventRemark, eventLimitDateRender, getDateCount} from '../../helper/common'
+import {renderEventRemark, eventLimitDateRender, getDateCount, renderTagLst, } from '../../helper/common'
 import { dateFormat } from '../../constant'
-
-
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step1 extends React.Component {
 
@@ -80,6 +78,7 @@ class Step1 extends React.Component {
     render () {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
         formItems1.eventLimitDate.render = eventLimitDateRender.bind(this)
+        formItems1.tagLst.render = renderTagLst.bind(this);
         let { formData,isView,isEdit } = this.props.createActiveCom
         formData = {
             ...formData,

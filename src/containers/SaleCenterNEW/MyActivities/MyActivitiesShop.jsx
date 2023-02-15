@@ -86,7 +86,6 @@ import {
     isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian,
     isMine
 } from "../../../constants/projectHuatianConf";
-import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
@@ -308,7 +307,8 @@ class MyActivitiesShop extends React.Component {
     handleDisableClickEvent(text, record) {
         // this.state.selectedRecord
         this.props.toggleSelectedActivityState({
-            record: { ...record, shopID: this.props.user.shopID },
+            record: { ...record, shopID: this.props.user.shopID, },
+            groupID: this.props.user.accountInfo.groupID,
             cb: this.toggleStateCallBack,
         });
     }
@@ -452,7 +452,7 @@ class MyActivitiesShop extends React.Component {
             ),
             onOk: () => {
                 const params = {
-                    groupID: record.groupID,
+                    groupID: this.props.user.accountInfo.groupID,
                     shopID: record.shopID,
                     promotionID: record.promotionIDStr,
                     isActive: 2,
@@ -1021,6 +1021,7 @@ class MyActivitiesShop extends React.Component {
         const k5ey8jvj = intl.formatMessage(SALE_STRING.k5ey8jvj);
         const k5ey8l0e = intl.formatMessage(SALE_STRING.k5ey8l0e);
         const k5ey8lip = intl.formatMessage(SALE_STRING.k5ey8lip);
+        const l88f03b4 = intl.formatMessage(SALE_STRING.l88f03b4);
         const columns = [
             {
                 title: COMMON_LABEL.serialNumber,
@@ -1200,7 +1201,7 @@ class MyActivitiesShop extends React.Component {
                 key: 'valid',
                 width: 72,
                 render: (status) => {
-                    return status == '1' ? k5dlp2gl : status == '2' ? k5dlp7zc : k5dlpczr;
+                    return status == '1' ? <span className={styles.unBegin}>{k5dlp2gl}</span> : status == '2' ? <span className={styles.begin}>{k5dlp7zc}</span> :status == '3' ? <span className={styles.end}>{k5dlpczr}</span> :<span className={styles.end}>{l88f03b4}</span>;
                 },
             },
 
@@ -1244,10 +1245,10 @@ class MyActivitiesShop extends React.Component {
         ];
 
         return (
-            <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight }}>
+            <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight + 80 }}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1700, y: this.state.contentHeight - 93 }}
+                    scroll={{ x: 1700, y: this.state.contentHeight - 13 }}
                     className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
@@ -1286,7 +1287,6 @@ class MyActivitiesShop extends React.Component {
                 <div>
                     {this.renderHeader()}
                 </div>
-                <PromotionCalendarBanner jumpTarget={PROMOTION_CALENDAR_SHOP} />
                 <div>
                     <div className={styles.pageContentWrapper} >
                         <div style={{padding: 0}} className="layoutsHeader">

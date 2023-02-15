@@ -5,10 +5,14 @@ import { Input } from 'antd'
 import {formItems1,formKeys1} from '../constant'
 import styles from '../payHaveGift.less'
 import {connect} from 'react-redux';
-import { renderEventRemark } from '../../helper/common'
+import { renderEventRemark, renderTagLst } from '../../helper/common'
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step1 extends React.Component {
+    constructor(){
+        super();
+        this.form = null;
+    }
 
     getForm = (form) => {
         this.form = form;
@@ -21,6 +25,14 @@ class Step1 extends React.Component {
     }
 
     handleFromChange = (key,value) => {
+        if(key == 'tagLst'){
+            if(this.form){
+                const { setFieldsValue } = this.form;
+                setFieldsValue({
+                    tagLst: value
+                })
+            }
+        }
 
         const { formData } = this.props.createActiveCom
 
@@ -48,10 +60,14 @@ class Step1 extends React.Component {
     }
     render () {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
+        formItems1.tagLst.render = renderTagLst.bind(this)
         let { formData,isView,isEdit } = this.props.createActiveCom
         formData = {
             ...formData,
-            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`,
+        }
+        if(formData && formData.tagLst && !Array.isArray(formData.tagLst)){
+            formData.tagLst = formData.tagLst.split(',');
         }
         return (
             <div className={styles.step1Wrap}>

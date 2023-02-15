@@ -17,12 +17,19 @@ import ConnectedScopeListSelector from '../common/ConnectedScopeListSelector';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common/PriceInput';
 
 
 const RadioGroup = Radio.Group;
 const Immutable = require('immutable');
+
+//周黑鸭需求
+import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
+import { isCheckApproval, isZhouheiya, businessTypesList } from '../../../constants/WhiteList';
+import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+import GoodsRef from '@hualala/sc-goodsRef';
+
 @injectIntl()
 class NDiscountDetailInfo extends React.Component {
     constructor(props) {
@@ -53,7 +60,25 @@ class NDiscountDetailInfo extends React.Component {
         const display = !this.props.isNew;
         const isCopy = this.props.isCopy
         const priceLst = Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
-        this.setState({priceLst, display, isCopy});
+        this.setState({ priceLst, display, isCopy });
+        if (isZhouheiya(this.props.user.groupID)) {
+            let goodsScopeList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'goodsScopeList']).toJS();
+            if (goodsScopeList.length > 0) {
+                this.goodsScopeList = goodsScopeList[0]
+            }
+
+            let stageGoodsList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'stageGoodsList']).toJS();
+            if (stageGoodsList.length > 0 && stageGoodsList[0].goodsList.length > 0) {
+                this.goodsList = {
+                    containData: { goods: stageGoodsList[0].goodsList },
+                    containType: 1,
+                    exclusiveData: {},
+                    participateType: 1
+                }
+
+            }
+        }
+
     }
 
     initRule(props = this.props) {
@@ -112,11 +137,34 @@ class NDiscountDetailInfo extends React.Component {
             this.props.setPromotionDetail({
                 rule, priceLst: []
             });
+            //周黑鸭需求
+            if (isZhouheiya(this.props.user.groupID)) {
+                this.props.setPromotionDetail({
+                    approval: this.state.approvalInfo,
+                });
+                if (isCheckApproval && (!this.state.approvalInfo.activityCost || !this.state.approvalInfo.estimatedSales || !this.state.approvalInfo.auditRemark)) {
+                    return
+                }
+            }
             return true;
         } else if (nextFlag && stageType == '1') {
-            if (!priceLst.length) {
-                message.warning(this.props.intl.formatMessage(SALE_STRING.k6hdp6nz));
-                return false;
+            if (!isZhouheiya(this.props.user.groupID)) {
+                if (!priceLst.length) {
+                    message.warning(this.props.intl.formatMessage(SALE_STRING.k6hdp6nz));
+                    return false;
+                }
+            }
+
+            if (isZhouheiya(this.props.user.groupID)) {
+                let goodsList = []
+                let stageGoodsList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'stageGoodsList']).toJS();
+                if (stageGoodsList.length > 0 && stageGoodsList[0].goodsList.length > 0) {
+                    goodsList = stageGoodsList[0].goodsList
+                }
+                if (!goodsList.length) {
+                    message.warning(this.props.intl.formatMessage(SALE_STRING.k6hdp6nz));
+                    return false;
+                }
             }
             const rule = {
                 stageType: Number(stageType),
@@ -131,6 +179,16 @@ class NDiscountDetailInfo extends React.Component {
             this.props.setPromotionDetail({
                 rule, priceLst,
             });
+
+            //周黑鸭需求
+            if (isZhouheiya(this.props.user.groupID)) {
+                this.props.setPromotionDetail({
+                    approval: this.state.approvalInfo,
+                });
+                if (isCheckApproval && (!this.state.approvalInfo.activityCost || !this.state.approvalInfo.estimatedSales || !this.state.approvalInfo.auditRemark)) {
+                    return
+                }
+            }
             return true;
         }
         return false
@@ -179,6 +237,30 @@ class NDiscountDetailInfo extends React.Component {
         const { value } = target;
         this.setState({ shortRule: value });
     }
+
+    renderGoodRef() {
+        return (
+            <div>
+                <FormItem
+                    label={'活动范围'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <GoodsRef
+                        defaultValue={this.goodsScopeList}
+                        businessTypesList={businessTypesList}
+                        onChange={(goods) => {
+                            this.props.setPromotionDetail({
+                                goodsScopeList: [goods],
+                            });
+                        }} ></GoodsRef>
+                </FormItem>
+
+            </div>
+        )
+    }
+
     render() {
         const { priceLst, stageType, shortRule = '0' } = this.state;
         const _priceLst = priceLst.map(food => ({
@@ -190,7 +272,10 @@ class NDiscountDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
+                    {isZhouheiya(this.props.user.groupID) ? this.renderGoodRef() :
+                        <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
+                    }
+
                     <NDiscount
                         onChange={this.handleDiscountTypeChange}
                         form={this.props.form}
@@ -198,9 +283,31 @@ class NDiscountDetailInfo extends React.Component {
                         value={this.state.nDiscount}
                     />
                     {
-                        stageType === '1' && (
+                        !isZhouheiya(this.props.user.groupID) && stageType === '1' && (
                             <FormItem required={true} label={SALE_LABEL.k6hdp6wb} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
-                                <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={(dishes) => this.handleDishesChange({dishes})} />
+                                <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={(dishes) => this.handleDishesChange({ dishes })} />
+                            </FormItem>
+                        )
+                    }
+                    {
+                        isZhouheiya(this.props.user.groupID) && stageType === '1' && (
+                            <FormItem required={true} label={SALE_LABEL.k6hdp6wb} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                                <GoodsRef
+                                    defaultValue={this.goodsList}
+                                    businessTypesList={businessTypesList}
+                                    containLabel=""
+                                    exclusiveShow={false}
+                                    onChange={(goods) => {
+                                        let stageGoodsList = []
+                                        stageGoodsList.push({ stage: 0, goodsList: goods.containData.goods })
+                                        this.props.setPromotionDetail({
+                                            stageGoodsList,
+                                        });
+                                    }}
+                                    showContainSeletorOption={{ categoryShow: false }}
+                                    showParticipateLabel={{ participate: false, unParticipate: false }}
+                                >
+                                </GoodsRef>
                             </FormItem>
                         )
                     }
@@ -217,8 +324,18 @@ class NDiscountDetailInfo extends React.Component {
                             </FormItem>
                         )
                     }
+
                     {this.renderAdvancedSettingButton()}
-                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+
+                    {this.state.display && !isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+                    {this.state.display && isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSettingNew bizType={1} /> : null}
+                    {isZhouheiya(this.props.user.groupID) ? <Approval onApprovalInfoChange={(val) => {
+                        this.setState({
+                            approvalInfo: {
+                                ...val
+                            }
+                        })
+                    }} /> : null}
                 </Form>
             </div>
         )
@@ -227,9 +344,10 @@ class NDiscountDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
+        myActivities: state.sale_myActivities_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
-
+        user: state.user.get('accountInfo').toJS()
     }
 }
 

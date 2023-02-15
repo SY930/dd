@@ -47,7 +47,7 @@ class AddCategorys extends React.Component {
                 this.props.user.shopID && this.props.user.shopID !== ""
                     ? this.props.user.shopID
                     : undefined,
-            phraseType: "1",
+            phraseType: "2",
         });
     }
     componentWillReceiveProps(nextProps) {

@@ -1,15 +1,21 @@
-import { Row, Col, Form, Icon, Input, Radio, Select, Tooltip, DatePicker } from 'antd';
+import { Row, Col, Form, Icon, Input, Radio, Select, Tooltip, DatePicker, Checkbox } from 'antd';
 import SelectBrands from '../../../GiftNew/components/SelectBrands';
 import DateRange from '../../../PromotionV3/Camp/DateRange';
 import styles from './style.less';
 import ShopSelector from '../../../../components/ShopSelector/ShopSelector';
 import CategoryAndFoodSelector from 'containers/SaleCenterNEW/common/CategoryAndFoodSelector';
 import moment from 'moment';
+import OnSaleNoShareBenifit from '../components/OnSaleNoShareBenifit'
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 const DATE_FORMAT = 'YYYYMMDD000000';
 const END_DATE_FORMAT = 'YYYYMMDD235959';
 const RangePicker = DatePicker.RangePicker;
 const Option = Select.Option
+const RadioGroup = Radio.Group;
+const CheckboxGroup = Checkbox.Group;
+
+const  wrapperCol = { offset: 5 }
 
 export const SALE_CENTER_ACTIVITY_SUITSENCE_LIST = [
     {
@@ -468,21 +474,139 @@ export const ALL_FORM_ITEMS = {
         options: [
             { label: '优惠券', value: 1 },
             { label: '积分', value: 2 },
-            // { label: '卡值', value: 5 },
+            { label: '卡值', value: 5 },
         ],
         rules: ['required'],
     },
     hasMutexDepend: {
         type: 'switcher',
         label: '与优惠券不共享',
+        labelCol: { span: 5 },
+        wrapperCol: { span: 19 },
         defaultValue: false,
         onLabel: '开',
         offLabel: '关',
     },
+    hasOnSaleDepend: {
+        type: 'switcher',
+        label: '与促销活动不共享',
+        labelCol: { span: 5 },
+        wrapperCol: { span: 19 },
+        defaultValue: false,
+        onLabel: '开',
+        offLabel: '关',
+    },
+    onSaleDependType: {
+        type: 'custom',
+        label: '',
+        defaultValue: [],
+        render: (decorator, form) => {
+            const { getFieldsValue } = form;
+            const { hasOnSaleDepend } = getFieldsValue();
+            if (!hasOnSaleDepend) return 
+            return (
+                <Row>
+                    <Col offset={6}>
+                        {
+                            decorator({
+                                defaultValue: 1
+                            })(
+                                <RadioGroup>
+                                    <Radio key={1} value={1}>与所有促销活动不共享</Radio>
+                                    <Radio key={2} value={2}>与部分促销活动不共享</Radio>
+                                </RadioGroup>
+                            )
+                        }
+                    </Col>
+                </Row>
+            )
+        }
+    },
+    onSaleNoShareBenifit: {
+        type: 'custom',
+        label: '',
+        render: (decorator, form) => {
+            const { getFieldsValue } = form;
+            const { hasOnSaleDepend, onSaleDependType } = getFieldsValue();
+            if (hasOnSaleDepend && onSaleDependType == 2) {
+                return (
+                    <Row>
+                        <Col span={24} offset={6}>
+                            {
+                                <FormItem label='' style={{ display: 'flex' }} >
+                                    {
+                                        decorator({
+                                            rules: [
+                                                { required: true, message: '至少选择一项活动' }
+                                            ]
+                                        })(
+                                            <OnSaleNoShareBenifit />
+                                        )
+                                    }
+                                </FormItem>
+                            }
+                        </Col>
+                    </Row>
+                )
+            } 
+            return null
+        }
+    },
+    hasBenefitsDepend: {
+        type: 'switcher',
+        label: '与会员权益不共享',
+        defaultValue: false,
+        labelCol: { span: 5 },
+        wrapperCol: { span: 19 },
+        onLabel: '开',
+        offLabel: '关',
+    },
+    benefitsOptions: {
+        label: '',
+        type: 'custom',
+        defaultValue: [31, 32],
+        wrapperCol,
+        render: (decorator, form) => {
+            const { getFieldsValue } = form;
+            const { hasBenefitsDepend } = getFieldsValue();
+            if (!hasBenefitsDepend) return null
+            return (
+                decorator({
+                    rules: [{ type: 'array', required: true, message: '至少要选择一种不共享会员权益' }],
+                })(<CheckboxGroup options={[{ label: '会员价', value: 31 }, { label: '会员折扣', value: 32 },]} />)
+            )
+        }
+    },
+    hasAssetsDepend: {
+        type: 'switcher',
+        label: '与会员资产不共享',
+        labelCol: { span: 5 },
+        wrapperCol: { span: 19 },
+        defaultValue: false,
+        onLabel: '开',
+        offLabel: '关',
+    },
+    assetsOptions: {
+        label: '',
+        type: 'custom',
+        defaultValue: [33, 34],
+        wrapperCol,
+        render: (decorator, form) => {
+            const { getFieldsValue } = form;
+            const { hasAssetsDepend } = getFieldsValue();
+            if (!hasAssetsDepend) return null
+            return (
+                decorator({
+                    rules: [{ type: 'array', required: true, message: '至少要选择一种不共享会员资产' }],
+                })(<CheckboxGroup options={[{ label: '会员储值', value: 33 }, { label: '会员积分', value: 34 },]} />)
+            )
+        }
+    },
     amountType: {
         type: 'radio',
         label: '金额核算',
-        labelCol: { span: 3 },
+        labelCol: { span: 5 },
+        wrapperCol: { span: 19 },
         defaultValue: 1,
         options: [
             { label: '账单金额', value: 1 },
@@ -525,9 +649,10 @@ export const ALL_FORM_ITEMS = {
         labelCol: { span: 4 },
         wrapperCol: { span: 16 },
         render: (d, form) => {
-            const { giftPresentType = 1 } = form.getFieldsValue();
-            if (giftPresentType == 1) { return null }
-            return (<FormItem style={{ marginTop: '-6px' }}>
+            const { giftPresentType = 1, presentType = [] } = form.getFieldsValue();
+            if (presentType && presentType.includes(1) && giftPresentType == 4) {
+                return (
+                    <FormItem style={{ marginTop: '-6px' }}>
                 {d({
                     rules: [{
                         required: true,
@@ -537,16 +662,32 @@ export const ALL_FORM_ITEMS = {
                                 return callback('请输入数字');
                             }
                             if (+value < 1 || +value > 999999) {
-                                console.log(+value < 1 || +value > 999999)
                                 return callback('大于0，限制999999个');
                             }
                             return callback();
                         },
                     }],
                 })(<Input placeholder="请输入库存个数" />)}
-            </FormItem>)
+            </FormItem>
+                )
+            }
+            return null
         },
     },
+    tagLst: {
+        label: '标签',
+        type: 'custom',
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 },
+        render: (d, form) => d()(
+            <CategoryFormItem 
+                decorator={d}
+                form={form}
+                key='tagLst'
+                phraseType='2'
+            />
+        ),
+    }
 };
 
 export const BASE_FORM_KEYS = {
@@ -555,7 +696,7 @@ export const BASE_FORM_KEYS = {
             col: {
                 span: 24,
             },
-            keys: ['eventType', 'eventName', 'eventRange', 'eventRemark'],
+            keys: ['eventType', 'eventName', 'tagLst', 'eventRange', 'eventRemark'],
         },
     ],
     'todo_demo': [
@@ -574,7 +715,6 @@ export const ACTIVITY_RULE_FORM_KEYS = {
             col: {
                 span: 24,
             },
-            // keys: ['joinCount', 'cardScopeType', 'defaultCardType', 'brandList', 'shopIDList', 'sourceWayLimit', 'orderTypeList'],
             keys: ['joinCount', 'cardScopeType', 'brandList', 'shopIDList', 'sourceWayLimit', 'orderTypeList'],
         },
     ],
@@ -586,7 +726,7 @@ export const ACTIVITY_THIRD_RULE_FORM_KEYS = {
             col: {
                 span: 24,
             },
-            keys: ['amountType', 'hasMutexDepend'],
+            keys: ['amountType', 'hasMutexDepend', 'hasOnSaleDepend', 'onSaleDependType', 'onSaleNoShareBenifit', 'hasBenefitsDepend', 'benefitsOptions', 'hasAssetsDepend', 'assetsOptions'],
         },
     ],
 };

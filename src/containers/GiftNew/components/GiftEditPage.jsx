@@ -7,13 +7,16 @@ import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import {
     Button,
+    message,
 } from 'antd';
 import { COMMON_LABEL } from 'i18n/common';
 import styles from '../GiftAdd/Crm.less';
-import {cancelCreateOrEditGift} from "../_action";
-import PhonePreview from "./PhonePreview";
-import FormWrapper from "./FormWrapper";
-import GiftCfg from "../../../constants/Gift";
+import { cancelCreateOrEditGift } from '../_action';
+import PhonePreview from './PhonePreview';
+import FormWrapper from './FormWrapper';
+import GiftCfg from '../../../constants/Gift';
+import { Iconlist } from 'components/basic/IconsFont/IconsFont';
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 class GiftEditPage extends Component {
 
     constructor(props) {
@@ -22,6 +25,7 @@ class GiftEditPage extends Component {
             contentHeight: 782,
             scrollPercent: 0,
             tabKey: 1,
+            isCheckedAgreement: false,//是否确认协议
         };
         this.formRef = null;
         this.container = null;
@@ -53,12 +57,18 @@ class GiftEditPage extends Component {
 
     // TODO: 这块为什么执行了两次保存？
     saving() {
+        if(this.props.giftType == '90') {
+            if(!this.state.isCheckedAgreement) {
+                message.error('当前您未勾选《法律声明》')
+                return
+            }
+        }
         this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
         && this.formRef.wrappedInstance.handleSubmit();
     }
 
     render() {
-        const { giftType, operationType, loading } = this.props;
+        const { giftType, operationType, loading, groupID } = this.props;
         let {tabkey} = this.state
         const { name: giftName, describe: giftDescribe, example } = GiftCfg.giftType.find(item => item.value === giftType) || {};
         return (
@@ -70,14 +80,15 @@ class GiftEditPage extends Component {
             >
                 <div className={styles.pageHeader} >
                     <div className={styles.pageHeaderTitle}>
-                        {giftName}
+                        {isZhouheiya(groupID) ? giftName.replace(/菜品/g, '商品') : giftName}
+
                     </div>
                     <div className={styles.pageHeaderDescription} style={{ fontSize: example ? 12 : 14 }}>
-                        {giftDescribe}
+                        {isZhouheiya(groupID) ? giftDescribe.replace(/菜品/g, '商品') : giftDescribe}
                         {
                             !!example && (
                                 <div>
-                                    {example}
+                                    {isZhouheiya(groupID) ? example.replace(/菜品/g, '商品') : example}
                                 </div>
                             )
                         }
@@ -123,6 +134,8 @@ class GiftEditPage extends Component {
                                 scrollPercent: value
                             })
                         }}
+                        isCheckedAgreement={this.state.isCheckedAgreement}
+                        changeProtocol={(e) => this.setState({ isCheckedAgreement: e.target.checked })}
                         contentHeight={this.state.contentHeight}
                         ref={form => this.formRef = form}
                         describe={giftDescribe}

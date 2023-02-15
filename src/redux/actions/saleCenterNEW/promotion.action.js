@@ -55,6 +55,19 @@ export const saleCenterAddNewActivityAC = (opts) => {
             shareLst: opts.data.promotionInfo.shareLst,
             cardScopeList: opts.data.promotionInfo.cardScopeList,
             createBy: userName,
+
+            //周黑鸭新需求
+            mutexActivityId:opts.data.promotionInfo.mutexActivityId,
+            mutexActivityType:opts.data.promotionInfo.mutexActivityType,
+            sharedAndNotOverlieActivityId:opts.data.promotionInfo.sharedAndNotOverlieActivityId,
+            sharedAndNotOverlieType:opts.data.promotionInfo.sharedAndNotOverlieType,
+            sharedAndOverlieActivityId:opts.data.promotionInfo.sharedAndOverlieActivityId,
+            sharedAndOverlieType:opts.data.promotionInfo.sharedAndOverlieType,  
+            goodsScopeList:opts.data.promotionInfo.goodsScopeList,  
+            ruleUseType:opts.data.promotionInfo.ruleUseType,  
+            shopScopeList:opts.data.promotionInfo.shopScopeList,
+            requiredLst:opts.data.promotionInfo.requiredLst,
+            stageGoodsList:opts.data.promotionInfo.stageGoodsList,
         };
         axiosData(
             '/promotion/docPromotionService_add.ajax',
@@ -97,6 +110,19 @@ export const saleCenterUpdateNewActivityAC = (opts) => { // opts.data
             shareLst: opts.data.promotionInfo.shareLst,
             cardScopeList: opts.data.promotionInfo.cardScopeList,
             modifiedBy: getAccountInfo().userName,
+
+             //周黑鸭新需求
+             mutexActivityId:opts.data.promotionInfo.mutexActivityId,
+             mutexActivityType:opts.data.promotionInfo.mutexActivityType,
+             sharedAndNotOverlieActivityId:opts.data.promotionInfo.sharedAndNotOverlieActivityId,
+             sharedAndNotOverlieType:opts.data.promotionInfo.sharedAndNotOverlieType,
+             sharedAndOverlieActivityId:opts.data.promotionInfo.sharedAndOverlieActivityId,
+             sharedAndOverlieType:opts.data.promotionInfo.sharedAndOverlieType,  
+             goodsScopeList:opts.data.promotionInfo.goodsScopeList,  
+             ruleUseType:opts.data.promotionInfo.ruleUseType?opts.data.promotionInfo.ruleUseType:'0',  
+             shopScopeList:opts.data.promotionInfo.shopScopeList,
+             requiredLst:opts.data.promotionInfo.requiredLst,
+             stageGoodsList:opts.data.promotionInfo.stageGoodsList,
         };
 
         axiosData(
@@ -140,11 +166,12 @@ export const fetchPromotionDetail = (opts) => {
             '/promotion/docPromotionService_queryDetail.ajax',
             opts.data,
             {},
-            {path: 'data'},
+            {path: ''},
             'HTTP_SERVICE_URL_PROMOTION_NEW'
-        ).then((result) => {
+        ).then((record) => {
+            const { data: result , promotionVersion } = record;
             let res = {...result};
-            res.data = { promotionInfo: result.promotionInfo };
+            res.data = { promotionInfo: result.promotionInfo, promotionVersion };
             try {
                 if (opts.success !== undefined && typeof opts.success === 'function') {
                     opts.success(res.data);

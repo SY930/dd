@@ -137,11 +137,12 @@ export const toggleSelectedActivityStateSuccess = (opts) => {
 };
 export const toggleSelectedActivityStateAC = (opts) => {
     const params = {
-        groupID: opts.record.groupID,
+        groupID: opts.groupID,
         shopID: opts.record.shopID,
         promotionID: opts.record.promotionIDStr,
         promotionType: opts.record.promotionType,
         isActive: opts.record.isActive == '1' ? '0' : '1',
+        sale_promotionVersion: opts ? opts.record.promotionVersion : '1.0',
     };
     return (dispatch) => {
 
@@ -154,7 +155,7 @@ export const toggleSelectedActivityStateAC = (opts) => {
         ).then((responseJSON) => {
             dispatch(toggleSelectedActivityStateSuccess(opts.record));
 
-            opts.cb && opts.cb();
+            opts.modalTip ? opts.cb && opts.cb(opts.modalTip): null;
         }).catch((error) => {});
     };
 };

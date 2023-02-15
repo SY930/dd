@@ -24,6 +24,7 @@ import { fetchSpecialCardLevel } from "../../../redux/actions/saleCenterNEW/mySp
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 import EveryDay from '../../GiftNew/GiftInfo/TicketBag/EveryDay';
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 const moment = require('moment');
 
@@ -76,6 +77,7 @@ class StepOne extends React.Component {
             smsGate: '0',
             timeString: '',
             tableDisplay: false,
+            tagLst: [],
 
             // advanced time setting
             // expand: !!expand,
@@ -139,6 +141,7 @@ class StepOne extends React.Component {
                 eventCode: this.props.isView ? specialPromotion.eventCode : specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode,
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 dateRange: isCopy ? Array(2) : [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')],
+                tagLst: specialPromotion.tagLst ? specialPromotion.tagLst.split(',') : [],
             })
         } else {
             this.setState({
@@ -148,6 +151,7 @@ class StepOne extends React.Component {
                 name: specialPromotion.eventName || this.state.name,
                 description: specialPromotion.eventRemark || this.state.description,
                 eventCode: this.props.isView ? specialPromotion.eventCode : specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode,
+                tagLst: specialPromotion.tagLst ? specialPromotion.tagLst.split(',') : [],
             })
         }
 
@@ -230,6 +234,7 @@ class StepOne extends React.Component {
                 eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                 eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                 signID: this.state.signID,
+                tagLst: this.state.tagLst.join(','),
             })
         }
         return nextFlag;
@@ -584,6 +589,12 @@ class StepOne extends React.Component {
         )
     }
 
+    changeCategoryFormItem = (tagLst) => {
+        this.setState({
+            tagLst
+        });
+    }
+
     render() {
         const {
             isBenefitJumpSendGift = false,
@@ -712,6 +723,22 @@ class StepOne extends React.Component {
                             initialValue: this.state.eventCode,
                         })(
                             <Input placeholder='请输入活动编码' onChange={(e) => this.setState({ eventCode: e.target.value })} />
+                        )}
+                    </FormItem>
+                    <FormItem
+                        label={<span>标签管理</span>}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        {getFieldDecorator('tagLst', {
+                            initialValue: this.state.tagLst,
+                        })(
+                            <CategoryFormItem
+                                phraseType='2'
+                                onChange={this.changeCategoryFormItem}
+                                selectedPhrases={this.state.tagLst}
+                            />
                         )}
                     </FormItem>
                     <FormItem

@@ -59,7 +59,7 @@ let STRING_GIFT = {
     },
     k5dn4fpc: {
         id: 'Gift.Context.k5dn4fpc',
-        defaultMessage: '线上礼品卡',
+        defaultMessage: '微信礼品卡',
     },
     k5dn6km0: {
         id: 'Gift.Context.k5dn6km0',
@@ -626,7 +626,7 @@ let STRING_GIFT = {
     dojbbg15s029: {id: "Gift.Context.dojbbg15s029", defaultMessage: "券与券共用"},
     dojbbg15s165: {id: "Gift.Context.dojbbg15s165", defaultMessage: "对线上营销，与所有券共用设置不执行。所有券之间默认互斥，与活动默认同"},
     d1qcroudg4212: {id: "Gift.Context.d1qcroudg4212", defaultMessage: "享。也就是说，一笔订单享受满减、特价商品等活动，当有满足账单使用情况时可以"},
-    d14253f6c3338: {id: "Gift.Context.d14253f6c3338", defaultMessage: "使用优惠券，但一笔订单只能使用一张券。"},
+    d14253f6c3338: {id: "Gift.Context.d14253f6c3338", defaultMessage: "使用优惠券，但一笔订单只能使用一种券。"},
     d1qcroudg4491: {id: "Gift.Context.d1qcroudg4491", defaultMessage: "一笔订单最多使用"},
     d14253f6c355: {id: "Gift.Context.d14253f6c355", defaultMessage: "张数范围1~999999"},
     d1dv5m19rj672: {id: "Gift.Context.d1dv5m19rj672", defaultMessage: "不填表示不限制"},
@@ -702,7 +702,7 @@ let COMMON_GIFT = defineMessages({
     },
     k5dn4fpc: {
         id: 'Gift.Context.k5dn4fpc',
-        defaultMessage: '线上礼品卡',
+        defaultMessage: '微信礼品卡',
     },
     k5dn6km0: {
         id: 'Gift.Context.k5dn6km0',

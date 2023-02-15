@@ -199,7 +199,7 @@ export const toggleSelectedActivityStateFail = (opts) => {
 export const toggleSelectedActivityStateAC = (opts) => {
     const nextActive = opts.nextActive == '-1' ? '-1' : (opts.record.isActive == '1' ? '0' : '1');
     const params = {
-        groupID: opts.record.groupID,
+        groupID: opts.groupID,
         itemID: opts.record.itemID,
         isActive: nextActive,
     };
@@ -391,6 +391,7 @@ export const fetchSpecialPromotionDetailAC = opts => {
                 }
             })
             .catch((err) => {
+                console.log(err)
                 opts.fail();
                 return dispatch(fetchSpecialPromotionDetailFail(err));
             })

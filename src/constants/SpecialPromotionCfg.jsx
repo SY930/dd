@@ -24,6 +24,7 @@ const SpecialPromotionCfg = {
         { value: '75', label: '集点卡' },
         { value: '77', label: '支付后广告' },
         { value: '76', label: '签到' },
+        { value: '95', label: '限时秒杀' },
     ],
 }
 

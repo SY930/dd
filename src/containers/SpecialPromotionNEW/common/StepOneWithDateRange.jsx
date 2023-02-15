@@ -34,7 +34,7 @@ import ExcludeCardTable from './ExcludeCardTable';
 import ExcludeGroupTable from './ExcludeGroupTable';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import {fetchSpecialCardLevel} from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
-import {queryOccupiedWeiXinAccountsStart} from "../../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
+import { queryOccupiedWeiXinAccountsStart, queryOccupiedDouYinAccountsStart } from "../../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 import {queryWechatMpInfo} from "../../GiftNew/_action";
 import {
     MONTH_OPTIONS,
@@ -43,6 +43,9 @@ import {
 import EveryDay from '../../GiftNew/GiftInfo/TicketBag/EveryDay';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import TimeRange from "containers/PromotionV3/Camp/TimeRange/index";
+import _ from 'lodash';
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 const CheckboxGroup = Checkbox.Group;
 const moment = require('moment');
@@ -61,6 +64,7 @@ const fullOptionSmsGate = [ // 选项有5种
     '63',
     '68',
     '70',
+    '89'
 ];
 
 const simpleOptionSmsGate = [ // 选项有2种
@@ -80,11 +84,19 @@ const PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS = new Set([
     '53',  // 群发礼品
 ])
 
+// 活动时段 enabled promotion types
+export const TimeRangeEnabledTypes = [
+    '31',
+    '21',
+]
 
+// _TODO
 const ATSEnabledTypes = [ // advanced time settings enabled promotion types
     '20',
     '30',
     '67',
+    '31',
+    '21',
 ];
 const dateLimitedTypes = [ // 活动日期不能选到今天以前的活动类型
     '61',
@@ -113,9 +125,26 @@ class StepOneWithDateRange extends React.Component {
         let selectMonthValue;
         let validCycleType;
         let expand;
+        let timeList = [
+            {
+                startTime: '',
+                endTime: ''
+            }
+        ];
         try {
             const eventInfo = props.specialPromotion.getIn(['$eventInfo']).toJS();
-            excludeDateArray = eventInfo.excludedDate.map(item => moment(item, 'YYYYMMDD'))
+            if(props.timeList && Array.isArray(props.timeList.toJS()) && props.timeList.toJS().length > 0){
+                timeList = props.timeList.toJS().map(item => {
+                    if(item.startTime){
+                        item.startTime = moment.isMoment(item.startTime) ? item.startTime : moment(item.startTime, 'HH:mm');
+                    }
+                    if(item.endTime){
+                        item.endTime = moment.isMoment(item.endTime) ? item.endTime : moment(item.endTime, 'HH:mm');
+                    }
+                    return item;
+                }).filter(item => item.startTime && item.endTime);
+            }
+            excludeDateArray = eventInfo.excludedDate.map(item => moment(item, 'YYYYMMDD'));
             expand = !!excludeDateArray.length;
             if (!eventInfo.validCycle) {
                 validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
@@ -132,12 +161,17 @@ class StepOneWithDateRange extends React.Component {
                 selectMonthValue = ['1'];
                 selectWeekValue = eventInfo.validCycle.map(item => item.substring(1));
             }
+            let newTimeList = timeList.filter(item => item.startTime && item.endTime);
+            if(newTimeList.length > 0){
+                expand = true;
+            }
         } catch (e) {
             validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
             excludeDateArray = [];
             selectWeekValue = ['1'];
             selectMonthValue = ['1'];
         }
+        this.initEventCode = `YX${moment(new Date()).format('YYYYMMDDHHmmss') + new Date().getMilliseconds()}`;
         this.state = {
             categoryList: [],//类别数据
             tagList: [],//标签数据
@@ -147,6 +181,7 @@ class StepOneWithDateRange extends React.Component {
             description: null,
             dateRange: Array(2),
             name: '',
+            eventCode: this.initEventCode,
             startTime: '', // 礼品发放时间
             smsGate: '0',
             timeString: '',
@@ -158,6 +193,7 @@ class StepOneWithDateRange extends React.Component {
             excludeDateArray,
             selectWeekValue,
             selectMonthValue,
+            timeRangelist: timeList,
 
             iconDisplay: false,
             getExcludeEventList: [],
@@ -186,6 +222,7 @@ class StepOneWithDateRange extends React.Component {
     }
 
     componentDidMount() {
+        const { isCopy } = this.props;
         this.props.getSubmitFn({
             prev: undefined,
             next: this.handleSubmit,
@@ -203,7 +240,7 @@ class StepOneWithDateRange extends React.Component {
             data: opts,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        const { eventStartDate, eventEndDate } = specialPromotion
+        const { eventStartDate, eventEndDate, tagLst } = specialPromotion
         this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
         if ((this.props.type === '31' || this.props.type === '68') && this.props.specialPromotion.getIn(['$eventInfo', 'itemID'])) {
             const itemID = specialPromotion.itemID;
@@ -219,10 +256,11 @@ class StepOneWithDateRange extends React.Component {
             specialPromotion.eventStartDate !== '' && specialPromotion.eventEndDate !== '') {
             this.setState({
                 name: specialPromotion.eventName || this.state.name, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
-                eventCode: !this.props.isUpdate ? specialPromotion.eventCode : specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
+                eventCode: isCopy ? this.initEventCode : specialPromotion.eventCode || this.state.eventCode,
                 description: specialPromotion.eventRemark || this.state.description,
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 dateRange: this.props.isCopy ? Array(2) : [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')],
+                tagLst: tagLst ? tagLst.split(',') : []
             })
         } else {
             this.setState({
@@ -230,8 +268,9 @@ class StepOneWithDateRange extends React.Component {
                 timeString: specialPromotion.startTime.substring(8),
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 name: specialPromotion.eventName || this.state.name,
-                eventCode: !this.props.isUpdate ? specialPromotion.eventCode : specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
+                eventCode: isCopy ? this.initEventCode : specialPromotion.eventCode || this.state.eventCode,
                 description: specialPromotion.eventRemark || this.state.description,
+                tagLst: tagLst ? tagLst.split(',') : []
             })
         }
         // 群发短信以及其它可发短信的活动，要查权益账户和短信签名
@@ -244,7 +283,9 @@ class StepOneWithDateRange extends React.Component {
         }
         // 活动名称auto focus
         try {
-            this.promotionNameInputRef.focus()
+            if(!this.props.onlyModifyShop && this.props.isUpdate) {
+                this.promotionNameInputRef.focus()
+            }
         } catch (e) {
             // oops
         }
@@ -351,6 +392,22 @@ class StepOneWithDateRange extends React.Component {
         //         tagList,
         //     });
         // }
+
+        if (nextProps.promotionBasicInfo.getIn(["$tagList", "initialized"])) {
+            const tagList = nextProps.promotionBasicInfo.getIn([
+                "$tagList",
+                "data",
+            ])
+                ? nextProps.promotionBasicInfo
+                      .getIn(["$tagList", "data"])
+                      .toJS()
+                      .map((item) => item.name)
+                : [];
+            this.setState({
+                tagList,
+            });
+        }
+        
         if (this.props.type == '31') {
             let isLoadingWeChatOccupiedInfo = this.state.isLoadingWeChatOccupiedInfo;
             let isAllWeChatIDOccupied = this.state.isAllWeChatIDOccupied;
@@ -369,7 +426,9 @@ class StepOneWithDateRange extends React.Component {
                     allWeChatIDList
                 })
             }
+            // console.log("__TODO 111", this.props.occupiedWeChatInfo.toJS(), nextProps.occupiedWeChatInfo.toJS());
             if (this.props.occupiedWeChatInfo !== nextProps.occupiedWeChatInfo) {
+                // console.log('_TODO')
                 isLoadingWeChatOccupiedInfo = nextProps.occupiedWeChatInfo.get('isLoading');
                 isAllWeChatIDOccupied = nextProps.occupiedWeChatInfo.get('isAllOccupied');
                 occupiedWeChatIDs = nextProps.occupiedWeChatInfo.get('occupiedIDs');
@@ -379,7 +438,6 @@ class StepOneWithDateRange extends React.Component {
                     occupiedWeChatIDs,
                 }, this.throttledCheckWeChatID);
             }
-
         }
 
     }
@@ -414,11 +472,6 @@ class StepOneWithDateRange extends React.Component {
             this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d31f01f38ji1267)}`)
         }
 
-        // 关注送礼
-        if (this.props.type == '31') {
-            this.checkIfAllOccupied() && (nextFlag = false);
-        }
-
         if (this.state.getExcludeEventList.length > 0) {
             nextFlag = false;
 
@@ -433,6 +486,7 @@ class StepOneWithDateRange extends React.Component {
             this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d5g391i90j344)}`)
         }
         if (nextFlag) {
+            let tagLst = this.state.tagLst.join(',');
             if (this.props.type == '53' || this.props.type == '50') {
                 this.props.setSpecialBasicInfo({
                     startTime: this.state.startTime + this.state.timeString || '',
@@ -441,6 +495,7 @@ class StepOneWithDateRange extends React.Component {
                     eventRemark: this.state.description,
                     smsGate: this.state.smsGate,
                     signID: this.state.signID,
+                    tagLst,
                 })
             } else if (this.props.type == '61' || this.props.type == '62') {
                 this.props.setSpecialBasicInfo({
@@ -451,6 +506,7 @@ class StepOneWithDateRange extends React.Component {
                     eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                     signID: this.state.signID,
+                    tagLst,
                 });
             } else if( this.props.type == '60') {
                 const eventStartDate =  actStartDate[0] ? actStartDate[0].format('YYYYMMDD') : '';
@@ -464,6 +520,7 @@ class StepOneWithDateRange extends React.Component {
                     eventEndDate ,
                     smsGate: this.state.smsGate,
                     signID: this.state.signID,
+                    tagLst,
                 })
 
             } else  {
@@ -475,13 +532,18 @@ class StepOneWithDateRange extends React.Component {
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                     smsGate: this.state.smsGate,
                     signID: this.state.signID,
+                    tagLst,
                 })
             }
             if (ATSEnabledTypes.includes(`${this.props.type}`)) {
                 const {
                     validCycleType,
-                    selectMonthValue,
-                    selectWeekValue
+                    selectMonthValue = [],
+                    selectWeekValue = [],
+                    dateRange,
+                    timeRangelist = [],
+                    excludeDateArray = [],
+                    expand
                 } = this.state;
                 let validCycle;
                 switch (validCycleType) {
@@ -493,10 +555,64 @@ class StepOneWithDateRange extends React.Component {
                         break;
                     default: validCycle = null;
                 }
-                this.props.setSpecialBasicInfo({
-                    excludedDate: (this.state.excludeDateArray || []).map(moments => moments.format('YYYYMMDD')),
-                    validCycle,
-                })
+                // _TODO
+                let excludedDate = excludeDateArray.map(moments => moments.format('YYYYMMDD'));
+
+                let params = {
+                    eventStartDate: dateRange[0].format('YYYYMMDD'),
+                    eventEndDate: dateRange[1].format('YYYYMMDD'),
+                    eventWay: this.props.type, 
+                    itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
+                }
+                if(TimeRangeEnabledTypes.includes(this.props.type)){
+                    let timeList = timeRangelist
+                        .filter(item => item && item.startTime && item.endTime)
+                        .map(item => {
+                            let startTime = moment.isMoment(item.startTime) ? item.startTime : moment(item.startTime);
+                            let endTime = moment.isMoment(item.endTime) ? item.endTime : moment(item.endTime);
+                            return {
+                                startTime: startTime.format('HHmm'),
+                                endTime: endTime.format('HHmm'),
+                            }
+                        });
+                    params.timeList = timeList;
+                    params.excludedDateList = excludedDate; 
+                    params.validCycleList = validCycle;
+                }
+                if(expand){
+                    this.props.setSpecialBasicInfo({
+                        excludedDate,
+                        validCycle,
+                        timeList: params.timeList,
+                        advMore: expand,
+                    });
+                }else{
+                    params.timeList = [];
+                    params.excludedDateList = []; 
+                    params.validCycleList = [];
+                    this.props.setSpecialBasicInfo({
+                        excludedDate: [],
+                        validCycle: null,
+                        timeList: [],   
+                        advMore: expand,
+                    });
+                }
+                // _TODO
+                let newParams = _.cloneDeep(params);
+                newParams.timeIntervalList = newParams.timeList;
+                delete newParams.timeList;
+                this.props.queryOccupiedWeixinAccounts(newParams);
+                // console.log('_TODO 222', this.props.occupiedWeChatInfo.toJS());
+
+                // 关注送礼
+                if (this.props.type == '31') {
+                    // _TODO
+                    // this.checkIfAllOccupied() && (nextFlag = false);
+                }
+                        
+                // this.props.queryOccupiedDouYinAccounts({
+                //     eventInfo: params
+                // });
             }
         }
         return nextFlag;
@@ -560,7 +676,8 @@ class StepOneWithDateRange extends React.Component {
                     })
                 })
             }
-            if (this.props.type === '31' || this.props.type === '68') {
+            // 活动时段change
+            if (this.props.type === '68') {
                 this.props.queryOccupiedWeixinAccounts({ ...opts, eventWay: this.props.type, itemID: opts.itemID });
             }
         }
@@ -739,15 +856,48 @@ class StepOneWithDateRange extends React.Component {
                     <span className={styles.gTip}>{this.props.intl.formatMessage(STRING_SPE.de8g05amdm1166)}</span>
                     <span className={styles.gDate} onClick={this.toggleAdvancedDateSettings}>{this.props.intl.formatMessage(STRING_SPE.dk46c4417i1276)}</span>
                 </FormItem>
+                {
+                    this.state.expand && 
+                    TimeRangeEnabledTypes.includes(this.props.type) && 
+                    this.renderTimeRange()
+                }
                 {this.state.expand && this.renderPromotionCycleSetting()}
                 {this.state.expand && this.renderExcludedDatePicker()}
             </div>
         )
     }
 
+    onChangeTimeRange = (value) => {
+        this.setState({
+            timeRangelist: value
+        })
+    }
+
+    renderTimeRange(){
+        const formItemLayout = {
+            labelCol: { span: 4 },
+            wrapperCol: { span: 17 },
+        };
+        return (
+            <FormItem label='活动时段' {...formItemLayout}>
+                <TimeRange 
+                    value={this.state.timeRangelist} 
+                    onChange={this.onChangeTimeRange}
+                    type={this.props.type}
+                />
+            </FormItem>
+        )
+    }
+
     handleNameChange(e) {
         this.setState({
             name: e.target.value,
+        });
+    }
+
+    handleEventCodeChange = (e) => {
+        this.setState({
+            eventCode: e.target.value,
         });
     }
 
@@ -1061,6 +1211,11 @@ class StepOneWithDateRange extends React.Component {
         return result;
     }
 
+    changeCategoryFormItem = (value) => {
+        this.setState({
+            tagLst: value
+        })
+    }
 
     render() {
         const categorys = this.props.saleCenter.get('characteristicCategories').toJS();
@@ -1268,55 +1423,73 @@ class StepOneWithDateRange extends React.Component {
                             />
                         )}
                     </FormItem>
+                    {/* _TODO */}
+		    {
+                        ['69', '89', '88'].includes(this.props.type) && 
+                        <FormItem label='活动编码' className={styles.FormItemStyle} {...formItemLayout}>
+                            {getFieldDecorator('eventCode', {
+                                rules: [
+                                    { required: true, message: '活动编码不能为空' },
+                                    { max: 50, message: `${this.props.intl.formatMessage(STRING_SPE.de8fcgn43i698)}` },
+                                    {
+                                        whitespace: true,
+                                        required: true,
+                                        message: '字母、数字组成，不多于50个字符',
+                                        pattern: /^[A-Za-z0-9]{1,50}$/,
+                                    }
+                                ],
+                                initialValue: this.state.eventCode,
+                            })(
+                                <Input
+                                    // disabled={this.props.isUpdate && this.props.isCopy === false}
+                                    disabled={true}
+                                    placeholder='请输入编码名称'
+                                    onChange={this.handleEventCodeChange}
+                                />
+                            )}
+                        </FormItem>
+                    }
+                    {/* _TODO */}
+                    {!['69', '89', '88'].includes(this.props.type) && 
+                            <FormItem
+                                label={<span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                {getFieldDecorator('eventCode', {
+                                    rules: [{
+                                        whitespace: true,
+                                        message: "字母、数字组成，不多于50个字符",
+                                        pattern: /^[A-Za-z0-9]{1,50}$/,
+                                    }],
+                                    initialValue: this.state.eventCode,
+                                })(
+                                        <Input
+                                            // disabled={this.props.isUpdate && this.props.isCopy === false}
+                                            placeholder='请输入编码名称'
+                                            onChange={this.handleEventCodeChange}
+                                        />
+                                )}
+                            </FormItem>
+                    }
+
                     <FormItem
-                        label={<span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>}
+                        label={<span>标签管理</span>}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
-                        {getFieldDecorator('eventCode', {
-                            rules: [{
-                                whitespace: true,
-                                message: "字母、数字组成，不多于50个字符",
-                                pattern: /^[A-Za-z0-9]{1,50}$/,
-                            }],
-                            initialValue: this.state.eventCode,
+                        {getFieldDecorator('tagLst', {
+                            initialValue: this.state.tagLst,
                         })(
-                            <Input placeholder='请输入活动编码' onChange={(e) => this.setState({ eventCode: e.target.value })} />
+                            <CategoryFormItem
+                                phraseType='2'
+                                onChange={this.changeCategoryFormItem}
+                                selectedPhrases={this.state.tagLst}
+                            />
                         )}
                     </FormItem>
-
-                    {/* <FormItem
-                        label='标签'
-                        className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
-                    >
-                        <Select
-                            allowClear={true}
-                            showSearch
-                            optionFilterProp="children"
-                            multiple
-                            className={styles.linkSelectorRight}
-                            onChange={(tagLst) => this.setState({ tagLst })}
-                            getPopupContainer={(node) => node.parentNode}
-                            value={this.state.tagLst}
-                            size="default"
-                            dropdownClassName={`${styles.dropdown}`}
-                        >
-                            {
-                                (this.state.tagList || [])
-                                    .map((tag, index) => {
-                                        return ( <Option value={tag} key={tag}>{tag}</Option>)
-                                    })
-                            }
-                        </Select>
-                        <AddCategorys
-                            catOrtag={'tag'}
-                            resetCategorgOrTag={() => this.setState({ tagLst: [] })}
-                        />
-                    </FormItem> */}
-
 
                     {
                         // 渲染周期选择期
@@ -1464,7 +1637,7 @@ class StepOneWithDateRange extends React.Component {
                                         <Col span={21}>
                                             {getFieldDecorator('rangePicker', {
                                                 rules: [{
-                                                    required: true,
+                                                    required: this.props.type != '88' ? true : false,
                                                     message: `${this.props.intl.formatMessage(STRING_SPE.du3ac84kn21119)}`,
                                                 }],
                                                 ...dateRangeProps,
@@ -1528,7 +1701,7 @@ class StepOneWithDateRange extends React.Component {
 
                     }
                     {
-                        this.props.type != '77' ?
+                        this.props.type != '77' && this.props.type != '69' ?
                         <FormItem
                             label={this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}
                             className={styles.FormItemStyle}
@@ -1537,7 +1710,10 @@ class StepOneWithDateRange extends React.Component {
                         >
                             {getFieldDecorator('description', {
                                 rules: [
-                                    { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.d7ekp859ld12164)}` },
+                                    { 
+                                        required: this.props.type != '88' ? true : false,
+                                        message: `${this.props.intl.formatMessage(STRING_SPE.d7ekp859ld12164)}`
+                                     },
                                     { max: 1000, message: `${this.props.intl.formatMessage(STRING_SPE.d17009e3e35b1366)}` },
                                 ],
                                 initialValue: this.state.description,
@@ -1566,6 +1742,7 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
         isUpdate:state.sale_myActivities_NEW.get('isUpdate'),
+        timeList: state.sale_mySpecialActivities_NEW.get('timeList')
     }
 };
 
@@ -1574,7 +1751,7 @@ const mapDispatchToProps = (dispatch) => {
         setSpecialBasicInfo: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoAC(opts));
         },
-        saleCenterQueryFsmGroupSettleUnit: (opts) => {
+        saleCenterQueryFsmGroupSettleUnit: (opts) => { 
             dispatch(saleCenterQueryFsmGroupSettleUnit(opts));
         },
         saleCenterGetExcludeCardLevelIds: (opts) => {
@@ -1591,6 +1768,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryOccupiedWeixinAccounts: (opts) => {
             dispatch(queryOccupiedWeiXinAccountsStart(opts));
+        },
+        queryOccupiedDouYinAccounts: (opts) => {
+            dispatch(queryOccupiedDouYinAccountsStart(opts));
         },
         queryWechatMpInfo: (opts) => {
             dispatch(queryWechatMpInfo(opts))

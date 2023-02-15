@@ -8,7 +8,6 @@
 * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
 */
 
-
 const Immutable = require('immutable');
 
 const $initialState = Immutable.fromJS({

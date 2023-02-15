@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Tabs, Button, Icon, Modal, message } from 'antd';
 import _ from 'lodash';
 import { throttle } from 'lodash';
-import { axiosData, fetchData, isFilterShopType } from '../../../helpers/util';
+import { axiosData, fetchData, isFilterShopType, timeFormat } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
 import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
@@ -37,14 +37,15 @@ import {
     GIFT_LIST_QUERY,
     GIFT_DETAIL_QUERY,
 } from "../../../constants/authorityCodes";
-import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import GiftLinkGenerateModal from './GiftLinkGenerateModal';
 import { isBrandOfHuaTianGroupList, isMine, } from "../../../constants/projectHuatianConf";
 import TicketBag from './TicketBag';
 import GiftList from './TicketBag/GiftList';
 import { GIFT_DETAILS } from '../../../constants/entryCodes';
 import { jumpPage, closePage } from '@hualala/platform-base';
-
+//周黑鸭新增
+import { isZhouheiya } from '../../../constants/WhiteList.jsx';
+import { sensorsAutoTrack } from "../../../helpers/util";
 const TabPane = Tabs.TabPane;
 const validUrl = require('valid-url');
 class GiftDetailTable extends Component {
@@ -76,7 +77,42 @@ class GiftDetailTable extends Component {
         this.setTableRef = el => this.tableRef = el;
         // this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
         this.queryFrom = null;
-        this.columns = COLUMNS.slice();
+        const { groupID } = props.user.accountInfo || {}
+
+        this.columns = COLUMNS(groupID).slice();
+
+
+        const statusMap = {
+            0: '未同步',
+            1: '已同步',
+            2: '同步失败',
+        }
+        isZhouheiya(groupID) && this.columns.push(...[
+            {
+                title: '推送状态',
+                dataIndex: 'syncStatus',
+                key: 'syncStatus',
+                width: 150,
+                className: 'x-tc',
+                render: (value, record) => {
+                    if (record.syncStatus === 3) {
+                        return null
+                    }
+                    return <span title={statusMap[value]}>{statusMap[value]}</span>
+                },
+            },
+            {
+                title: '推送时间',
+                dataIndex: 'syncTime',
+                key: 'syncTime',
+                width: 150,
+                className: 'x-tc',
+                render: (value) => {
+                    return <span title={timeFormat(value)}>{timeFormat(value)}</span>
+                },
+            },
+
+        ])
         this.columns.splice(2, 0, {
             title: this.getTitle(),
             dataIndex: 'sortOrder',
@@ -127,6 +163,7 @@ class GiftDetailTable extends Component {
             FetchGiftSchemaAC(parm)
         }
         this.props.queryWechatMpInfo();
+        sensorsAutoTrack('礼品信息');
     }
 
     componentWillReceiveProps(nextProps) {
@@ -334,8 +371,57 @@ class GiftDetailTable extends Component {
         });
     }
 
+
+    mutexAxios = async (record) => {
+        const { groupID, giftItemID } = record || {}
+
+
+        // 调用查询权限接口
+        const { user } = this.props
+        const accountID = user.accountInfo.accountID
+
+        const res = await axiosData(
+            '/coupon/couponService_getCouponMutexRule.ajax',
+            { couponItemId: giftItemID, groupID },
+            { needThrow: true, needCode: true },
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then((data) => {
+            return data;
+        }).catch((err) => {
+            message.warning(err);
+        })
+
+        return res.code === '000' ? res.data : false
+    }
+
+
     // 用户点击编辑，处理编辑
-    handleEdit(record, operationType) {
+    handleEdit = async (record, operationType) => {
+        const { groupID, hasOperateAuth, giftItemID } = record || {}
+        if (isZhouheiya(groupID) && hasOperateAuth != 0 && hasOperateAuth != 1 && !hasOperateAuth) {
+            // 调用查询权限接口
+            const { user } = this.props
+            const accountID = user.accountInfo.accountID
+
+            const res = await axiosData(
+                '/coupon/couponService_checkCouponDataAuth.ajax',
+                { giftItemID, groupID, accountID },
+                { needThrow: true, needCode: true },
+                { path: '' },
+                'HTTP_SERVICE_URL_PROMOTION_NEW',
+            ).then((data) => {
+                return data;
+            }).catch((err) => {
+                message.warning(err);
+            })
+            if (res.data && res.data.hasOperateAuth == 0) {
+                message.warning('没有编辑权限');
+                return;
+            }
+        }
+
+
         let gift = _.find(GiftCfg.giftType, { name: record.giftTypeName });
         const selectShops = [];
         if (!gift) {
@@ -364,6 +450,26 @@ class GiftDetailTable extends Component {
         gift.data.action = `${gift.data.action || 0}`;
         gift.data.valueType = `${gift.data.valueType}`;
         gift.data.monetaryUnit = `${gift.data.monetaryUnit}`;
+
+        if (isZhouheiya(groupID) && [10, 20, 21, 111].includes(+gift.data.giftType)) {
+            gift.data.goodScopeRequestClone = {
+                containData: { goods: [], category: [] },
+                exclusiveData: { goods: [], category: [] },
+                containType: 1,
+                exclusiveType: 1,
+                participateType: 1,
+                ...gift.data.goodScopeRequest,
+            }
+        }
+
+
+        if (isZhouheiya(groupID) && (operationType === 'detail' || operationType === 'edit')) {
+            const mutedata = await this.mutexAxios(record)
+            if (mutedata) {
+                gift.data = { ...gift.data, mutedata }
+            }
+        }
+
         const { FetchSharedGifts } = this.props;
         FetchSharedGifts({ giftItemID: record.giftItemID });
         if (gift.value == 100) { //
@@ -376,7 +482,7 @@ class GiftDetailTable extends Component {
         });
     }
 
-    handleDelete(rec) {
+    handleOkDelete = (rec) => {
         const { giftItemID, giftName } = rec;
         Modal.confirm({
             title: '您确定要停用吗？',
@@ -404,94 +510,130 @@ class GiftDetailTable extends Component {
                             this.proGiftData(data);
                         });
                     }
-                }, ({ code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = [] }) => {
-                    if (code === '1211105076') {// 券被占用
-                        Modal.warning({
-                            title: '礼品被占用，不可停用',
-                            content: (
-                                <div
-                                    style={{
-                                        lineHeight: 1.5
-                                    }}
-                                >
-                                    {
-                                        !!eventReference.length && (
-                                            <div>
-                                                <div>
-                                                    该礼品被以下活动使用，如需停用，请取消引用
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        marginTop: 8,
-                                                        background: '#fef4ed',
-                                                        padding: 5
-                                                    }}
-                                                >   {eventReference.map(name => `【${name}】`).join('')} </div>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        !!wechatCardReference.length && (
-                                            <div>
-                                                <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下微信卡券使用，如需停用，请取消引用
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        marginTop: 8,
-                                                        background: '#fef4ed',
-                                                        padding: 5
-                                                    }}
-                                                >   {wechatCardReference.map(name => `【${name}】`).join('')} </div>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        !!quotaCardsReference.length && (
-                                            <div>
-                                                <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下礼品定额卡券使用，如需停用，请取消引用
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        marginTop: 8,
-                                                        background: '#fef4ed',
-                                                        padding: 5
-                                                    }}
-                                                >   {quotaCardsReference.map(name => `【${name}】`).join('')} </div>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        !!couponPackageReference.length && (
-                                            <div>
-                                                <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下券包使用，如需停用，请取消引用
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        marginTop: 8,
-                                                        background: '#fef4ed',
-                                                        padding: 5
-                                                    }}
-                                                >   {couponPackageReference.map(name => `【${name}】`).join('')} </div>
-                                            </div>
-                                        )
-                                    }
-                                </div>
-                            ),
-                        });
-                    } else {
-                        Modal.error({
-                            title: '啊哦！好像有问题呦~~',
-                            content: `${msg}`,
-                        });
-                    }
+                }, ({ code, msg }) => {
+                    Modal.error({
+                        title: '啊哦！好像有问题呦~~',
+                        content: `${msg}`,
+                    });
                 });
             },
             onCancel: () => {
             },
         })
+    }
+
+    handleDelete(rec) {
+        const { giftItemID, giftName } = rec;
+        axiosData(
+            '/coupon/couponService_checkBeforeRemoveBoard.ajax',
+            { giftItemID },
+            { needThrow: true, needCode: true },
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then((data) => {
+            if (data.code === '000') {
+                this.handleOkDelete(rec);
+            }
+        }, ({ code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = [], yuYingEventReference = [] }) => {
+            if (code === '1211105076') {// 券被占用
+                Modal.warning({
+                    title: '礼品被占用，不可停用',
+                    content: (
+                        <div
+                            style={{
+                                lineHeight: 1.5
+                            }}
+                        >
+                            {
+                                !!eventReference.length && (
+                                    <div>
+                                        <div>
+                                            该礼品被以下活动使用，如需停用，请取消引用
+                                        </div>
+                                        <div
+                                            style={{
+                                                marginTop: 8,
+                                                background: '#fef4ed',
+                                                padding: 5
+                                            }}
+                                        >   {eventReference.map(name => `【${name}】`).join('')} </div>
+                                    </div>
+                                )
+                            }
+                            {
+                                !!wechatCardReference.length && (
+                                    <div>
+                                        <div style={{ marginTop: 8 }}>
+                                            该礼品被以下微信卡券使用，如需停用，请取消引用
+                                        </div>
+                                        <div
+                                            style={{
+                                                marginTop: 8,
+                                                background: '#fef4ed',
+                                                padding: 5
+                                            }}
+                                        >   {wechatCardReference.map(name => `【${name}】`).join('')} </div>
+                                    </div>
+                                )
+                            }
+                            {
+                                !!quotaCardsReference.length && (
+                                    <div>
+                                        <div style={{ marginTop: 8 }}>
+                                            该礼品被以下礼品定额卡券使用，如需停用，请取消引用
+                                        </div>
+                                        <div
+                                            style={{
+                                                marginTop: 8,
+                                                background: '#fef4ed',
+                                                padding: 5
+                                            }}
+                                        >   {quotaCardsReference.map(name => `【${name}】`).join('')} </div>
+                                    </div>
+                                )
+                            }
+                            {
+                                !!couponPackageReference.length && (
+                                    <div>
+                                        <div style={{ marginTop: 8 }}>
+                                            该礼品被以下券包使用，如需停用，请取消引用
+                                        </div>
+                                        <div
+                                            style={{
+                                                marginTop: 8,
+                                                background: '#fef4ed',
+                                                padding: 5
+                                            }}
+                                        >   {couponPackageReference.map(name => `【${name}】`).join('')} </div>
+                                    </div>
+                                )
+                            }
+                            {
+                                !!yuYingEventReference.length && (
+                                    <div>
+                                        <div style={{ marginTop: 8 }}>
+                                            该礼品被以下企微（语鹦）活动使用，如需停用，请取消引用
+                                        </div>
+                                        <div
+                                            style={{
+                                                marginTop: 8,
+                                                background: '#fef4ed',
+                                                padding: 5
+                                            }}
+                                        >   {yuYingEventReference.map(name => `【${name}】`).join('')} </div>
+                                    </div>
+                                )
+                            }
+                        </div>
+                    ),
+                });
+            } else {
+                Modal.error({
+                    title: '啊哦！好像有问题呦~~',
+                    content: `${msg}`,
+                });
+            }
+        });
     }
 
     handleMore(rec) {
@@ -651,7 +793,13 @@ class GiftDetailTable extends Component {
                 label: '礼品类型',
                 type: 'combo',
                 defaultValue: '',
-                options: GiftCfg.giftTypeName,
+                options: isZhouheiya(this.props.user.accountInfo.groupID) ? [
+                { label: '全部', value: '' },
+                { label: '代金券', value: '10' },
+                { label: '优惠券', value: '20' },
+                { label: '兑换券', value: '21' },
+                { label: '折扣券', value: '111' },
+            ] : GiftCfg.giftTypeName,
                 props: {
                     showSearch: true,
                     optionFilterProp: 'children',
@@ -687,7 +835,7 @@ class GiftDetailTable extends Component {
             <div className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div className="layoutsTool" style={{ height: '64px' }}>
                     <div className={headerClasses}>
-                        <span className={styles2.customHeader}>
+                        <span className={styles2.customHeader} id="pageName" pageName="礼品信息">
                             礼品信息
                         </span>
                         <p style={{ marginLeft: 'auto' }}>
@@ -728,59 +876,8 @@ class GiftDetailTable extends Component {
                         </p>
                     </div>
                 </div>
-                <PromotionCalendarBanner />
                 <Tabs activeKey={tabkey} onChange={this.props.toggleTabs} className={styles.tabBox}>
                     <TabPane tab="礼品查询" key="1">
-                        {/* <div className={styles2.pageContentWrapper}>
-                            <div style={{ padding: '0'}} className="layoutsHeader">
-                                <div className="layoutsSearch">
-                                    <ul>
-                                        <li className={styles.formWidth}>
-                                            <BaseForm
-                                                getForm={form => this.queryFrom = form}
-                                                formItems={formItems}
-                                                formKeys={formKeys}
-                                                formData={queryParams}
-                                                layout="inline"
-                                                onChange={(key, value) => this.handleFormChange(key, value)}
-                                            />
-                                        </li>
-                                        <li>
-                                            <Authority rightCode={GIFT_LIST_UPDATE}>
-                                                <Button type="primary" onClick={() => this.handleQuery(1)}>
-                                                    <Icon type="search" />
-                                                    { COMMON_LABEL.query }
-                                                </Button>
-                                            </Authority>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div style={{ margin: '0'}} className="layoutsLine"></div>
-                            </div>
-                            <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')}>
-                                <Table
-                                    ref={this.setTableRef}
-                                    bordered={true}
-                                    columns={this.getTableColumns().map(c => (c.render ? ({
-                                        ...c,
-                                        render: c.render.bind(this),
-                                    }) : c))}
-                                    dataSource={this.state.dataSource}
-                                    pagination={{
-                                        showSizeChanger: true,
-                                        pageSize,
-                                        current: pageNo,
-                                        total: this.state.total,
-                                        showQuickJumper: true,
-                                        onChange: this.handlePageChange,
-                                        onShowSizeChange: this.handlePageChange,
-                                        showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
-                                    }}
-                                    loading={this.props.loading}
-                                    scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
-                                />
-                            </div>
-                        </div> */}
                         {
                             tabkey == '1' ?
                                 <GiftList

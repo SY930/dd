@@ -14,6 +14,7 @@ const {
     miniProgramInfo,
     eventDate,
     eventCode,
+    tagLst
 } = formItem;
 export const formItems1 = {
     actType: {
@@ -26,12 +27,14 @@ export const formItems1 = {
     eventCode,
     merchantLogoUrl,
     eventRemark,
+    tagLst
 };
 
 export const formKeys1 = [
     'actType',
     'eventName',
     'eventCode',
+    'tagLst',
     'merchantLogoUrl',
     'eventRemark',
 ];

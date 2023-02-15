@@ -45,6 +45,7 @@ class NewPromotion extends React.Component {
 
     onFinish(cb) {
         const { promotionBasicInfo, promotionScopeInfo, promotionDetailInfo, isOnline, isCopy } = this.props;
+        const menuIDs = promotionBasicInfo.get('menuID');
         const basicInfo = promotionBasicDataAdapter(promotionBasicInfo.get('$basicInfo').toJS(), true);
         const scopeInfo = promotionScopeInfoAdapter(promotionScopeInfo.get('$scopeInfo').toJS(), true);
         const _detailInfo = promotionDetailInfoAdapter(promotionDetailInfo.get('$promotionDetail').toJS(), true);
@@ -82,12 +83,29 @@ class NewPromotion extends React.Component {
         if (!opts.shopIDLst && promotionBasicInfo.getIn(['$basicInfo', 'shopIDLst']) > 0) {
             opts.shopIDLst = promotionBasicInfo.getIn(['$basicInfo', 'shopIDLst'])
         }
+        //处理新商品组件数据
+        if(detailInfo._newGoodsCompData) {
+            opts.goodScopeRequest = detailInfo._newGoodsCompData;
+            delete opts._newGoodsCompData;
+        }
         // 和志超更改接口后的数据结构
         const { groupID, promotionName, promotionShowName, categoryName, promotionCode,
             tagLst, description, promotionType, startDate, endDate, excludedDate,
             validCycle, cityLst, brandIDLst, orgIDLst, shopIDLst, excludedShopIDLst,
             orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun,
-            maintenanceLevel, usageMode, shopID, foodRuleList, birthdayLimit, cardBalanceLimitType = 0 } = opts;
+            maintenanceLevel, usageMode, shopID, foodRuleList, birthdayLimit, cardBalanceLimitType = 0,
+            mutexActivityId, mutexActivityType, sharedAndNotOverlieActivityId, sharedAndNotOverlieType,
+            sharedAndOverlieActivityId, sharedAndOverlieType,
+            approval,
+            goodsScopeList,
+            ruleUseType,
+            shopScopeList,
+            requiredLst,
+            stageGoodsList,
+            executionRoleType,
+            shareType,
+        } = opts;
+        
         const promotionInfo = {
             master: {
                 groupID,
@@ -126,6 +144,16 @@ class NewPromotion extends React.Component {
                 giftList,
                 birthdayLimit,
                 cardBalanceLimitType,
+		        //周黑鸭新需求
+                activityCost:approval?approval.activityCost:'',
+                estimatedSales: approval ? approval.estimatedSales : '',
+                activityRate: approval ? approval.activityRate : '',
+                auditRemark: approval ? approval.auditRemark : '',
+                headquartersCost: approval ? approval.headquartersCost : null,
+                storeAttribute: approval ? approval.storeAttribute : null,
+                // 魏家凉皮字段
+                executionRoleType: executionRoleType || 1,
+                shareType,
             },
             timeLst: opts.timeLst,
             priceLst: opts.priceLst,
@@ -133,8 +161,22 @@ class NewPromotion extends React.Component {
             foodRuleList,
             shareLst: opts.shareLst,
             cardScopeList: detailInfo.cardScopeList,
+            //周黑鸭新需求
+            mutexActivityId,
+            mutexActivityType,
+            sharedAndNotOverlieActivityId,
+            sharedAndNotOverlieType,
+            sharedAndOverlieActivityId,
+            sharedAndOverlieType,
+            goodsScopeList,
+            ruleUseType,
+            shopScopeList,
+            requiredLst,
+            stageGoodsList,
         }
         if (this.props.isNew === false && !isCopy) {
+            const promotionVersion = promotionBasicInfo.getIn(['$basicInfo', 'promotionVersion']);
+            promotionInfo.master.sale_promotionVersion = promotionVersion ? '2.0' : '1.0'
             promotionInfo.master.promotionID = basicInfo.promotionID;
             this.props.updateNewPromotion({
                 data: { promotionInfo },
@@ -160,6 +202,14 @@ class NewPromotion extends React.Component {
                 },
             });
         } else {
+            const path = window.location.pathname.split('/') || [];
+            const pathMenuID = path[path.length - 1];
+            if(isCopy){
+                const promotionVersion = promotionBasicInfo.getIn(['$basicInfo', 'promotionVersion']);
+                promotionInfo.master.sale_promotionVersion = promotionVersion ? '2.0' : '1.0'
+            }else{
+                promotionInfo.master.sale_promotionVersion = menuIDs.includes(pathMenuID) ? '2.0' : '1.0';
+            }
             this.props.addNewPromotion({
                 data: { promotionInfo },
                 success: () => {
@@ -228,7 +278,6 @@ class NewPromotion extends React.Component {
 
     handleFinish(cb, index) {
         let flag = true;
-
         if (undefined !== this.handles[index].finish && typeof this.handles[index].finish === 'function') {
             flag = this.handles[index].finish();
         }
@@ -253,6 +302,7 @@ class NewPromotion extends React.Component {
             isNew,
             isOnline,
             isCopy,
+            onlyModifyShop,
         } = this.props;
         const steps = [
             {
@@ -261,6 +311,7 @@ class NewPromotion extends React.Component {
                     <PromotionBasicInfo
                         isNew={isNew}
                         isCopy={isCopy}
+                        onlyModifyShop={onlyModifyShop}
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;
                         }}
@@ -277,6 +328,7 @@ class NewPromotion extends React.Component {
                         isOnline={isOnline}
                         isNew={isNew}
                         isCopy={isCopy}
+                        onlyModifyShop={onlyModifyShop}
                     />
                 ),
             },

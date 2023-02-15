@@ -40,6 +40,9 @@ import GiftImagePath from './GiftImagePath';
 import { axios } from '@hualala/platform-base';
 import { axiosData } from '../../../../helpers/util';
 
+//周黑鸭新增
+import { isZhouheiya } from '../../../../constants/WhiteList.jsx'
+
 const RangePicker = DatePicker.RangePicker;
 
 const FormItem = Form.Item
@@ -189,6 +192,7 @@ class TrdTemplate extends React.Component {
     componentDidMount() {
         let channelID = undefined;
         // 编辑
+	const groupID = this.props.accountInfo.toJS().groupID
         if (this.props.data) {
             this.propsChange(this.props.data)
             if (this.props.data.trdTemplateInfo) {
@@ -207,7 +211,9 @@ class TrdTemplate extends React.Component {
                     trdTemplateInfo.entranceWords = miniProgramsInfo.entranceWords
                 }
                 if (trdTemplateInfo.trdChannelID === '50') {
-                    this.getMiniProgramsAppIdList()
+                    if (!isZhouheiya(groupID)) {
+                        this.getMiniProgramsAppIdList()
+                    }
                     this.getlinks()
                     this.getPayChannel()
                 }
@@ -238,7 +244,10 @@ class TrdTemplate extends React.Component {
         const mpList = this.props.mpList.toJS()
         mpList.length === 0 ? this.props.queryWechatMpInfo() : null
 
-        this.props.queryWechatMpAndAppInfo()
+        // 周黑鸭不需要公众号/小程序
+        if (!isZhouheiya(groupID)) {
+            this.props.queryWechatMpAndAppInfo()
+        }
         const mpAndAppList = this.props.mpAndAppList ? this.props.mpAndAppList : []
 
         this.setState({ mpList: mpList || [], mpAndAppList: mpAndAppList || [] })

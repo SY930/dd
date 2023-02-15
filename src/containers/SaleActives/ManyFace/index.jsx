@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { Modal, Steps, Spin, message, Radio } from 'antd';
@@ -14,7 +13,7 @@ import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/pr
 import {
     saleCenterSetSpecialBasicInfoAC,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
-import { getEvent, searchAllActivity, searchAllMallActivity, postEvent, putEvent, queryActiveList, putRule } from './AxiosFactory';
+import { getEvent, searchAllActivity, searchAllMallActivity, postEvent, putEvent, queryActiveList, putRule, getAppCoustomPage } from './AxiosFactory';
 import { asyncParseForm } from '../../../helpers/util'
 import { getItervalsErrorStatus } from './Common'
 import styles from './ManyFace.less'
@@ -34,6 +33,7 @@ class ManyFace extends Component {
             tagRuleDetails: [],
             allActivity: [],
             allMallActivity: [],
+            customPageLst: [],
             formDataLen: 0, // 数据的长度
             flag: false,
             paramsValueList: [],
@@ -72,15 +72,23 @@ class ManyFace extends Component {
         if (value === '2' && key === 'clientType') {
             form1 && form1.setFieldsValue({ triggerSceneList: [1] })
         }
-        if (value === '2' && key === 'sceneList') { // banner
-            form1 && form1.setFieldsValue({ triggerSceneList: [11] })
+        // 21 开屏页
+        if (['2', '21', '22'].includes(`${value}`) && key === 'sceneList') { // banner
             form2 && form2.setFieldsValue({ faceRule: [] })
-            this.props.onChangDecorateType('2')
+            form1 && form1.setFieldsValue({ triggerSceneList: [] })
+            setTimeout(() => {
+                form1 && form1.setFieldsValue({ triggerSceneList: [11] })
+                this.props.onChangDecorateType('2')
+            })
         }
         if (value === '1' && key === 'sceneList') {
-            form1 && form1.setFieldsValue({ triggerSceneList: [1] }) // 弹窗海报
+            form1 && form1.setFieldsValue({ triggerSceneList: [] })
             form2 && form2.setFieldsValue({ faceRule: [] })
-            this.props.onChangDecorateType('1')
+
+            setTimeout(() => {
+                form1 && form1.setFieldsValue({ triggerSceneList: [1] }) // 弹窗海报
+                this.props.onChangDecorateType('1')
+            })
         }
 
         this.setState({
@@ -164,7 +172,6 @@ class ManyFace extends Component {
         // console.log(flag, 'flag')
         return flag;
     }
-
 
     onCheck = (faceRule) => {
         let flag = false;
@@ -296,19 +303,22 @@ class ManyFace extends Component {
 
     onSubmit = (values, formData2) => {
         const { itemID } = this.props
-        const { eventRange, timeList, validCycle = [], cycleType, clientType, ...others1 } = values;
+        const { eventRange, timeList, validCycle = [], cycleType, clientType, sceneList, tagLst,  ...others1 } = values;
         const newEventRange = this.formatEventRange(eventRange);
         const newTimeList = this.formatTimeList(timeList);
+        const newTagLst = Array.isArray(tagLst) ? tagLst.join(',') : '';
 
-        const triggerSceneList = clientType === '1' ? [1, 2, 3] : values.triggerSceneList
-
+        let triggerSceneList = clientType === '1' ? [1, 2, 3] : values.triggerSceneList
+        if (['21', '22'].includes(sceneList)) { // 开屏页
+            triggerSceneList = [sceneList]
+        }
         let cycleObj = {};
         if (cycleType) {
             const cycle = validCycle.filter(x => (x[0] === cycleType));
             cycleObj = { validCycle: cycle };
         }
         // shopRange全部店铺和部分店铺的
-        const event = { ...others1, ...newEventRange, cycleType, ...cycleObj, ...others1, eventWay: '85', shopRange: '1' };
+        const event = { ...others1, ...newEventRange, cycleType, ...cycleObj, ...others1, eventWay: '85', shopRange: '1', launchSceneList: [{ appID: values.launchSceneList, sceneType: 4 }], tagLst: newTagLst};
         delete event.faceRule
         const eventConditionInfos = _.map(formData2, item =>
             (_.omit(item, ['triggerEventCustomInfo2', 'triggerEventValue2', 'triggerEventName2',
@@ -345,21 +355,22 @@ class ManyFace extends Component {
         fetchFoodMenuLightInfo({ groupID, shopID: this.props.user.shopID }); // 轻量级接口
         fetchPromotionScopeInfoAC({ groupID }) // 品牌
   
-        // 获取商城和营销活动
-        Promise.all([searchAllActivity(), searchAllMallActivity()]).then((data = []) => {
+        // 获取商城和营销活动\获取小程序自定义页面
+        Promise.all([searchAllActivity(), searchAllMallActivity(), getAppCoustomPage()]).then((data = []) => {
             this.setState({
                 allActivity: data[0] || [],
                 allMallActivity: data[1] || [],
+                customPageLst: data[2] || [],
             })
         }).catch(() => {
             this.setState({
                 allActivity: [],
                 allMallActivity: [],
+                customPageLst: [],
             })
         })
     }
   
-    // TODO: //需要重新写
     getEventDetail() {
         const { itemID } = this.props;
         if (itemID) {
@@ -373,12 +384,18 @@ class ManyFace extends Component {
     }
 
     setData4Step1 = (data, eventConditionInfos, times, triggerSceneList) => {
-        const { eventStartDate: sd, eventEndDate: ed, shopIDList: slist, validCycle, excludedDate = [] } = data;
+        const { eventStartDate: sd, eventEndDate: ed, shopIDList: slist, validCycle, excludedDate = [], launchSceneList = [], tagLst = '' } = data;
         const eventRange = [moment(sd), moment(ed)];
         const clientType = eventConditionInfos[0] ? String(eventConditionInfos[0].clientType) : '1';
         const shopIDList = slist ? slist.map(x => `${x}`) : [];
+        // 有投放位置的话 投放类型是1弹窗海报、2banner。否则是开屏页
         let sceneList = triggerSceneList.some(item => [1, 2, 3, 4, '1', '2', '3', '4'].includes(item)) ? '1' : '2'
         sceneList = clientType === '1' ? '1' : sceneList;
+        let leftType = sceneList;
+        if ([21, '21', '22', 22].includes(triggerSceneList.join())) {
+            sceneList = triggerSceneList.join() // 开屏页
+            leftType = '2'
+        }
         let timsObj = {};
         const TF = 'HH:mm';
         if (times) {
@@ -400,16 +417,20 @@ class ManyFace extends Component {
         if (!_.isEmpty(timsObj) || cycleType || excludedDate.length) {
             advMore = true
         }
-
         const formData = {
             step1Data: {
-                ...data, clientType, shopIDList, sceneList,
+                ...data,
+                clientType,
+                shopIDList,
+                sceneList,
+                launchSceneList: launchSceneList[0] ? launchSceneList[0].appID : '',
+                tagLst: tagLst ? tagLst.split(',') : [],
             },
             setp2Data: {
                 ...data, eventRange, ...timsObj, advMore, cycleType,
             },
         }
-        this.props.onChangDecorateType(sceneList)
+        this.props.onChangDecorateType(leftType)
         this.props.onChangClientype(clientType)
 
         return formData;
@@ -424,7 +445,7 @@ class ManyFace extends Component {
                 faceData = this.setData4AppBanner(eventConditionInfos)
             } else if (clientType == '1') { // h5弹窗
                 faceData = this.setData4Step3H5(eventConditionInfos)
-            } else { // 小程序弹窗
+            } else { // 小程序弹窗 和 开屏页
                 faceData = this.setData4Step3App(eventConditionInfos)
             }
         }
@@ -448,7 +469,7 @@ class ManyFace extends Component {
             } else {
                 item.everyTagsRule = [];
             }
-            item.triggerEventInfoList = item.triggerEventInfoList.map((itm, idx) => {
+            item.triggerEventInfoList = (item.triggerEventInfoList || []).map((itm, idx) => {
                 if (['miniAppPage', 'speedDial', 'customLink'].includes(itm.triggerEventValue)) {
                     itm.triggerEventCustomInfo1 = { value: itm.triggerEventCustomInfo }
                 } else if (itm.triggerEventName === '小程序开卡') { // 兼容老数据的小程序开卡时间，其回显的值 置为空
@@ -632,12 +653,14 @@ class ManyFace extends Component {
     }
 
     preSubmit = (values, formData2) => {
-        const { clientType, eventRange, shopIDList, triggerSceneList = [], timeList, validCycle, cycleType, excludedDate } = values;
+        const { clientType, eventRange, shopIDList, triggerSceneList = [], timeList, validCycle, cycleType, excludedDate, sceneList, } = values;
         const { itemID } = this.props
         const { eventStartDate, eventEndDate } = this.formatEventRange(eventRange);
         let triggerScene = triggerSceneList;
         triggerScene = clientType === '1' ? [1, 2, 3, 4] : triggerScene;
-
+        if (['21', '22'].includes(sceneList)) { // 开屏页 首页
+            triggerScene = [sceneList]
+        }
         let cycleObj = {};
         if (cycleType) {
             const cycle = validCycle.filter(x => (x[0] === cycleType));
@@ -656,6 +679,9 @@ class ManyFace extends Component {
                 validCycleList: cycleObj.validCycleList,
                 excludedDateList: excludedDate,
             },
+        }
+        if (!shopIDList && ['21', '22'].includes(sceneList)) {
+            return this.onSubmit(values, formData2)
         }
         queryActiveList(params).then((dataSource) => {
             if (dataSource) {
@@ -747,7 +773,7 @@ class ManyFace extends Component {
 
 
     render() {
-        const { form1, form2, allActivity, allMallActivity, formData1, formData2, viewRuleVisible, loading } = this.state
+        const { form1, form2, allActivity, allMallActivity, formData1, formData2, viewRuleVisible, loading, customPageLst } = this.state
         return (
             <div className={styles.formContainer}>
                 <div >
@@ -780,6 +806,7 @@ class ManyFace extends Component {
                             getForm={(form) => { this.setState({ form2: form }) }}
                             allActivity={allActivity}
                             allMallActivity={allMallActivity}
+                            customPageLst={customPageLst}
                             isEdit={true}
                             formData={formData2}
                             onChangeForm={this.onChangeForm}

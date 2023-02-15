@@ -30,6 +30,7 @@ export const FILTERS = [{
     { value: '2070', label: '累计次数减免' },
     { value: '1021', label: '称重买赠' },
     { value: '10071', label: '拼团活动' },
+    { value: '2090', label: '配送费减免' },
   ],
 }, {
   name: 'hllCoupon',
@@ -85,8 +86,16 @@ class PromotionSelectorModal extends Component {
         return
       }
     } else if (this.selected && this.selected.length > 100) {
-      message.warning('最多选择100个活动')
-      return
+        //农耕记组间共享放开到200
+        if(groupID == '163832'){//
+            if(this.selected.length > 200){
+                message.warning('最多选择200个活动')
+                return
+            }
+        }else{
+            message.warning('最多选择100个活动')
+            return
+        }
     }
 
     this.props.onOk(this.selected);
@@ -117,6 +126,7 @@ class PromotionSelectorModal extends Component {
             onChange={this.handleChange}
             onFilterKeyChange={this.handleFilterKeyChange}
             onGroupNameChange={this.handleGroupNameChange}
+            isShowBatchImport={false}
           />
         </Spin>
       </Modal>

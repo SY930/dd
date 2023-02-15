@@ -19,9 +19,10 @@ import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import SpecialDishesTableWithoutBrand from './SpecialDishesTableWithoutBrand'; // 表格
 import SpecialDishesTableWithBrand from './SpecialDishesTableWithBrand';
+import SpecialDishesTableWithBrandNew from './SpecialDishesTableWithBrandNew';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -32,6 +33,12 @@ import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import PriceInput from "../common/PriceInput";
+
+//周黑鸭需求
+import { isCheckApproval, isZhouheiya, priceRulsGroupID } from '../../../constants/WhiteList';
+import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
+
 @injectIntl()
 class SpecialDetailInfo extends React.Component {
     constructor(props) {
@@ -44,6 +51,7 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited,
             customerUseCountLimit,
             shortRule,
+            calType,
         } = this.getInitState()
         this.state = {
             display: !props.isNew,
@@ -60,6 +68,7 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited, // 特价菜每人每天享受特价数量是否限制 0 为不限制使用数量, 1为限制
             shortRule,
             bookID: '',
+            calType,
         };
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
@@ -69,6 +78,8 @@ class SpecialDetailInfo extends React.Component {
         this.handleIsTotalLimitedChange = this.handleIsTotalLimitedChange.bind(this);
         this.handleTotalAmountLimitChange = this.handleTotalAmountLimitChange.bind(this);
         this.dishesChange = this.dishesChange.bind(this);
+
+        this.dishesChangeZhy = this.dishesChangeZhy.bind(this);
     }
 
     getInitState() {
@@ -78,6 +89,7 @@ class SpecialDetailInfo extends React.Component {
         const totalAmountLimit = _rule ? Number(_rule.totalFoodMax) : 0;
         const customerUseCountLimit = _rule ? Number(_rule.customerUseCountLimit) : 0;
         const shortRule = _rule ? Number(_rule.shortRule) : 0;
+        const calType = (_rule && _rule.calType) ? _rule.calType : '0';
         return {
             isLimited: Number(!!amountLimit),
             amountLimit: amountLimit || 1,
@@ -86,6 +98,7 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited: Number(!!customerUseCountLimit),
             customerUseCountLimit: customerUseCountLimit || 1,
             shortRule: shortRule || 0,
+            calType,
         };
     }
 
@@ -93,6 +106,15 @@ class SpecialDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
+
+        if (isZhouheiya(this.props.user.groupID)) {
+            let stageGoodsList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'stageGoodsList']).toJS();
+            if (stageGoodsList.length > 0) {
+                this.setState({ data: stageGoodsList[0].goodsList })
+            }
+        }
+
+
     }
     handleSubmit = (cbFn) => {
         const {
@@ -104,18 +126,29 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited,
             customerUseCountLimit,
             shortRule,
-            bookID
+            bookID,
+            calType,
         } = this.state;
-        const priceLst = data.map((item) => {
-            return {
-                foodUnitID: item.itemID,
-                foodUnitCode: item.foodKey,
-                foodName: item.foodName,
-                foodUnitName: item.unit,
-                brandID: item.brandID || 0,
-                price: parseFloat(item.newPrice) < 0 ?  item.price : parseFloat(item.newPrice),
-            }
-        });
+
+        let priceLst = []
+
+        if (isZhouheiya(this.props.user.groupID)) {
+            priceLst = data
+        } else {
+            console.log("🚀 ~ file: specialDetailInfo.jsx ~ line 149 ~ SpecialDetailInfo ~ priceLst=data.map ~ data", data)
+            priceLst = data.map((item) => {
+                return {
+                    foodUnitID: item.itemID,
+                    foodUnitCode: item.foodKey,
+                    foodName: item.foodName,
+                    foodUnitName: item.unit,
+                    brandID: item.brandID || 0,
+                    price: parseFloat(item.newPrice) < 0 ? item.price : parseFloat(item.newPrice),
+                    discount: item.salePercent,
+                }
+            });
+        }
+
         if (isLimited == 1 && !amountLimit) {
             return false;
         }
@@ -159,10 +192,31 @@ class SpecialDetailInfo extends React.Component {
         if (bookID) {
             rule.bookID = bookID
         }
+        rule.calType = calType;
         this.props.setPromotionDetail({
             priceLst,
             rule, // 为黑白名单而设
         });
+
+        //周黑鸭需求
+        if (isZhouheiya(this.props.user.groupID)) {
+            let stageGoodsList = []
+            stageGoodsList.push({
+                stage: 0,
+                goodsList: priceLst
+            })
+            this.props.setPromotionDetail({
+                stageGoodsList
+            });
+            this.props.setPromotionDetail({
+                approval: this.state.approvalInfo,
+            });
+            if (isCheckApproval && (!this.state.approvalInfo.activityCost || !this.state.approvalInfo.estimatedSales || !this.state.approvalInfo.auditRemark)) {
+                return
+            }
+        }
+
+
         return true;
     };
 
@@ -179,6 +233,12 @@ class SpecialDetailInfo extends React.Component {
                 item.newPrice = item.price
             }
         });
+        this.setState({
+            data: val,
+        })
+    }
+
+    dishesChangeZhy(val) {
         this.setState({
             data: val,
         })
@@ -267,10 +327,11 @@ class SpecialDetailInfo extends React.Component {
         })
     }
     renderLimitRules() {
-        const { intl } = this.props;
+        const { intl, user } = this.props;
         const k6hdpuyl = intl.formatMessage(SALE_STRING.k6hdpuyl);
         const k5kp4vhr = intl.formatMessage(SALE_STRING.k5kp4vhr);
         const k5f4b1b9 = intl.formatMessage(SALE_STRING.k5f4b1b9);
+        const { groupID } = user
         return (
             <div>
                 <div style={{ color: 'rgba(0,0,0,0.85)'}} className={styles.coloredBorderedLabel}>
@@ -352,8 +413,8 @@ class SpecialDetailInfo extends React.Component {
                         <Radio key={'1'} value={1}>{SALE_LABEL.k6hdpvvx}</Radio>
                     </RadioGroup> : null
                 }
-                <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
-                    <div style={{lineHeight: '28px', marginRight: '14px'}}>
+                {!isZhouheiya(this.props.user.groupID) && <div style={{ height: '40px', paddingLeft: 35, marginTop: '8px' }} className={styles.flexContainer}>
+                    <div style={{ lineHeight: '28px', marginRight: '14px' }}>
                         {SALE_LABEL.k6hdpw49}
                     </div>
                     <div style={{width: '400px'}}>
@@ -386,6 +447,24 @@ class SpecialDetailInfo extends React.Component {
                         }
                     </div>
                 </div>
+                }
+                {
+                  priceRulsGroupID.includes(`${groupID}`) && <div style={{ height: '40px', paddingLeft: 35, marginTop: '8px' }} className={styles.flexContainer}>
+                    <div style={{ lineHeight: '28px', marginRight: '14px' }}>价格计算规则</div>
+                    <div style={{ width: '400px' }}>
+                        <Col span={24}>
+                            <Select
+                                onChange={(value) => { this.setState({ calType: value }) }}
+                                value={String(this.state.calType)}
+                                getPopupContainer={(node) => node.parentNode}
+                            >
+                                <Option key="0" value={'0'}>按特价计算</Option>
+                                <Option key="1" value={'1'}>按折扣计算</Option>
+                            </Select>
+                        </Col>
+                    </div>
+                </div>
+                }
             </div>
         )
     }
@@ -395,22 +474,41 @@ class SpecialDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    {
+                    {!isZhouheiya(this.props.user.groupID) && (
                         this.props.isShopFoodSelectorMode ? (
                             <SpecialDishesTableWithoutBrand
                                 onChange={this.dishesChange}
                             />
                         ) : (
-                            <SpecialDishesTableWithBrand
-                                onChange={this.dishesChange}
-                                onChangeBookID={this.onChangeBookID}
-                                bookID={this.state.bookID}
-                            />
-                        )
+                                <SpecialDishesTableWithBrand
+                                    onChange={this.dishesChange}
+                                    onChangeBookID={this.onChangeBookID}
+                                    bookID={this.state.bookID}
+                                />
+                            )
+                    )
+                    }
+                    {isZhouheiya(this.props.user.groupID) && (
+
+                        <SpecialDishesTableWithBrandNew
+                            onChange={this.dishesChangeZhy}
+                            value={this.state.data}
+                        />
+
+                    )
                     }
                     {this.renderLimitRules()}
                     {!isOnline && this.renderAdvancedSettingButton()}
-                    {!isOnline && this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+
+                    {this.state.display && !isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+                    {this.state.display && isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSettingNew bizType={1} /> : null}
+                    {isZhouheiya(this.props.user.groupID) ? <Approval onApprovalInfoChange={(val) => {
+                        this.setState({
+                            approvalInfo: {
+                                ...val
+                            }
+                        })
+                    }} /> : null}
                 </Form>
             </div>
         )
@@ -423,6 +521,8 @@ function mapStateToProps(state) {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
+        user: state.user.get('accountInfo').toJS()
     }
 }
 

@@ -66,7 +66,11 @@ class SpecialDishesTableWithoutBrand extends Component {
         if (!priceLst.length) return;
         const data = priceLst.reduce((acc, item) => {
             const dish = dishes.find(d => d.value === `${item.foodName}${item.foodUnitName}`);
-            dish && (dish.newPrice = item.price, acc.push(dish));
+            if(dish){
+                dish.newPrice = item.price
+                dish.salePercent = Number(dish.newPrice) <= 0 ? '0' : Number(dish.newPrice) !== Number(dish.price) ? `${Number((Number(dish.newPrice) / dish.price * 10).toFixed(2))}` : '10'
+                acc.push(dish)
+            }
             return acc;
         }, [])
         this.setState({ data })
@@ -82,6 +86,7 @@ class SpecialDishesTableWithoutBrand extends Component {
             num = '0';
         }
         record.newPrice = num;
+        record.salePercent = (num / record.price * 10).toFixed(2)
         this.setState({data});
         this.props.onChange(data.map(item => ({...item})));
     }
@@ -101,7 +106,7 @@ class SpecialDishesTableWithoutBrand extends Component {
             const dishObj = dishes.find(item => item.value === curr);
             if (dishObj) {
                 const reservedDish = this.state.data.find(item => item.value === dishObj.value);
-                acc.push(reservedDish ? {...dishObj, newPrice: reservedDish.newPrice} : dishObj)
+                acc.push(reservedDish ? {...dishObj, newPrice: reservedDish.newPrice, salePercent: reservedDish.salePercent} : { ...dishObj, salePercent: '10' } )
             }
             return acc;
         }, [])
@@ -261,7 +266,7 @@ class SpecialDishesTableWithoutBrand extends Component {
                 key: 'salePercent',
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
-                    return Number(record.newPrice) <= 0 ? '0'+k5ezdc19 : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(1))}${k5ezdc19}` : k6hfzdpl
+                    return Number(record.newPrice) <= 0 ? '0折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(1))}折` : k6hfzdpl
                 },
             },
         ];

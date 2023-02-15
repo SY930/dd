@@ -14,6 +14,7 @@ import {
     Col,
     Radio,
     Form,
+    Select
 } from 'antd';
 import styles from '../AthActivitiesPage.less';
 import {
@@ -23,9 +24,14 @@ import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 
 const FormItem = Form.Item;
+
+//周黑鸭需求
+import GoodsRef from '@hualala/sc-goodsRef';
+import { isCheckApproval, isZhouheiya, businessTypesList } from '../../../constants/WhiteList';
+
 
 @injectIntl()
 class NewAddGrade extends React.Component {
@@ -53,10 +59,45 @@ class NewAddGrade extends React.Component {
             },
             // TODO:赠送份数没校验
             foodCountFlag: this.props.foodCountFlag || true,
+
+            countType: '0',
+            defaultData: [{
+                containData: { goods: [] },
+                containType: 1,
+                exclusiveData: {},
+                participateType: 1
+            }]
         }
         this.allData = {};
         this.onStageAmountChange = this.onStageAmountChange.bind(this);
         this.onFoodCountChange = this.onFoodCountChange.bind(this);
+        this.defaultListValues = {
+            containData: { goods: [] },
+            containType: 1,
+            exclusiveData: {},
+            participateType: 1
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            countType: this.props.countType,
+        })
+
+        let newDishes = Object.keys(this.props.value).map((keys) => {
+            return this.props.value[keys].dishes
+        });
+
+        this.setState({
+            data: this.props.value,
+            defaultData: newDishes.map(item => ({
+                containData: { goods: item },
+                containType: 1,
+                exclusiveData: {},
+                participateType: 1
+            })
+            )
+        })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -67,7 +108,9 @@ class NewAddGrade extends React.Component {
         }
         if (this.props.ruleType != nextProps.ruleType) { // 活动方式改变
             //初始化数据
-            this.initALot();
+            if (!isZhouheiya(this.props.user.groupID)) {
+                this.initALot();
+            }
             //初始化数据
             if (nextProps.ruleType !== '2' && nextProps.ruleType !== '3') {
                 this.uuid = 0;
@@ -81,7 +124,9 @@ class NewAddGrade extends React.Component {
                 form.setFieldsValue({
                     keys: Object.keys(nextProps.value),
                 });
-                this.initALot();
+                if (!isZhouheiya(this.props.user.groupID)) {
+                    this.initALot();
+                }
             }
         }
         const a = nextProps.value;
@@ -132,7 +177,7 @@ class NewAddGrade extends React.Component {
         data[k].dishes = value;
         data[k].giftName = value.foodName;
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data);
+        this.props.onChange && this.props.onChange(data, this.state.countType);
     }
 
     renderDishsSelectionBox(k) {
@@ -156,12 +201,42 @@ class NewAddGrade extends React.Component {
         )
     }
 
+    //周黑鸭需求
+    renderDishsSelectionBoxNew(k) {
+        return (
+            <div>
+                <FormItem
+                    label={''}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 0 }}
+                    wrapperCol={{ span: 24 }}
+                    validateStatus={this.state.data[k] ? this.state.data[k].dishesFlag ? 'success' : 'error' : 'success'}
+                    help={this.state.data[k] ? this.state.data[k].dishesFlag ? null : SALE_LABEL.k5hly0bq : null}
+                >
+                    <GoodsRef
+                        defaultValue={this.state.defaultData[k]}
+                        businessTypesList={businessTypesList}
+                        containLabel=""
+                        containShowClearAll={false}
+                        exclusiveShow={false}
+                        onChange={(goods) => {
+                            this.onDishesChange(goods.containData.goods, k);
+                        }}
+                        showContainSeletorOption={{ categoryShow: false }}
+                        showParticipateLabel={{ participate: false, unParticipate: false }}
+                    ></GoodsRef>
+                </FormItem>
+
+            </div>
+        )
+    }
+
     // 删除一个档次
     remove = (k) => {
         const { data } = this.state;
         delete data[this.uuid];
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data);
+        this.props.onChange && this.props.onChange(data, this.state.countType);
         this.uuid--;
         const { form } = this.props;
         const keys = form.getFieldValue('keys');
@@ -194,7 +269,7 @@ class NewAddGrade extends React.Component {
             StageAmountFlag: true,
         };
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data);
+        this.props.onChange && this.props.onChange(data, this.state.countType);
     }
 
     onStageAmountChange(value, index) {
@@ -246,7 +321,7 @@ class NewAddGrade extends React.Component {
                 }
         }
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data);
+        this.props.onChange && this.props.onChange(data, this.state.countType);
     }
 
     onFoodCountChange(value, index) {
@@ -258,7 +333,7 @@ class NewAddGrade extends React.Component {
         }
         data[index].foodCount = value.number;
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data);
+        this.props.onChange && this.props.onChange(data, this.state.countType);
     }
 
     render() {
@@ -325,7 +400,20 @@ class NewAddGrade extends React.Component {
                                                 }
                                             </span>
                                             <PriceInput
-                                                addonAfter={k5ezdbiy}
+                                                addonAfter={isZhouheiya(this.props.user.groupID) ? <Select
+                                                    disabled={index != 0}
+                                                    style={{ width: 40 }}
+                                                    size="default"
+                                                    placeholder=""
+                                                    value={String(this.state.countType)}
+                                                    onChange={(val) => {
+                                                        this.setState({ countType: val })
+                                                        this.props.onCountTypeChange(val)
+                                                    }}
+                                                >
+                                                    <Option key="1" value="1">元</Option>
+                                                    <Option key="2" value="2">份</Option>
+                                                </Select> : k5ezdbiy}
                                                 onChange={(val) => { this.onStageAmountChange(val, index) }}
                                                 value={{ number: this.state.data[k] ? this.state.data[k].stageAmount : '' }}
                                                 modal="float"
@@ -357,7 +445,8 @@ class NewAddGrade extends React.Component {
                         <div >
                             <div className={styles.CategoryList} style={{ marginBottom: 0 }}>
                                 <div className={styles.whiteBox}></div>
-                                {this.renderDishsSelectionBox(k)}
+                                {!isZhouheiya(this.props.user.groupID) && this.renderDishsSelectionBox(k)}
+                                {isZhouheiya(this.props.user.groupID) && this.renderDishsSelectionBoxNew(k)}
                             </div>
                         </div>
                     </div>
@@ -379,6 +468,7 @@ const mapStateToProps = (state) => {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+        user: state.user.get('accountInfo').toJS()
     }
 };
 

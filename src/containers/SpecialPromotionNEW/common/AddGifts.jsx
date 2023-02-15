@@ -10,6 +10,8 @@ import selfStyle from './addGifts.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import ExpandTree from './ExpandTree';
 import _ from 'lodash';
+const moment = require('moment');
+
 import {
     SALE_CENTER_GIFT_TYPE,
     SALE_CENTER_GIFT_EFFICT_TIME,
@@ -21,6 +23,7 @@ import { STRING_GIFT } from 'i18n/common/gift';
 import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 import { axios } from '@hualala/platform-base';
 import { isEditPromotionCode } from '../../../constants/promotionEditCode';
+import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -28,6 +31,18 @@ const RangePicker = DatePicker.RangePicker;
 const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'alipay/', '/api/v1/universal?'];
 // const TreeNode = Tree.TreeNode;
 // const Search = Input.Search;
+
+if(isZhouheiya()) {
+    SALE_CENTER_GIFT_TYPE.forEach(item => {
+        if(item.value == '20') {
+            item.label = '优惠券';
+        }
+        if(item.value == '21') {
+            item.label = '兑换券';
+        }
+    })
+}
+
 const defaultData = {
     // 膨胀所需人数
     needCount: {
@@ -61,6 +76,8 @@ const defaultData = {
         msg: null,
     },
     effectType: '1',
+    /** 周期类型  */
+    weekEffectType: '4', 
     // 礼品生效时间
     giftEffectiveTime: {
         value: '0',
@@ -79,6 +96,28 @@ const defaultData = {
         validateStatus: 'success',
         msg: null,
     },
+    // 适用区域
+    region: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    //领取日期及个数
+    segments: [
+        {
+            getDate: {
+                value: [],
+                validateStatus: "success",
+                msg: null,
+            }, //领取日期
+            giftTotalCount: {
+                value: "",
+                validateStatus: "success",
+                msg: null,
+            }, //领取总数
+            id: Date.now().toString(36),
+        }
+    ]
 };
 
 @injectIntl
@@ -91,6 +130,7 @@ class AddGifts extends React.Component {
             infos: this.props.value || [JSON.parse(JSON.stringify(defaultData))],
             maxCount: this.props.maxCount || 3,
             couponData: [],
+            wxCouponData: []
         };
 
         this.handlegiftTotalCountChange = this.handlegiftTotalCountChange.bind(this);
@@ -105,10 +145,20 @@ class AddGifts extends React.Component {
         this.renderValidOptions = this.renderValidOptions.bind(this);
         this.handleRangePickerChange = this.handleRangePickerChange.bind(this);
         this.proGiftTreeData = this.proGiftTreeData.bind(this);
-        this.VALIDATE_TYPE = Object.freeze([{
-            key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}`,
-        },
-        { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` }])
+        this.VALIDATE_TYPE = Object.freeze(
+            this.props.type == '53' ? 
+            [
+                { key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}` },
+                { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` },
+                { key: 2, value: '99', name: '周期有效期' }
+            ]
+            : 
+            [
+                { key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}` },
+                { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` }
+            ]
+        );
+
         this.GIFT_BELONGING_TYPE = Object.freeze([{
             key: 0, value: '1', name: `餐饮券`,
         },
@@ -136,7 +186,46 @@ class AddGifts extends React.Component {
 
     componentDidMount() {
         // 请求零售券
-        this.getCouponsData()         
+        if(!isZhouheiya()) {
+            this.getCouponsData()
+        }
+
+        if(this.props.type == '69') {
+            // 微信支付代金券
+            this.getWxCouponsData()
+        }
+    }
+
+    getWxCouponsData = async () => {
+        const {
+            user
+        } = this.props
+        const method = '/couponCodeBatchService/queryBatchListForH5.ajax';
+        const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW', type, data: {
+            groupID: user.accountInfo.groupID,
+            pageNo: 1,
+            pageSize: 10000,
+            platformType: '3', 
+            batchStatus: '0,1'
+        }, method };
+        const response = await axios.post(url + method, params);
+        const { code, message: msg, data: obj } = response;
+        if (code === '000') {
+            const { couponCodeBatchInfos = [] } = obj;
+            this.setState({
+                wxCouponData: [{
+                    giftType: '112',
+                    crmGifts: couponCodeBatchInfos.map(item => ({
+                        ...item,
+                        _giftName: item.batchName,
+                        giftItemID: item.itemID,
+                        giftName: item.batchName + ' -【' + item.itemID + '】'
+                    }))
+                }]
+            })
+        }else {
+            message.error(msg);
+        }
     }
 
     getCouponsData = async () => {
@@ -231,31 +320,54 @@ class AddGifts extends React.Component {
         });
     }
 
+    addSegments = (index) => {
+        const _infos = this.state.infos;
+        _infos[index].segments.push({
+            getDate: {
+                value: [],
+                validateStatus: "success",
+                msg: null,
+            }, //领取日期
+            giftTotalCount: {
+                value: "",
+                validateStatus: "success",
+                msg: null,
+            }, //领取总数
+            id: Date.now().toString(36),
+        })
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
     render() {
         const { type, isAttached, theme } = this.props;
         // 当有人领取礼物后，礼物不可编辑，加蒙层
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，礼物不可编辑，加蒙层
         // 桌边砍, 集点卡编辑时可以主动加蒙层
         const disabledGifts = this.props.disabledGifts;
+        const isCopy = this.props.isCopy; //复制解除禁用
         return (
             <div className={[selfStyle.listWrapper, isAttached ? selfStyle.isAttached : ''].join(' ')}>
                 {this.renderItems()}
                 { // 膨胀大礼包固定3档礼品，不可添加, 免费领取固定1个礼品，不可添加
-                    (this.state.infos.length < 10 && type != '66' && type != '30' && theme !== 'green') && (
+                    (this.state.infos.length < 10 && type != '66' && type != '30' && this.state.maxCount > 1 && theme !== 'green') && (
                         <div className={selfStyle.addLink} onClick={this.add}>
                             + {this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n936298)}
                         </div>
                     )
                 }
                 {
-                    (this.state.infos.length < 10 && type != '66' && type != '30' && theme === 'green') && (
+                    (this.state.infos.length < 10 && type != '66' && type != '30' && this.state.maxCount > 1 && theme === 'green') && (
                         <Button style={{ display: 'flex', alignItems: 'center', color: 'rgba(0, 0, 0, 0.65)' }} className={selfStyle.addLink} onClick={this.add}>
                             <Icon type="plus" />点击添加礼品
                         </Button>
                     )
                 }
                 {
-                   isEditPromotionCode.indexOf(type) < 0 ? <div className={userCount > 0 || disabledGifts ? styles.opacitySet : null}></div> : null //WTCRM-8629 评价有礼有参与记录礼品还可以编辑
+                   isEditPromotionCode.indexOf(type) < 0 ? <div className={(userCount > 0 || disabledGifts) && !isCopy ? styles.opacitySet : null}></div> : null //WTCRM-8629 评价有礼有参与记录礼品还可以编辑
                 }
             </div>
         );
@@ -264,10 +376,19 @@ class AddGifts extends React.Component {
 
     renderItems() {
         const {
-            couponData = []
+            couponData = [],
+            wxCouponData = [],
         } = this.state
         let filteredGiftInfo = this.state.giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
             .map(cat => ({ ...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType)) }));
+        filteredGiftInfo.forEach(item => {
+            item.crmGifts.forEach(row => {
+                if(!row._giftName && isZhouheiya()) {
+                    row._giftName = row.giftName;
+                    row.giftName = row.giftName + ' -【' + row.giftItemID + '】';
+                }
+            })
+        })
         const arr = [`${this.props.intl.formatMessage(STRING_SPE.da8oel25o02265)}`,
         `${this.props.intl.formatMessage(STRING_SPE.d1kgda4ea393183)}`,
         `${this.props.intl.formatMessage(STRING_SPE.db60a2a3891c4274)}`,
@@ -286,6 +407,9 @@ class AddGifts extends React.Component {
             this.setState({ disArr })
         }
         const { intl, theme } = this.props;
+        const eventStartDate = this.props.specialPromotion.getIn(['$eventInfo', 'eventStartDate']);
+        const eventEndDate = this.props.specialPromotion.getIn(['$eventInfo', 'eventEndDate']);
+
         return this.state.infos.map((info, index, arr) => {
             let validateStatus,
                 addonBefore,
@@ -376,7 +500,7 @@ class AddGifts extends React.Component {
                         <ExpandTree
                             idx={index}
                             value={this.getGiftValue(index)}
-                            data={_.sortBy(info.presentType == 8 ? couponData :filteredGiftInfo, 'index')}
+                            data={_.sortBy(info.presentType == 8 ? couponData : this.props.type == '69' ? wxCouponData : filteredGiftInfo, 'index')}
                             filterLable={info.presentType == 8 ? SALE_CENTER_COUPON_TYPE : SALE_CENTER_GIFT_TYPE}
                             onChange={(value) => {
                                 this.handleGiftChange(value, index);
@@ -389,7 +513,8 @@ class AddGifts extends React.Component {
                             disArr={this.state.disArr || []}
                         >
                             <Input
-                                value={(this.getGiftValue(index) || '').split(',')[1]}
+                                // value={(this.getGiftValue(index) || '').split(',')[1]}
+                                value={!isZhouheiya() ? (this.getGiftValue(index) || '').split(',')[1] : ((this.getGiftValue(index) || '').split(',')[1] || '').split(' -【')[0]}
                                 className="input_click"
                                 onClick={() => { toggleFun(index); }}
                                 placeholder="请选择礼品名称"
@@ -420,7 +545,7 @@ class AddGifts extends React.Component {
                     </FormItem>        
 
                     {/* 礼品个数 */}
-                    <FormItem
+                    {this.props.type != '69' && <FormItem
                         label={addonBefore}
                         required={true}
                         className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.labeleBeforeSlectMargin, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
@@ -439,17 +564,21 @@ class AddGifts extends React.Component {
                             placeholder="请输入礼品数量"
                         />
 
-                    </FormItem>
+                    </FormItem>}
                     {/* ....... */}
                     {
-                        info.presentType != '8' ?
+                        info.presentType != '8' && this.props.type != '69' ?
                             <FormItem
                                 className={[styles.FormItemStyle].join(' ')}
                             >
                                 <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.du389nqve18246)}</span>
                                 <RadioGroup
                                     className={styles.radioMargin}
-                                    value={info.effectType == '2' ? '2' : '1'}
+                                    // value={info.effectType == '2' ? '2' : info.effectType == '99' ? '99' : '1'}
+                                    value={
+                                        info.effectType == '2' ? '2' 
+                                        : (info.effectType == '99' || info.effectType == '4' || info.effectType == '5') ? '99' : '1'
+                                    }
                                     onChange={val => this.handleValidateTypeChange(val, index)}
                                     disabled={info.effectTypeIsDisabled}
                                 >
@@ -461,7 +590,7 @@ class AddGifts extends React.Component {
                                 </RadioGroup>
                             </FormItem> : null
                     }
-                    {info.presentType != '8' ? this.renderValidOptions(info, index) : null}
+                    {info.presentType != '8' && this.props.type != '69' ? this.renderValidOptions(info, index) : null}
                     {/* ....... */}
                     {/* 中奖比率 */}
                     {
@@ -482,7 +611,86 @@ class AddGifts extends React.Component {
                                 </FormItem>
                             ) : null
                     }
+                    {this.props.type == '69' ? (
+                        <FormItem
+                            className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}
+                            label='适用区域'
+                            required={true}
+                            validateStatus={info.region.validateStatus}
+                            help={info.region.msg}
+                        >
+                            <Input
+                                addonBefore=""
+                                addonAfter=""
+                                value={info.region.value}
+                                onChange={(e) => { this.handleRegionChange(e.target.value, index); }}
+                                placeholder="请输入适用区域"
+                            />
+                        </FormItem>
+                    ) : null}
+                    {this.props.type == '69' && (
+                        <div style={{ padding: '10px 10px 1px 10px', background: '#fff' }}>
+                            {info.segments.map((item, i) => {
+                                    return (
+                                        <div key={item.id} style={{ background: '#fef4ed', marginBottom: '10px', padding: '0 6px', position: 'relative' }}>
+                                            {/* 可领取日期 */}
+                                            <FormItem
+                                                label='可领取日期'
+                                                className={[styles.FormItemStyle, styles.labeleBeforeSlect, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                                                labelCol={{ span: 8 }}
+                                                wrapperCol={{ span: 16 }}
+                                                required={true}
+                                                validateStatus={item.getDate.validateStatus}
+                                                help={item.getDate.msg}
+                                            >
+                                                <RangePicker
+                                                    showTime={false}
+                                                    format={'YYYY-MM-DD'}
+                                                    onChange={(date, dateString) => {
+                                                        this.handleSegmentsRangePickerChange(date, dateString, index, i);
+                                                    }}
+                                                    value={item.getDate.value}
+                                                    disabledDate={(current) => {
+                                                        return current && (current.format('YYYYMMDD') < eventStartDate || current.format('YYYYMMDD') > eventEndDate);
+                                                    }}
+                                                />
+                                            </FormItem>
+                                            {/* 礼品总数 */}
+                                            <FormItem
+                                                label={'礼品总数'}
+                                                required={true}
+                                                className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.labeleBeforeSlectMargin, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                                                labelCol={{ span: 8 }}
+                                                wrapperCol={{ span: 16 }}
+                                                validateStatus={item.giftTotalCount.validateStatus}
+                                                help={item.giftTotalCount.msg}
+                                                colon={false}
+                                            >
+                                                <PriceInput
+                                                    maxNum={8}
+                                                    value={{ number: item.giftTotalCount.value }}
+                                                    onChange={val => this.handleSegmentsGiftTotalChange(val, index, i)}
+                                                    modal="int"
+                                                    placeholder="请输入礼品总数"
+                                                />
 
+                                            </FormItem>
+                                            {info.segments.length > 1 && <Icon onClick={() => this.handleSegmentsRemove(index, i)} style={{ position: 'absolute', right: '0', top: '0', cursor: 'pointer' }} type="close-circle" />}
+                                        </div>
+                                    )
+                                }
+                            )}
+                            {
+                                info.segments.length < 5 && ((new Date(moment(eventEndDate, "YYYY-MM-DD")).getTime() - new Date(moment(eventStartDate, "YYYY-MM-DD")).getTime())/86400000) > 0 && (
+                                    <div style={{ width: '35px' }} className={selfStyle.addLink} onClick={() => this.addSegments(index)}>
+                                        +添加
+                                    </div>
+                                )
+                            }
+                        </div>
+                    )}
                 </div>
             );
         });
@@ -584,8 +792,33 @@ class AddGifts extends React.Component {
         });
     }
     // form的label样式，三种实现，哎，
-    // 相对有效期 OR 固定有效期
+    // 相对有效期 OR 固定有效期 OR 周期有效期
     renderValidOptions(info, index) {
+        if(info.effectType == '99' || info.effectType == '4' || info.effectType == '5'){
+            return (
+                <FormItem
+                    className={[styles.FormItemStyle].join(' ')}
+                >
+                    <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>周期类型</span>
+                    <RadioGroup
+                        value={info.weekEffectType || (info.effectType == '99' ? '4' : info.effectType)}
+                        className={styles.radioMargin}
+                        onChange={e => {
+                            const infos = this.state.infos;
+                            infos[index].weekEffectType = e.target.value
+                            this.setState({
+                                infos,
+                            }, () => {
+                                this.props.onChange && this.props.onChange(this.state.infos);
+                            })
+                        }}
+                    >
+                       <Radio value='4' key={4}>当周有效</Radio>
+                       <Radio value='5' key={5}>当月有效</Radio>
+                    </RadioGroup>
+                </FormItem>
+            );
+        }
         if (info.effectType != '2') {
             return (
                 <div>
@@ -716,6 +949,90 @@ class AddGifts extends React.Component {
             this.props.onChange && this.props.onChange(this.state.infos);
         });
     }
+
+    //适用区域
+    handleRegionChange = (val, index) => {
+        const _infos = this.state.infos;
+        _infos[index].region.value = val.slice(0, 10);
+        if (val) {
+            _infos[index].region.validateStatus = 'success';
+            _infos[index].region.msg = null;
+        } else {
+            _infos[index].region.validateStatus = 'error';
+            _infos[index].region.msg = '请输入适用区域';
+        }
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
+    // 领取日期
+    handleSegmentsRangePickerChange = (date, dateString, index, i) => {
+        const _infos = this.state.infos;
+        _infos[index].segments[i].getDate.value = date;
+
+        this.validateDateIsHasIntersection(_infos[index].segments)
+
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
+    validateDateIsHasIntersection = (segments = []) => {
+        segments.forEach((item, index) => {
+            if(!item.getDate.value || !item.getDate.value.length || segments.find((row, i) => {
+                if(index != i && 
+                    row.getDate.value && row.getDate.value.length &&
+                    ((item.getDate.value[0].format("YYYYMMDD") <= row.getDate.value[1].format("YYYYMMDD") && item.getDate.value[0].format("YYYYMMDD") >= row.getDate.value[0].format("YYYYMMDD")) ||
+                     (item.getDate.value[1].format("YYYYMMDD") <= row.getDate.value[1].format("YYYYMMDD") && item.getDate.value[1].format("YYYYMMDD") >= row.getDate.value[0].format("YYYYMMDD")) )) {
+                    return true;
+                }
+                return false;
+            })) {
+                item.getDate.validateStatus = 'error';
+                item.getDate.msg = `在活动范围内并且阶梯日期之间不能有交集`;
+            } else {
+                item.getDate.validateStatus = 'success';
+                item.getDate.msg = null;
+            }
+        })
+    }
+
+    // 礼品总数
+    handleSegmentsGiftTotalChange = (val, index, i) => {
+        const _infos = this.state.infos;
+        _infos[index].segments[i].giftTotalCount.value = val.number;
+        const _value = parseFloat(val.number);
+        if (_value > 0) {
+            _infos[index].segments[i].giftTotalCount.validateStatus = 'success';
+            _infos[index].segments[i].giftTotalCount.msg = null;
+        } else {
+            _infos[index].segments[i].giftTotalCount.validateStatus = 'error';
+            _infos[index].segments[i].giftTotalCount.msg = '礼品总数必须大于0';
+        }
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
+    handleSegmentsRemove = (index, i) => {
+        const _infos = this.state.infos;
+        _infos[index].segments.splice(i, 1);
+        this.validateDateIsHasIntersection(_infos[index].segments);
+
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
     // 类型改变
     handleValidateTypeChange(e, index) {
         const _infos = this.state.infos;
@@ -727,6 +1044,9 @@ class AddGifts extends React.Component {
         _infos[index].giftEffectiveTime.msg = null;
         _infos[index].giftValidDays.msg = null;
 
+        console.log(333333, _infos);
+        console.log(555555, e.target.value);
+        
         this.setState({
             infos: _infos,
         }, () => {
@@ -764,6 +1084,9 @@ class AddGifts extends React.Component {
             _infos[index].giftInfo.validateStatus = 'success';
             _infos[index].giftInfo.msg = null;
             _infos[index].giftInfo.parentId = newValue[2]
+            if(this.props.type == '69') {
+                _infos[index]._allItem = this.state.wxCouponData[0].crmGifts.find(item => item.giftItemID == newValue[0])
+            }
             this.setState({
                 infos: _infos,
             }, () => {

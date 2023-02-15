@@ -86,7 +86,8 @@ class GiftList extends Component {
      * 加载列表
      */
     onQueryList = (pagingParams) => {
-        let { pageType } = this.props
+        const { pageType, user } = this.props
+	const accountID = user.accountInfo.accountID
         let action = pageType == 1 ? 0 : 2
         const { queryParams } = this.state;
         const { FetchGiftList } = this.props;
@@ -109,6 +110,7 @@ class GiftList extends Component {
                 action,
                 pageNo: 1,
                 pageSize: queryParams.pageSize || 1,
+		accountID,
                 ...pagingParams,
                 ...params,
             }).then((data = []) => {
@@ -119,11 +121,13 @@ class GiftList extends Component {
 
     handlePageChange = (pageNo, pageSize) => {
         const { queryParams } = this.state;
-        const { FetchGiftList } = this.props;
+        const { FetchGiftList, user } = this.props;
+        const accountID = user.accountInfo.accountID
         FetchGiftList({
             ...queryParams,
             pageNo,
             pageSize,
+            accountID,
         }).then((data = []) => {
             this.proGiftData(data);
         });
@@ -317,7 +321,7 @@ class GiftList extends Component {
                             showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
                         }}
                         loading={this.props.loading}
-                        scroll={{ x: 1600, y: 'calc(100vh - 440px)' }}
+                        scroll={{ x: 1600, y: 'calc(100vh - 360px)' }}
                     />
                 </div>
             </div>

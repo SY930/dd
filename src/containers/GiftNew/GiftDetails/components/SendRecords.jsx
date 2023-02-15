@@ -35,7 +35,7 @@ class SendRecords extends Component {
       .then((records) => {
         this.setState({
           list: records.data.sendRecordDetailList || [],
-          total: records.data.totalSize || 0,
+          total: records.data.page.totalSize || 0,
         })
       }).catch(err => {
         // empty catch
@@ -60,8 +60,8 @@ class SendRecords extends Component {
       createStampStart: time && time.length ? time[0].format('YYYY-MM-DD HH:mm:ss') : '',
       createStampEnd: time && time.length ? time[1].format('YYYY-MM-DD HH:mm:ss') : '',
     }
-    this.setState({ filters: params })
-    this.getSendRecordList(params)
+    this.setState({ filters: params, pageNo: 1, pageSize: 10 })
+    this.getSendRecordList({...params, pageNo: 1, pageSize: 10})
   }
 
   render() {

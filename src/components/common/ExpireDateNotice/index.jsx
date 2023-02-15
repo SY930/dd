@@ -2,7 +2,7 @@
  * 提醒到期组件
  */
 import React from "react";
-import { Icon, Col, Tooltip } from "antd";
+import { Icon, Col, Tooltip, message } from "antd";
 import { getStore } from "@hualala/platform-base";
 import axios from "axios";
 import styles from "./notice.less";

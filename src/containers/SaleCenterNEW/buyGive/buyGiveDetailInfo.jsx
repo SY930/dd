@@ -30,7 +30,12 @@ import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
+
+//周黑鸭需求
+import { isCheckApproval, isZhouheiya } from '../../../constants/WhiteList';
+import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
 
 @injectIntl()
 class BuyGiveDetailInfo extends React.Component {
@@ -212,6 +217,22 @@ class BuyGiveDetailInfo extends React.Component {
                     rule, priceLst, foodRuleList,
                 });
             }
+
+            //周黑鸭需求
+	    if(isZhouheiya(this.props.user.groupID)){
+            let approval;
+            approval = {
+                activityCost: this.state.activityCost,
+                estimatedSales: this.state.estimatedSales,
+                activityRate: this.state.activityRate,
+                auditRemark: this.state.auditRemark,
+            }
+
+            this.props.setPromotionDetail({
+                approval,
+            });
+	    }
+
             return true
         }
         return false
@@ -568,7 +589,16 @@ class BuyGiveDetailInfo extends React.Component {
                         this.renderGiveDishNumInput()
                     }
                     {this.renderAdvancedSettingButton()}
-                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+
+                    {this.state.display && !isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+                    {this.state.display && isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSettingNew bizType={1} /> : null}
+                    {isZhouheiya(this.props.user.groupID) ? <Approval onApprovalInfoChange={(val) => {
+                        this.setState({
+                            approvalInfo: {
+                                ...val
+                            }
+                        })
+                    }} /> : null}
                 </Form>
             </div>
         )
@@ -581,6 +611,8 @@ function mapStateToProps(state) {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
+        user: state.user.get('accountInfo').toJS()
     }
 }
 

@@ -78,14 +78,13 @@ export default class PresentForm extends Component {
     /* 整理formItems对象 */
     resetFormItems = () => {
         const { smsTemplate: msg, accountNo: acc } = this.state;
-        const { num = 0 } = this.props;
+        const { num = 0, isOld, couponPackageType } = this.props;
         const noLimit = num < 0 ? '不限制' : num;
         const btnProp = { type: 'primary', onClick: this.onSend };
         const { q, c, sendCount, accountNo, smsTemplate, ...other } = pFormItems;
         const render = () => (<div className={styles.sendBtn}><Button {...btnProp}>发送</Button></div>);
         const render1 = d => d()(<AccountNoSelector autoFetch={true} />);
         const render2 = d => d()(<MsgSelector selectedMessage={msg} />);
-        const render3 = () => (<p>{noLimit}</p>);
         const rules = [{
             required: true,
             validator: (rule, value, callback) => {
@@ -110,7 +109,7 @@ export default class PresentForm extends Component {
             smsTemplate: { ...smsTemplate, render: render2, onChange: this.onMessageChange},
             sendCount: { ...sendCount, rules },
             q: { ...q, render },
-            c: { ...c, render: render3 },
+            c: { ...c, render: () => { return isOld || couponPackageType == 1 ? noLimit : null } },
         };
     }
     render() {

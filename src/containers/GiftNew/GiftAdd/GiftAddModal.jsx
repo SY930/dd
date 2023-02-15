@@ -12,8 +12,11 @@ import {
     Input,
     Radio,
     Form,
-    Switch
+    Switch,
+    Checkbox,
+    Button
 } from 'antd';
+import Protocol from './Protocol'
 import styles from './GiftAdd.less';
 import BaseForm from '../../../components/common/BaseForm';
 import GiftCfg from '../../../constants/Gift';
@@ -34,6 +37,7 @@ import FakeBorderedLabel from "../components/FakeBorderedLabel";
 import GiftInfoHaveCoupon from './GiftInfoHaveCoupon';
 import decorator from '@hualala/react-lazyload/lib/decorator';
 import CategoryFormItem from './CategoryFormItem/index';
+import { getVersionUI } from 'utils'
 
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -341,6 +345,9 @@ class GiftAddModal extends React.Component {
             })
         }
         return allKeys.includes('tagLst');
+    }
+    seeProtocal = () => {
+        this.refs.protocol.seeProtocal && this.refs.protocol.seeProtocal()
     }
     render() {
         const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
@@ -1056,8 +1063,10 @@ class GiftAddModal extends React.Component {
                 }
             }
         }
+        const isPro = getVersionUI().styleName === 'professional'
         return (
             <div className={styles.giftAddModal}>
+                <Protocol ref='protocol' />
                 <BaseForm
                     getForm={form => this.baseForm = form}
                     getRefs={refs => this.refMap = refs}
@@ -1067,6 +1076,18 @@ class GiftAddModal extends React.Component {
                     onChange={(key, value) => this.handleFormChange(key, value)}
                     key={`${describe}-${type}`}
                 />
+                {value == '90' ? <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15, marginLeft: 150, paddingBottom: 100 }}>
+                    <div>
+                        <Checkbox
+                            value={this.props.isCheckedAgreement}
+                            onChange={this.props.changeProtocol}
+                        ></Checkbox>
+                        <span style={{ paddingLeft: 0 }}>
+                            我已阅读并同意
+                            <span onClick={this.seeProtocal} style={{ color: isPro ? '#0091FF' : '#1ab495', cursor: 'pointer' }}>《法律声明》</span>
+                        </span>
+                    </div>
+                </div> : null}
             </div>
         )
     }

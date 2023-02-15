@@ -153,7 +153,7 @@ export const FORMITEMS = {
                         <br/>
                         享。也就是说，一笔订单享受满减、特价商品等活动，当有满足账单使用情况时可以
                         <br/>
-                        使用优惠券，但一笔订单只能使用一张券。
+                        使用优惠券，但一笔订单只能使用一种券。
                     </p>
                 }>
                     <Icon type="question-circle" />
@@ -608,7 +608,7 @@ export const FIRST_KEYS = {
             ],
         },
     ],
-    '线上礼品卡': [
+    '微信礼品卡': [
         {
             col: {
                 span: 24,
@@ -839,7 +839,7 @@ export const SECOND_KEYS = (() => ({
                 // 'amountType',
                 'showGiftRule',
                 'giftImagePath',
-                'aggregationChannels',
+                // 'aggregationChannels',
                 'TrdTemplate',
                 'isSynch',
             ],
@@ -896,7 +896,7 @@ export const SECOND_KEYS = (() => ({
                 // 'selectedShops',
                 'showGiftRule',
                 'giftImagePath',
-                'aggregationChannels',
+                // 'aggregationChannels',
                 'TrdTemplate',
                 'isSynch',
             ],
@@ -926,7 +926,7 @@ export const SECOND_KEYS = (() => ({
                 // 'selectedShops',
                 'showGiftRule',
                 'giftImagePath',
-                'aggregationChannels',
+                // 'aggregationChannels',
                 'TrdTemplate',
                 'isSynch',
             ],
@@ -963,7 +963,7 @@ export const SECOND_KEYS = (() => ({
             ],
         },
     ],
-    '线上礼品卡': [
+    '微信礼品卡': [
         {
             col: {
                 span: 24,
@@ -1030,7 +1030,7 @@ export const SECOND_KEYS = (() => ({
                 'excludeShops',
                 'showGiftRule',
                 'giftImagePath',
-                'aggregationChannels',
+                // 'aggregationChannels',
                 'TrdTemplate',
                 'isSynch',
             ],

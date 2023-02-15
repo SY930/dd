@@ -4,7 +4,7 @@ import moment from 'moment';
 import styles from './index.less';
 import { href, DF, TF } from './Common';
 import PagingFactory from 'components/PagingFactory';
-import { deleteTicketBag, getTicketBagInfo } from './AxiosFactory';
+import { deleteTicketBag, getTicketBagInfo, httpCheckBeforeDeleteCouponPackage } from './AxiosFactory';
 import DetailModal from './Detail';
 import StockModal from './StockModal';
 import {
@@ -47,27 +47,71 @@ class MainTable extends Component {
         }
     }
     /** 编辑 */
-    onDelete = (couponPackageID, name) => {
+    onDelete = async (couponPackageID, name, record) => {
         const { groupID, onQuery } = this.props;
         const params = { couponPackageID, groupID };
-        Modal.confirm({
-            title: '您确定要停用吗？',
-            content: (
-                <div>
-                    {`您将停用券包
-                        【${name}】`}
-                    <br />
-                    <span>停用是不可恢复操作，被停用的券包可以在已停用的券包中查看~</span>
-                </div>
-            ),
-            onOk: () => {
-                deleteTicketBag(params).then((flag) => {
-                    if (flag) {
-                        message.success('停用成功');
-                        onQuery();
-                    }
-                });
-            },
+        const { couponSendWay } = record;
+        httpCheckBeforeDeleteCouponPackage(params).then((res) => {
+            if (typeof res == 'string') {
+                return Modal.warning({
+                    okText: "知道了",
+                    content: (
+                        <div className={styles.couponWarningBox}>
+                            {res}
+                        </div>
+                    ),
+                    onOk: () => { },
+                })
+            }
+            if (Array.isArray(res)) {
+                if (res.length == 0) {
+                    Modal.confirm({
+                        title: '您确定要停用吗？',
+                        content: (
+                            <div>
+                                {`您将停用券包
+                                    【${name}】`}
+                                <br />
+                                <span>停用是不可恢复操作，被停用的券包可以在已停用的券包中查看~</span>
+                            </div>
+                        ),
+                        onOk: () => {
+                            deleteTicketBag(params).then((flag) => {
+                                if (flag) {
+                                    message.success('停用成功');
+                                    onQuery();
+                                }
+                            });
+                        },
+                    })
+                } else {
+                    Modal.warning({
+                        title: '券包被占用，不可停用',
+                        okText: "知道了",
+                        content: (
+                            <div className={styles.couponWarningBox}>
+                                {
+                                    res.map(item => (
+                                        <div key={item.label} className={styles.label}>
+                                            {
+                                                Array.isArray(item.list) && item.list.length > 0 && <div className={styles.title}>该券包被以下{item.label}使用，如需停用，请取消引用</div>
+                                            }
+                                            <div className={styles.content}>
+                                                {
+                                                    item.list.map(content => (
+                                                        <span key={content} className={styles.contentItem}>【{content}】</span>
+                                                    ))
+                                                }
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        ),
+                        onOk: () => { },
+                    })
+                }
+            }
         })
     }
     /** 查看详情 */
@@ -106,7 +150,7 @@ class MainTable extends Component {
     resetFormData = (detail) => {
         const { couponPackageGiftConfigs, couponPackageInfo: info, shopInfos: shops } = detail;
         const { couponSendWay: way, couponPackageType: type, validCycle: cycle,
-            couponPackagePrice: price, remainStock: stock ,maxBuyCount:buyCount} = info;
+            couponPackagePrice: price, remainStock: stock, maxBuyCount: buyCount } = info;
         const shopInfos = shops.map(x => `${x.shopID}`);
         const { sellBeginTime, sellEndTime, sendTime: time } = info;
         let sellTime = [];
@@ -120,10 +164,11 @@ class MainTable extends Component {
         if (stock === -1) {
             remainStock = '';
         }
-        if (buyCount <= 0 ){
+        if (buyCount <= 0) {
             maxBuyCount = '';
         }
-        return { ...info,
+        return {
+            ...info,
             sellTime,
             sendTime,
             shopInfos,
@@ -134,17 +179,17 @@ class MainTable extends Component {
             couponPackagePrice2: price,
             remainStock,
             maxBuyCount
-         };
+        };
     }
     /* 分页改变执行 */
     onPageChange = (pageNo, pageSize) => {
         const { onSavePaging, onQuery } = this.props;
-        this.setState({ pageSize } ,()=>{
+        this.setState({ pageSize }, () => {
             const params = { pageSize, pageNo };
             onSavePaging(params);
             onQuery(params);
         })
-        
+
     }
     /* 是否显示 */
     onToggleModal = () => {
@@ -159,7 +204,7 @@ class MainTable extends Component {
     onDecorate = (id, name) => {
         const {
             selectPromotionForDecoration
-        } =  this.props
+        } = this.props
         selectPromotionForDecoration({
             type: `ticketbag`,
             id: id,
@@ -182,9 +227,9 @@ class MainTable extends Component {
                 <p id={id}>
                     {isNor && isVis && <a href={href} onClick={this.onEdit}>编辑</a>}
                     <a href={href} name="check" onClick={this.onEdit}>查看</a>
-                    {isNor && isVis && <a href={href} onClick={() => { this.onDelete(id, name) }}>停用</a>}
+                    {isNor && isVis && <a href={href} onClick={() => { this.onDelete(id, name, o) }}>停用</a>}
                     <a href={href} onClick={this.onPreview}>详情</a>
-                    <a href={href} onClick={() => {this.onDecorate(id, name)}}>装修</a>
+                    <a href={href} onClick={() => { this.onDecorate(id, name) }}>装修</a>
                 </p>);
         };
         const render1 = (v, o) => {
@@ -199,8 +244,11 @@ class MainTable extends Component {
             return (<span>{idx}</span>);
         };
         const render3 = (v, o) => {
-            const { couponPackageID: id, remainStock = 0 } = o;
+            const { couponPackageID: id, remainStock = 0, type, limitStockForEvent } = o;
             const stock = (remainStock === -1) ? '不限制' : remainStock;
+            if (limitStockForEvent == 2 && type === '活动投放') {
+                return '不限制'
+            }
             return (
                 <p id={`${id},${remainStock}`} className={tr}>
                     <span>{stock}</span>
@@ -214,7 +262,7 @@ class MainTable extends Component {
             { title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
             { width: 180, title: '券包ID', dataIndex: 'couponPackageID' },
             { width: 100, title: '券包类型', dataIndex: 'type' },
-            { width: 100, title: '库存', dataIndex: 'remainStock', render: render3 },
+            { width: 100, title: '库存', dataIndex: 'remainStock', render: render3, className: tc },
             { width: 160, title: '创建人/修改人', dataIndex: 'postBy', className: tc },
             { width: 260, title: '创建时间/修改时间', dataIndex: 'postTime', className: tc },
         ];
@@ -236,7 +284,7 @@ class MainTable extends Component {
         const { loading, page, groupID } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
-        const pagination = { ...page, onChange: this.onPageChange, onShowSizeChange: this.onPageChange,pageSizeOptions: ['25','50','100','200'], pageSize:this.state.pageSize};
+        const pagination = { ...page, onChange: this.onPageChange, onShowSizeChange: this.onPageChange, pageSizeOptions: ['25', '50', '100', '200'], pageSize: this.state.pageSize };
         return (
             <div className={styles.tableBox}>
                 <Table
@@ -245,23 +293,23 @@ class MainTable extends Component {
                     columns={columns}
                     dataSource={dataSource}
                     style={{ maxWidth: 1300 }}
-                    scroll={{ y: 'calc(100vh - 440px)' }}
+                    scroll={{ y: 'calc(100vh - 340px)' }}
                     pagination={pagination}
                 />
                 {visible &&
-                <DetailModal
-                    ids={{ groupID, couponPackageID }}
-                    treeData={this.props.treeData}
-                    detail={detail}
-                    onClose={this.onToggleModal}
-                />
+                    <DetailModal
+                        ids={{ groupID, couponPackageID }}
+                        treeData={this.props.treeData}
+                        detail={detail}
+                        onClose={this.onToggleModal}
+                    />
                 }
                 {visible1 &&
-                <StockModal
-                    stock={stock}
-                    ids={{ groupID, couponPackageID }}
-                    onClose={this.onToggleModal1}
-                />
+                    <StockModal
+                        stock={stock}
+                        ids={{ groupID, couponPackageID }}
+                        onClose={this.onToggleModal1}
+                    />
                 }
             </div>
         )

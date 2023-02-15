@@ -39,6 +39,7 @@ import {
 import { CHARACTERISTIC_CATEGORIES } from '../../../redux/actions/saleCenterNEW/types';
 import InviteeModal from './InviteeModal';
 import GiftDetailModal from './GiftDetailModal';
+import CollectPointAdjustModal from './CollectPointAdjustModal'
 import { axiosData } from '../../../helpers/util';
 import { injectIntl } from 'i18n/common/injectDecorator';
 import { STRING_SPE } from 'i18n/common/special';
@@ -69,8 +70,10 @@ const exportablePromotionTypes = [
     '76',
     '80',
     '81',
+    '69',
     '79',
-    '83'
+    '83',
+    '95'
 ];
 const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 import {
@@ -81,8 +84,17 @@ import {
 import {
     renderOverViewData
 } from './specialPromotionDetailHelp'
+import { isZhouheiya } from "../../../constants/WhiteList";
 import _ from 'lodash'
 const showNoLimitType = ['60', '52']
+
+const pointChangeMap = {
+    1: '消费',
+    2: '退款',
+    3: '兑换',
+    4: '调整增加',
+    5: '调整减少',
+}
 
 @injectIntl
 class SpecialPromotionDetail extends React.Component {
@@ -187,7 +199,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'pointChangeType',
                 className: 'TableTxtCenter',
                 render: (text) => {
-                    return text == '1' ? '消费' : text == '2' ? '退款' : '兑换'
+                    return pointChangeMap[text]
                 },
                 width: 50,
             },
@@ -222,7 +234,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'finalUsedCount',
                 key: 'finalUsedCount',
                 className: 'TableTxtCenter',
-                width: 50,
+                width: 100,
                 render: (text, record) => {
                     if (record.pointChangeType == '3') {
                         return parseInt(record.changeCount) * -1
@@ -251,6 +263,16 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 160,
             },
+            {
+                title: `操作人`,
+                dataIndex: 'operator',
+                key: 'operator',
+                className: 'TableTxtCenter',
+                render: (text) => {
+                    return text || '--'
+                },
+                width: 50,
+            }
         ];
     }
 
@@ -363,7 +385,7 @@ class SpecialPromotionDetail extends React.Component {
 
     render() {
         const eventEntity = this.props.record.eventInfo.data;
-        const { sameItemID, keyword } = this.state;
+        const { sameItemID, keyword, collectPointAdjustVisible = false, collectPointAdjustLst = {} } = this.state;
         return (
             <div className={styles.showInfo}>
                 {
@@ -415,6 +437,19 @@ class SpecialPromotionDetail extends React.Component {
                             })}
                         />
                     )
+                }
+                { 
+                    collectPointAdjustVisible && (<CollectPointAdjustModal
+                        data={collectPointAdjustLst}
+                        onCancel={() => {
+                            this.setState({
+                                collectPointAdjustLst: {},
+                                collectPointAdjustVisible: false
+                            }, () => {
+                                this.resetQuery()
+                            })
+                        }}
+                        />)
                 }
                 <Modal
                     title="客户参与详情"
@@ -474,7 +509,7 @@ class SpecialPromotionDetail extends React.Component {
                                 pageSizeOptions: ['5', '10', '20', '40'],
                                 onChange: this.handleDetailTablePageChange
                             }}
-                            scroll={{ x: 1400 }}
+                            scroll={{ x: 1500 }}
                         />
                     </div>
                 </Modal>
@@ -544,24 +579,27 @@ class SpecialPromotionDetail extends React.Component {
                                 )
                                 : null
                         }
-                        <Row>
-                            <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}</Col>
-                            <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                            <Col span={18} style={{ textAlign: 'left' }}>{record.eventRemark}</Col>
-                        </Row>
+                        {
+	                    record.eventWay != '69' && 
+	                    <Row>
+	                        <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}</Col>
+	                        <Col span={1} style={{ textAlign: 'center' }}>:</Col>
+	                        <Col span={18} style={{ textAlign: 'left' }}>{record.eventRemark}</Col>
+	                    </Row>
+                        }
+                        {
+                            record.createScenesName ?
+                                (
+                                    <div>
+                                        <Row>
+                                            <Col span={4} style={{ textAlign: 'right' }}>活动关联</Col>
+                                            <Col span={1} style={{ textAlign: 'center' }}>:</Col>
+                                            <Col span={18} style={{ textAlign: 'left' }}>{record.createScenesName}</Col>
+                                        </Row>
+                                    </div>
+                                ) : null
+                        }
                     </div>
-                    {
-                        record.createScenesName ?
-                            (
-                                <div>
-                                    <Row>
-                                        <Col span={4} style={{ textAlign: 'right' }}>活动关联</Col>
-                                        <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                                        <Col span={18} style={{ textAlign: 'left' }}>{record.createScenesName}</Col>
-                                    </Row>
-                                </div>
-                            ) : null
-                    }
                 </div>
             </div>
         );
@@ -953,8 +991,17 @@ class SpecialPromotionDetail extends React.Component {
     // 礼品信息表格
     renderGiftInfoTable(records, type) {
         const way = this.state.eventInfo.data.eventWay;
-        const { intl } = this.props
-
+        const { intl } = this.props;
+        let giftCountText = '';
+        if(['20','21','30','70'].includes(String(way))){
+            giftCountText = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`;
+        }else{
+            if(way == '95'){
+                giftCountText = '礼品库存';
+            }else{
+                giftCountText = `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}`;
+            }
+        }
         const columns = [
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
@@ -974,8 +1021,7 @@ class SpecialPromotionDetail extends React.Component {
                 }
             },
             {
-                title: way != '20' && way != '21' && way != '30' && way != '70' ?
-                    `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}` : `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`,
+                title: giftCountText,
                 dataIndex: 'EGiftSingleCount',
                 key: 'EGiftSingleCount',
                 className: 'TableTxtRight',
@@ -1014,6 +1060,18 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtRight',
             },
         ];
+        if(way == 95){//如果是限时秒杀
+            columns.pop();
+            columns.push({
+                title: '秒杀收益',
+                dataIndex: 'giftIncome',
+                key: 'giftIncome',
+                className: 'TableTxtRight',
+                render: (text) => {
+                    return (<Tooltip title={text || ''}>{text}</Tooltip>)
+                }
+            });
+        }
         const dataSource = records.map((gift, index) => {
             let days;
             if (!gift.giftValidUntilDayCount > 0) {
@@ -1028,20 +1086,30 @@ class SpecialPromotionDetail extends React.Component {
             //     }
             // }
             // 积分兑换 如果是 -1 改为不限制
+            let giftNumberText = null;
             let giftTotalCount = gift.giftTotalCount;
             if (way == 30 && gift.giftTotalCount === -1) {
                 giftTotalCount = '不限制'
+            }
+            if (['20', '21', '30', '70'].includes(String(way))) {
+                giftNumberText = giftTotalCount;
+            }else{
+                if(way == 95){
+                    giftNumberText = gift.remainStock;//限时秒杀取库存
+                }else{
+                    giftNumberText = gift.giftCount;
+                }
             }
             return {
                 key: `${index}`,
                 idx: `${index}`,
                 EGiftName: gift.giftName,
-                EGiftSingleCount: way != '20' && way != '21' && way != '30' && way != '70' ?
-                    gift.giftCount : giftTotalCount,
+                EGiftSingleCount: giftNumberText,
                 EGiftSendCount: gift.giftSendCount,
                 EGfitValidUntilDayCount: gift.giftValidUntilDayCount > 0 ? gift.giftValidUntilDayCount : days,
                 resumeGiftsCount: gift.resumeGiftsCount || 0,
                 resumeGiftsCountPercent: gift.giftSendCount == 0 ? '0%' : `${Math.round((gift.resumeGiftsCount || 0) / (gift.giftSendCount) * 10000) / 100}%`,
+                giftIncome: gift.giftIncome ? gift.giftIncome : 0
             }
         });
         if (this.props.record.eventInfo.data.eventWay == 68) {
@@ -1536,6 +1604,13 @@ class SpecialPromotionDetail extends React.Component {
         })
     }
 
+    handleAdjustModalOpen = (record) => {
+        this.setState({
+            collectPointAdjustLst: record,
+            collectPointAdjustVisible: true,
+        })
+    }
+
     checkChannel = (record) => {
         axiosData(
             '/specialPromotion/queryEventCustomerJoinChannel.ajax',
@@ -1582,9 +1657,9 @@ class SpecialPromotionDetail extends React.Component {
                 }
             }),
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.d1kgf6ij82123282)}`,
-                dataIndex: 'customerID',
-                key: 'customerID',
+                title: `${isZhouheiya() ? '会员号' : this.props.intl.formatMessage(STRING_SPE.d1kgf6ij82123282)}`,
+                dataIndex: `${isZhouheiya() ? 'cardNO' : 'customerID'}`,
+                key: `${isZhouheiya() ? 'cardNO' : 'customerID'}`,
                 width: 150,
                 className: 'TableTxtCenter',
                 render: (text) => {
@@ -1685,11 +1760,16 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 100,
                 render: (text, record) => {
-                    return <a onClick={this.handleDetailModalOpen.bind(this, record.itemID)}>
+                    return <div>
+                        <a onClick={this.handleDetailModalOpen.bind(this, record.itemID)}>
                         详情
                     </a>
+                    <a onClick={() => {this.handleAdjustModalOpen(record)}}>
+                        调整
+                    </a>
+                    </div>
                 }
-            }),
+            })
         ];
         if (eventWay == 65) { // 分享裂变活动表格不太一样
             columns.push({
@@ -1717,6 +1797,20 @@ class SpecialPromotionDetail extends React.Component {
                     }
                     return text
                 }
+            })
+        }
+        if (eventWay == 95) { // 限时秒杀
+            columns.push({
+                title: `秒杀礼品`,
+                dataIndex: 'giftName',
+                key: 'giftName',
+                className: 'TableTxtCenter',
+            },
+            {
+                title: `订单号`,
+                dataIndex: 'orderNo',
+                key: 'orderNo',
+                className: 'TableTxtCenter',
             })
         }
         if (eventWay == 68) { // 推荐有礼活动表格不一样
@@ -1812,6 +1906,8 @@ class SpecialPromotionDetail extends React.Component {
                 telephoneNo: user.customerMobile,
                 joinTime: moment(new Date(parseInt(user.createTime))).format('YYYY-MM-DD HH:mm:ss'),
                 joinCount: user.joinCount || 0,
+                giftName: user.giftName || '',
+                orderNo: user.orderNo || ''
             }
         });
         let len = null;
@@ -1821,12 +1917,15 @@ class SpecialPromotionDetail extends React.Component {
         if (eventWay == 66) {
             len = 700
         }
+        if (eventWay == 75 || eventWay == 95) {
+            len = 900
+        }
         return (
             <Table
                 dataSource={dataSource}
                 columns={columns.filter(Boolean)}
                 bordered={true}
-                scroll={eventWay == 68 || eventWay == 66 ? { x: len } : {}}
+                scroll={[66, 68, 75, 95].includes(eventWay) ? { x: len } : {}}
                 pagination={{
                     current: this.state.pageNo,
                     total: this.state.total,

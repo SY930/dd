@@ -71,8 +71,7 @@ const initState = {
         orderTypeList:[] , //拼手气抢红包适用业务
         shopIDList:[],//拼手气抢红包品牌适用店铺
         smsTemplate:'',//短信模板,
-        sendCount:0
-
+        sendCount:0,
     }, // 表单内的值,
     currentStep: 0,
     giftForm: null, // 礼品的form对象
@@ -294,6 +293,7 @@ export default {
                 mySendGift,
                 originalImageUrl,
                 miniProgramInfo,
+                tagLst,
             } = formData;
             const {
                 giftID,
@@ -328,6 +328,7 @@ export default {
                 groupID,
                 eventWay: 80,
                 consumeType: 8,
+                tagLst: tagLst ? tagLst.join(',') : '',
             };
             if (miniProgramInfo && afterPayJumpType === '4') {
                 event.miniProgramInfo = JSON.stringify({

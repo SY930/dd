@@ -45,6 +45,13 @@ import AddMoneyTradeDishesTableWithoutBrand from './AddMoneyTradeDishesTableWith
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from '../IntlDecor';
+//周黑鸭需求
+import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
+import { isCheckApproval, isZhouheiya, businessTypesList } from '../../../constants/WhiteList';
+import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+import GoodsRef from '@hualala/sc-goodsRef';
+const { GoodsSelector } = GoodsRef
+import AddMoneyTradeDishesTableWithBrandNew from './AddMoneyTradeDishesTableWithBrandNew'
 
 @injectIntl()
 class AddfreeAmountTradeDetailInfo extends React.Component {
@@ -89,7 +96,14 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
         const display = !this.props.isNew;
-        let ruleType = _scopeLst.size > 0 ? 1 : 0;
+
+        let ruleType
+        if (isZhouheiya(this.props.user.groupID)) {
+            let goodsScopeList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'goodsScopeList']).toJS();
+            ruleType = goodsScopeList.length > 0 ? 1 : 0
+        } else {
+            ruleType = _scopeLst.size > 0 ? 1 : 0;
+        }
         if (Number(_rule.stageStyle) === 1) {
             ruleType += 2;
         }
@@ -110,6 +124,18 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
+        if (isZhouheiya(this.props.user.groupID)) {
+            let stageGoodsList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'stageGoodsList']).toJS();
+            if (stageGoodsList.length > 0) {
+                this.setState({ stageGoodsList: stageGoodsList[0].goodsList, dishes: stageGoodsList[0].goodsList })
+            }
+
+            let goodsScopeList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'goodsScopeList']).toJS();
+            if (goodsScopeList.length > 0) {
+                this.goodsScopeList = goodsScopeList[0]
+            }
+        }
+
     }
 
     handleSubmit() {
@@ -147,53 +173,115 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             message.warning('最大换购数量必填并且必须大于0')
             return false;
         }
-        if (dishes.some(dish => +dish.payPrice > +dish.price)) {
-            message.warning(SALE_LABEL.k5kqf0jr)
-            return false;
+
+        //周黑鸭去除活动价与原价的判断
+        if (!isZhouheiya(this.props.user.groupID)) {
+            if (dishes.some(dish => +dish.payPrice > +dish.price)) {
+                message.warning(SALE_LABEL.k5kqf0jr)
+                return false;
+            }
         }
         this.setState({ stageAmountFlag, stageCountFlag });
         if (((stageType == 2 && stageAmountFlag) || (stageType == 1 && stageCountFlag))) {
-            const priceLst = dishes.map((price) => {
-                return {
-                    foodUnitID: price.itemID,
-                    foodUnitCode: price.foodKey,
-                    foodName: price.foodName,
-                    foodUnitName: price.unit,
-                    brandID: price.brandID || '0',
-                    price: price.price,
-                    payPrice: price.payPrice,
-                    imagePath: price.imgePath,
-                    weightOffset: price.weightOffset,
-                    maxNum: price.maxNum,
+
+            if (isZhouheiya(this.props.user.groupID)) {
+                const priceLst = dishes.map((price) => {
+                    return {
+                        ...price,
+                        payPrice: price.payPrice,
+                        weightOffset: price.weightOffset,
+                        maxNum: price.maxNum,
+                    }
+                });
+                const rule = {
+                    stageType,
+                    calType,
+                    totalFoodMax: this.canLimitBeSet() && isLimited == '1' ? totalFoodMax : undefined,
+                    stageStyle: Number(ruleType) > 1 ? 1 : 2, // 1 每满XX加价（可加N次）  2 满XX加价（加1次）
+                    stage: [
+                        {
+                            stageCount: stageCount || 0,
+                            stageAmount: stageAmount || 0,
+                            freeAmount: priceLst[0].payPrice,
+                        },
+                    ],
                 }
-            });
-            const rule = {
-                stageType,
-                calType,
-                totalFoodMax: this.canLimitBeSet() && isLimited == '1' ? totalFoodMax : undefined,
-                stageStyle: Number(ruleType) > 1 ? 1 : 2, // 1 每满XX加价（可加N次）  2 满XX加价（加1次）
-                stage: [
-                    {
-                        stageCount: stageCount || 0,
-                        stageAmount: stageAmount || 0,
-                        freeAmount: priceLst[0].payPrice,
-                    },
-                ],
-            }
-            if (ruleType == '0' || ruleType == '2') {
-                this.props.setPromotionDetail({
-                    rule,
-                    priceLst,
-                    scopeLst: [],
-                    dishes: [],
-                    excludeDishes: [],
-                    foodCategory: [],
-                });
+                let stageGoodsList = []
+                stageGoodsList.push({
+                    stage: 0,
+                    goodsList: priceLst
+                })
+                if (ruleType == '0' || ruleType == '2') {
+                    this.props.setPromotionDetail({
+                        rule,
+                        stageGoodsList,
+                        scopeLst: [],
+                        dishes: [],
+                        excludeDishes: [],
+                        foodCategory: [],
+                    });
+                    //周黑鸭需求
+                    this.props.setPromotionDetail({
+                        goodsScopeList: [],
+                    });
+
+                } else {
+                    this.props.setPromotionDetail({
+                        rule, stageGoodsList,
+                    });
+                }
             } else {
-                this.props.setPromotionDetail({
-                    rule, priceLst,
+                const priceLst = dishes.map((price) => {
+                    return {
+                        foodUnitID: price.itemID,
+                        foodUnitCode: price.foodKey,
+                        foodName: price.foodName,
+                        foodUnitName: price.unit,
+                        brandID: price.brandID || '0',
+                        price: price.price,
+                        payPrice: price.payPrice,
+                        imagePath: price.imgePath,
+                        weightOffset: price.weightOffset,
+                        maxNum: price.maxNum,
+                    }
                 });
+                const rule = {
+                    stageType,
+                    calType,
+                    totalFoodMax: this.canLimitBeSet() && isLimited == '1' ? totalFoodMax : undefined,
+                    stageStyle: Number(ruleType) > 1 ? 1 : 2, // 1 每满XX加价（可加N次）  2 满XX加价（加1次）
+                    stage: [
+                        {
+                            stageCount: stageCount || 0,
+                            stageAmount: stageAmount || 0,
+                            freeAmount: priceLst[0].payPrice,
+                        },
+                    ]
+                }
+                if (ruleType == '0' || ruleType == '2') {
+                    this.props.setPromotionDetail({
+                        rule,
+                        priceLst,
+                        scopeLst: [],
+                        dishes: [],
+                        excludeDishes: [],
+                        foodCategory: [],
+                    });
+                } else {
+                    this.props.setPromotionDetail({
+                        rule, priceLst,
+                    });
+                }
             }
+
+            //周黑鸭需求
+            this.props.setPromotionDetail({
+                approval: this.state.approvalInfo,
+            });
+            if (isCheckApproval && (!this.state.approvalInfo.activityCost || !this.state.approvalInfo.estimatedSales || !this.state.approvalInfo.auditRemark)) {
+                return
+            }
+
             return true
         }
         const errElement = document.querySelector('.ant-form-explain');
@@ -259,6 +347,29 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             }
         }
         this.setState({ stageCount, stageCountFlag });
+    }
+
+    renderZHYDishsSelectionBox(calType) {
+        return (
+            <div style={{ position: 'relative' }}>
+                {!this.canLimitBeSet() && (
+                    <div style={{ position: 'absolute', top: 12, left: 78 }}>
+                        （{SALE_LABEL.k5kqf0s3}）
+                    </div>
+                )}
+                {
+                    <AddMoneyTradeDishesTableWithBrandNew
+                        isLook={!this.props.isUpdate}
+                        legacyPayPrice={this.state.freeAmount}
+                        calType={calType}
+                        onChange={(value) => {
+                            this.onDishesChange(value);
+                        }}
+                        value={this.state.dishes}
+                    />
+                }
+            </div>
+        )
     }
 
     renderDishsSelectionBox(calType) {
@@ -398,6 +509,29 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         )
     }
 
+    renderGoodRef() {
+        return (
+            <div>
+                <FormItem
+                    label={'活动范围'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <GoodsRef
+                        defaultValue={this.goodsScopeList}
+                        businessTypesList={businessTypesList}
+                        onChange={(goods) => {
+                            this.props.setPromotionDetail({
+                                goodsScopeList: [goods],
+                            });
+                        }} ></GoodsRef>
+                </FormItem>
+
+            </div>
+        )
+    }
+
     render() {
         const { intl } = this.props;
         const k5koakjf = intl.formatMessage(SALE_STRING.k5koakjf);
@@ -504,16 +638,29 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                             <Icon type="question-circle" style={{ cursor: 'pointer' }} />
                         </Tooltip>
                     </FormItem>
-                    {
-                        this.state.ruleType == '0' || this.state.ruleType == '2' ?
+                    {!isZhouheiya(this.props.user.groupID) &&
+                        (this.state.ruleType == '0' || this.state.ruleType == '2' ?
                             null :
-                            <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
+                            <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />)
                     }
-
-                    {this.renderDishsSelectionBox(this.state.calType)}
+                    {isZhouheiya(this.props.user.groupID) &&
+                        (this.state.ruleType == '0' || this.state.ruleType == '2' ?
+                            null :
+                            this.renderGoodRef())
+                    }
+                    {!isZhouheiya(this.props.user.groupID) && this.renderDishsSelectionBox(this.state.calType)}
+                    {isZhouheiya(this.props.user.groupID) && this.renderZHYDishsSelectionBox(this.state.calType)}
                     {this.canLimitBeSet() && this.renderTotalFoodMax()}
                     {this.renderAdvancedSettingButton()}
-                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={this.state.stageType == 2} /> : null}
+                    {this.state.display && !isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSetting payLimit={this.state.stageType == 2} /> : null}
+                    {this.state.display && isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSettingNew bizType={1} payLimit={this.state.stageType == 2} /> : null}
+                    {isZhouheiya(this.props.user.groupID) ? <Approval onApprovalInfoChange={(val) => {
+                        this.setState({
+                            approvalInfo: {
+                                ...val
+                            }
+                        })
+                    }} /> : null}
                 </Form>
             </div>
         )
@@ -525,7 +672,9 @@ function mapStateToProps(state) {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
-
+        user: state.user.get('accountInfo').toJS(),
+        //周黑鸭新增
+        isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
     }
 }
 

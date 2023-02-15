@@ -83,7 +83,7 @@ import { crmCardTypeNew as sale_crmCardTypeNew } from "../../../redux/reducer/sa
 import { promotion_decoration as sale_promotion_decoration } from "../../../redux/reducer/decoration";
 import { selectPromotionForDecoration } from "../../../redux/actions/decoration";
 import { Iconlist } from "../../../components/basic/IconsFont/IconsFont";
-import { axiosData, checkAuthLicense } from "../../../helpers/util";
+import { axiosData, checkAuthLicense, sensorsAutoTrack } from "../../../helpers/util";
 import { queryWeixinAccounts } from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
 import {
     fetchPromotionCategoriesAC,
@@ -101,7 +101,6 @@ import {
     isGroupOfHuaTianGroupList,
     isMine,
 } from "../../../constants/projectHuatianConf";
-import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { injectIntl } from "i18n/common/injectDecorator";
 import { STRING_GIFT } from "i18n/common/gift";
 import { STRING_SPE } from "i18n/common/special";
@@ -119,7 +118,10 @@ import Card from "../../../assets/card.png";
 import newPromotionCardPageConfig from '../../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
 import { updateCurrentPromotionPageAC } from '../../SaleActives/NewPromotionCardPages/store/action';
 import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList.js";
+import { axios } from '@hualala/platform-base'
 
+//周黑鸭新增
+import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
 const Immutable = require("immutable");
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -155,6 +157,7 @@ const DECORATABLE_PROMOTIONS = [
     "79",
     "85",
     "83",
+    "69"
 ];
 
 const isDecorationAvailable = ({ eventWay }) => {
@@ -170,6 +173,7 @@ const copyUrlList = [
     "79", // 盲盒
     "66", // 膨胀大礼包
     "83", //口令领券
+    '69',// H5领券
 ];
 const isCanCopyUrl = ({ eventWay }) => {
     return copyUrlList.includes(`${eventWay}`);
@@ -285,6 +289,7 @@ class MySpecialActivities extends React.Component {
             promotionDateRange: "",
             isActive: "1",
             eventName: "",
+		
             editEventWay: "",
             pageSizes: 25,
             pageNo: 1,
@@ -309,10 +314,10 @@ class MySpecialActivities extends React.Component {
             qrItemID: "", // 点击提取链接/二维码 当前活动的itemID
             giftArr: [],
             allWeChatAccountList: [],
+            allWeChatAccountListForH5: [],
             pushMessageMpID: "",
             groupID: "",
             isCopy: false,
-            pushMessageMpID: "",
             channelContent: "",
             launchChannelID: "",
             launchChannelIDWX: "",
@@ -332,6 +337,10 @@ class MySpecialActivities extends React.Component {
             paramsValueList: [],
             eventCode: "", //活动编码
             expand: false,//高级查询展开收起
+	    //周黑鸭新增
+	    auditStatus: '', // 审批状态
+            onlyModifyShop: false, //是否只能修改门店
+            urlContentAllParts: '', //H5全国二维码
         };
         this.cfg = {
             eventWay: [
@@ -465,8 +474,27 @@ class MySpecialActivities extends React.Component {
                 { value: "83", label: "口令领券" },
                 { value: "85", label: "千人千面" },
                 { value: '87', label: '消费送礼' },
+                { value: '95', label: '限时秒杀' },
             ],
-        };
+            auditStatus: [
+                    { value: '', label: '全部' },
+                    { value: '0', label: '待审批' },
+                    { value: '1', label: '审批中' },
+                    { value: '2', label: '审批通过' },
+                    { value: '3', label: '审批驳回' },
+                    { value: '4', label: '无需审批' },
+            ],
+        }
+        if(isZhouheiya()) {
+            this.cfg.eventWay = [
+                { value: '', label: `${this.props.intl.formatMessage(STRING_GIFT.all)}` },
+                { value: '69', label: 'H5领券' },
+                { value: '89', label: '积分换礼' },
+                { value: '88', label: '消费送礼' },
+                { value: '90', label: '群发礼品' }
+            ];
+        }
+        
         this.renderFilterBar = this.renderFilterBar.bind(this);
         this.showNothing = this.showNothing.bind(this);
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(
@@ -775,6 +803,7 @@ class MySpecialActivities extends React.Component {
         // this.state.selectedRecord
         this.props.toggleSelectedActivityState({
             record,
+            groupID: this.props.user.accountInfo.groupID,
             nextActive,
             modalTip,
             success: this.toggleStateCallBack,
@@ -822,19 +851,18 @@ class MySpecialActivities extends React.Component {
         });
     }
     // 关闭更新
-    handleDismissUpdateModal() {
-        if (this.state.isCopy) {
-            this.handleQuery(this.state.pageNo);
+    handleDismissUpdateModal(type) {
+        // if (this.state.isCopy) {
+        if (type != 'cancel') {
+            this.handleQuery(this.state.pageNo)
         }
-        this.setState(
-            {
-                updateModalVisible: false,
-                isCopy: false,
-            },
-            () => {
-                this.props.saleCenterResetDetailInfo();
-            }
-        );
+        this.setState({
+            updateModalVisible: false,
+            isCopy: false,
+            onlyModifyShop: false
+        }, () => {
+            this.props.saleCenterResetDetailInfo();
+        });
     }
 
     componentDidMount() {
@@ -845,13 +873,16 @@ class MySpecialActivities extends React.Component {
 
         this.props.fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
-            phraseType: "1",
+            phraseType: "2",
         });
 
         this.props.fetchPromotionScopeInfo({
             _groupID: this.props.user.accountInfo.groupID,
         });
         this.queryWechatMpInfo();
+        if(isZhouheiya()) {
+            this.queryWechatMpInfoForH5();
+        }
         // 把groupID传给后台，后台执行自动终止
         this.props.updateExpiredActiveState({
             groupID: this.props.user.accountInfo.groupID,
@@ -865,6 +896,7 @@ class MySpecialActivities extends React.Component {
         // 千人千面活动创建和更新完，点去装修跳转页面
         this.handleFromOtherPage();
         this.getSearchListContent(); // 查询方案列表
+        sensorsAutoTrack("活动管理");
     }
 
     // 产品授权
@@ -919,6 +951,7 @@ class MySpecialActivities extends React.Component {
     // The filter condition should not be save to redux, just save it to state temporarily.
     // Modify it in the future
     componentWillReceiveProps(nextProps) {
+        // console.log('_TODO_111_nextProps', nextProps);
         if (
             this.props.user.activeTabKey !== nextProps.user.activeTabKey &&
             nextProps.user.activeTabKey === "1000076003"
@@ -979,11 +1012,13 @@ class MySpecialActivities extends React.Component {
                             total: _promoitonList.total,
                         });
                     } else {
-                        message.warning(
-                            `${this.props.intl.formatMessage(
-                                STRING_SPE.d4h1ac506h7670
-                            )}`
-                        );
+                        if(this.state.tabKeys == 'saleSpecialPage'){
+                            message.warning(
+                                `${this.props.intl.formatMessage(
+                                    STRING_SPE.d4h1ac506h7670
+                                )}`
+                            );
+                        }
                         this.setState({
                             loading: false,
                             dataSource: [],
@@ -1004,9 +1039,50 @@ class MySpecialActivities extends React.Component {
             });
         }
     }
+
+    //编辑、复制、查看积分换礼前把活动详细信息存到store
+    handleSpecialDetail = (itemID, cb) => {
+        const user = this.props.user;
+        this.props.fetchSpecialDetail({
+            data: {
+                itemID,
+                groupID: user.accountInfo.groupID,
+            },
+            success: (res) => {
+                if (res === undefined || res.data === undefined) {
+                    message.error(
+                        `${this.props.intl.formatMessage(STRING_SPE.d4h1ac506h952140)}`
+                    );
+                    return;
+                }
+                this.props.saleCenterSetSpecialBasicInfo(
+                    specialPromotionBasicDataAdapter(res, false)
+                );
+                cb()
+            },
+            fail: this.failFn,
+        });
+    }
+
     //** 第三版 重构 抽抽乐活动 点击事件 */
-    onV3Click = (itemID, view, key, isActive) => {
-        if (key == "85" || key == "23") {
+    onV3Click = (itemID, view, key, isActive, mode) => {
+        if(key == '89') {
+            this.handleSpecialDetail(itemID, () => {
+                setTimeout(() => {
+                    jumpPage({
+                        menuID: SALE_ACTIVE_NEW_PAGE,
+                        typeKey: key,
+                        itemID,
+                        isView: view,
+                        isActive,
+                        mode
+                    });
+                }, 100);
+                return closePage(SALE_ACTIVE_NEW_PAGE);
+            })
+            return;
+        }
+        if ([85, 23, 95].includes(key)) {
             setTimeout(() => {
                 jumpPage({
                     menuID: SALE_ACTIVE_NEW_PAGE,
@@ -1014,6 +1090,7 @@ class MySpecialActivities extends React.Component {
                     itemID,
                     isView: view,
                     isActive,
+                    mode
                 });
             }, 100);
             return closePage(SALE_ACTIVE_NEW_PAGE);
@@ -1181,12 +1258,12 @@ class MySpecialActivities extends React.Component {
         this.setState({ currAppID });
     };
     // 选择公众号
-    handleWechatAccountChange = (v) => {
+    handleWechatAccountChange = (v, type) => {
         const mpId = JSON.parse(v).mpID;
         this.setState({
             pushMessageMpID: mpId,
         });
-        this.handleCopyUrl(null, mpId);
+        this.handleCopyUrl(null, mpId, type);
     };
 
     // 修改活动规则
@@ -1251,6 +1328,19 @@ class MySpecialActivities extends React.Component {
             },
             () => {
                 this.handleQuery();
+                if(key == 'saleSpecialPage'){
+                    // 营销活动
+                    this.props.fetchPromotionTags({
+                        groupID: this.props.user.accountInfo.groupID,
+                        phraseType: "2",
+                    });
+                }else{
+                    // 促销活动
+                    this.props.fetchPromotionTags({
+                        groupID: this.props.user.accountInfo.groupID,
+                        phraseType: "1",
+                    });
+                }
             }
         );
     };
@@ -1339,7 +1429,17 @@ class MySpecialActivities extends React.Component {
             });
             return;
         }
-        if (record.isActive == "1") {
+        if (record.isActive == '1') {
+            if(isZhouheiya()) {
+                Modal.info({
+                    title: `活动删除`,
+                    content: '启用状态的活动，不允许直接删除！',
+                    iconType: 'exclamation-circle',
+                    okText: '知道了',
+                    onOk() {},
+                });
+                return
+            }
             Modal.confirm({
                 title: `确认删除这个活动`,
                 content:
@@ -1378,8 +1478,37 @@ class MySpecialActivities extends React.Component {
             });
             return;
         }
-        handleNext();
-    };
+        if(record.isActive == 0 && isZhouheiya()) {
+            //启用
+            if(record.auditStatus == 1) {
+                //审批中
+                Modal.info({
+                    title: `启用活动`,
+                    content: '活动审批中，通过后自动启用，无需再次发起',
+                    iconType: 'exclamation-circle',
+                    okText: '确定',
+                    onOk() {},
+                });
+            } else {
+                if(isGeneral() || !isZhouheiya()) {
+                    handleNext();
+                } else {
+                    Modal.confirm({
+                        title: `启用活动`,
+                        content: '启用活动需要审批，是否继续？',
+                        iconType: 'exclamation-circle',
+                        okText: '发起审批',
+                        onOk() {
+                            handleNext('audit');
+                        },
+                        onCancel() { },
+                    });
+                }
+            }
+        } else {
+            handleNext();
+        }
+    }
 
     // 列表样式切换
     stylesChange = (val) => {
@@ -1439,6 +1568,24 @@ class MySpecialActivities extends React.Component {
         image.src = document.getElementById(action).src;
     };
 
+    async queryWechatMpInfoForH5() {
+        const [service, type, api, url] = ['HTTP_SERVICE_URL_WECHAT', 'post', 'mpInfo/', '/api/v1/universal'];
+        const datas = {
+            groupID: this.props.user.accountInfo.groupID, 
+            pageNo: 1, 
+            pageSize: 100, 
+            mpType: 'DEFAULT'
+        };
+        const method = `${api}queryMpInfo`;
+        const params = { service, type, data: datas, method };
+        const { mpInfoResDataList = [], result } = await axios.post(url, params);
+        try {
+            this.setState({ allWeChatAccountListForH5: mpInfoResDataList });
+        } catch (error) {
+            message.warning(result.message);
+        }
+    }
+    
     queryWechatMpInfo = () => {
         const { shopList } = this.props;
         const shopIDs = shopList.toJS().map((x) => x.shopID);
@@ -1458,43 +1605,43 @@ class MySpecialActivities extends React.Component {
             const { mpInfoResDataList = [] } = data;
             this.setState({
                 allWeChatAccountList: mpInfoResDataList,
-                pushMessageMpID: mpInfoResDataList[0].mpID,
-                mpName: mpInfoResDataList[0].mpName,
+                pushMessageMpID: mpInfoResDataList[0] ? mpInfoResDataList[0].mpID : '',
+                mpName: mpInfoResDataList[0] ? mpInfoResDataList[0].mpName : '',
             });
         });
     };
     getAllAvailableMpInfo = () => {
-        const { allWeChatAccountList } = this.state;
+        const { allWeChatAccountList, allWeChatAccountListForH5, eventWay } = this.state;
+        const options = eventWay == 69 ? allWeChatAccountListForH5 : allWeChatAccountList;
         return [
-            ...allWeChatAccountList.map((item) => ({
+            ...options.map((item) => ({
                 value: JSON.stringify({ mpID: item.mpID, appID: item.appID }),
                 label: item.mpName,
             })),
         ];
     };
     // 渲染公众号列表
-    renderMp() {
-        const { pushMessageMpID, mpName } = this.state;
+    renderMp(type) {
+        const { pushMessageMpID, mpName, allWeChatAccountList, allWeChatAccountListForH5, eventWay } = this.state;
         this.handleWechatChange = this.handleWechatAccountChange.bind(this);
+        const options = eventWay == 69 ? allWeChatAccountListForH5 : allWeChatAccountList;
+        const value = options[0] ? options[0].mpName : undefined;
         return (
             <Select
-                notFoundContent={"未搜索到结果"}
+                notFoundContent={'未搜索到结果'}
                 placeholder="请选择微信推送的公众号"
                 showSearch={true}
-                defaultValue={mpName || undefined}
-                onChange={this.handleWechatChange}
+                defaultValue={value || undefined}
+                onChange={(v) => this.handleWechatChange(v, type)}
                 style={{
-                    width: "54%",
-                    margin: "0 10px",
+                    width: '54%', margin: '0 10px'
                 }}
             >
-                {this.getAllAvailableMpInfo().map(({ value, label }) => (
-                    <Option key={value} value={value} label={label}>
-                        {label}
-                    </Option>
-                ))}
+                {
+                    this.getAllAvailableMpInfo().map(({ value, label }) => <Option key={value} value={value} label={label}>{label}</Option>)
+                }
             </Select>
-        );
+        )
     }
 
     renderH5Channels() {
@@ -1547,6 +1694,58 @@ class MySpecialActivities extends React.Component {
         );
     }
 
+    H5GetCopyUrl() {
+        const  { urlContent, urlContentAllParts } = this.state;
+        return (<div className={indexStyles.copyCont}>
+            <div className={indexStyles.copyBox} style={{ marginRight: 20 }}>
+                <h4 className={indexStyles.copyTitle}>区域二维码</h4>
+                <div className={indexStyles.copyUrlWrap}>
+                    <div className={indexStyles.leftMpConent} >
+                        <div className={indexStyles.label}>请选择公众号</div>
+                        {this.renderMp('area')}
+                    </div>
+                    <div className={indexStyles.copyWrapHeader}>
+                        <div className={indexStyles.urlText}>{urlContent}</div>
+                        <Button className={indexStyles.copyBtn} onClick={() => this.handleToCopyUrl('area')}>复制链接</Button>
+                    </div>
+                    <div className={indexStyles.qrCodeBox}>
+                        <div >
+                            <QRCode
+                                size={160}
+                                value={urlContent}
+                                id="__promotion_xsct_qr_canvas"
+                            />
+                        </div>
+                        <Button className={indexStyles.xzqrCodeBtn} type="primary" onClick={() => { this.handleQrCodeDownload('__promotion_xsct_qr_canvas') }}>下载二维码</Button>
+                    </div>
+                </div>
+            </div>
+            <div className={indexStyles.copyBox} style={{ marginRight: 20 }}>
+                <h4 className={indexStyles.copyTitle}>全国二维码</h4>
+                <div className={indexStyles.copyUrlWrap}>
+                    <div className={indexStyles.leftMpConent} >
+                        <div className={indexStyles.label}>请选择公众号</div>
+                        {this.renderMp('allParts')}
+                    </div>
+                    <div className={indexStyles.copyWrapHeader}>
+                        <div className={indexStyles.urlText}>{urlContentAllParts}</div>
+                        <Button className={indexStyles.copyBtn} onClick={() => this.handleToCopyUrl('allParts')}>复制链接</Button>
+                    </div>
+                    <div className={indexStyles.qrCodeBox}>
+                        <div >
+                            <QRCode
+                                size={160}
+                                value={urlContentAllParts}
+                                id="__promotion_xsct_qr_canvas"
+                            />
+                        </div>
+                        <Button className={indexStyles.xzqrCodeBtn} type="primary" onClick={() => { this.handleQrCodeDownload('__promotion_xsct_qr_canvas') }}>下载二维码</Button>
+                    </div>
+                </div>
+            </div>
+        </div>)
+    }
+
     // 渲染复制链接modal内容
     renderCopyUrlModal() {
         const {
@@ -1558,6 +1757,11 @@ class MySpecialActivities extends React.Component {
             page,
             scene,
         } = this.state;
+	
+	if(eventWay == 69) { // H5领券
+            return this.H5GetCopyUrl();
+        }
+	
         const hideCTBox = [66, 79, 82, 83]; // 不显示餐厅
         const hideWXBox = [22]; // 不显示微信
         return (
@@ -1751,12 +1955,17 @@ class MySpecialActivities extends React.Component {
         let desc = ''
         switch (eventWay) {
             case 85:
-                name = '千人千面'
-                desc = '当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行'
+                name = "千人千面";
+                desc = "当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行";
                 break;
             case 23:
-                name = '线上餐厅弹窗送礼'
-                desc = '当同一时间、同一门店、同一发放位置下存在多个活动时，将按照以下规则执行'
+                name = "线上餐厅弹窗送礼";
+                desc = "当同一时间、同一门店、同一发放位置下存在多个活动时，将按照以下规则执行";
+                break;
+            case 95:
+                name = "限时秒杀";
+                desc = "当同一时间、同一门店、同一发放位置下存在多个活动时，限时秒杀";
+                break;
             default:
                 break;
         }
@@ -1787,7 +1996,6 @@ class MySpecialActivities extends React.Component {
             >
                 {this.renderHeader()}
                 <div>
-                    <PromotionCalendarBanner />
                     <Tabs
                         defaultActiveKey={tabKeys}
                         onChange={this.handleChangeTabs}
@@ -1798,14 +2006,14 @@ class MySpecialActivities extends React.Component {
                         <TabPane tab="营销活动" key="saleSpecialPage">
                             {!this.state.authStatus ? (
                                 <div
-                                    style={{ minHeight: "calc(100vh - 160px)" }}
+                                    style={{ minHeight: "calc(100vh - 80px)" }}
                                 >
                                     <EmptyPage />{" "}
                                 </div>
                             ) : (
                                 <div
                                     className={styles.pageContentWrapper}
-                                    style={{ minHeight: "calc(100vh - 160px)" }}
+                                    style={{ minHeight: "calc(100vh - 80px)" }}
                                 >
                                     <div
                                         style={{ padding: "0" }}
@@ -1936,7 +2144,7 @@ class MySpecialActivities extends React.Component {
                     footer={null}
                     width={900}
                 >
-                    {this.renderCopyUrlModal()}
+                    {isShowCopyUrl && this.renderCopyUrlModal()}
                 </Modal>
                 {this.state.planModalVisible && (
                     <PlanModal
@@ -2033,6 +2241,7 @@ class MySpecialActivities extends React.Component {
             promotionTags,
             promotionBrands,
             promotionShop,
+	    auditStatus,
         } = this.state;
         const opt = {};
         if (queryEventWay !== "" && queryEventWay !== undefined) {
@@ -2063,7 +2272,7 @@ class MySpecialActivities extends React.Component {
             opt.brandID = promotionBrands;
         }
         if (promotionShop !== "" && promotionShop !== undefined) {
-            opt.shopID = promotionShop;
+            // opt.applyShopIDList = [promotionShop];
         }
 
         if (isActive !== "") {
@@ -2071,6 +2280,9 @@ class MySpecialActivities extends React.Component {
                 isActive == "-1" ? "-1" : isActive == "1" ? "1" : "0";
         }
 
+	if (auditStatus !== '' && auditStatus !== undefined) {
+            opt.auditStatus = auditStatus;
+        }
         this.props.query({
             data: {
                 groupID: this.props.user.accountInfo.groupID,
@@ -2259,9 +2471,9 @@ class MySpecialActivities extends React.Component {
             return (
                 <div className="layoutsSeniorQuery">
                     <ul>
-                        <li><h5>适用店铺</h5></li>
-                        <li>{this.renderShopsInTreeSelectMode()}</li>
-                        <li><h5>统计类别</h5></li>
+                        {/* <li><h5>适用店铺</h5></li>
+                        <li>{this.renderShopsInTreeSelectMode()}</li> */}
+                        {/* <li><h5>统计类别</h5></li>
                         <li>
                             <Select
                                 placeholder=""
@@ -2281,7 +2493,7 @@ class MySpecialActivities extends React.Component {
                                     );
                                 })}
                             </Select>
-                        </li>
+                        </li> */}
                         <li><h5>标签</h5></li>
                         <li>
                             <Select
@@ -2303,7 +2515,7 @@ class MySpecialActivities extends React.Component {
                                 })}
                             </Select>
                         </li>
-                        <li> <h5>品牌</h5></li>
+                        {/* <li> <h5>品牌</h5></li>
                         <li>
                             <Select
                                 style={{ width: 100 }}
@@ -2323,7 +2535,7 @@ class MySpecialActivities extends React.Component {
                                     );
                                 })}
                             </Select>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
             );
@@ -2519,6 +2731,33 @@ class MySpecialActivities extends React.Component {
                                 }}
                             />
                         </li>
+			
+			{ isZhouheiya() &&
+                            <li>
+                                <h5>审批状态</h5>
+                            </li>
+                        }
+                        { isZhouheiya() &&
+                            <li>
+                                <Select
+                                    style={{ width: 80 }}
+                                    defaultValue=""
+                                    value={this.state.auditStatus}
+                                    placeholder='请选择审批状态'
+                                    onChange={(value) => {
+                                        this.setState({
+                                            auditStatus: value,
+                                        });
+                                    }}
+                                >
+                                    {this.cfg.auditStatus.map((item, index) => (
+                                        <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
+                                    ))}
+                                </Select>
+                            </li>
+                        }
+                        
+			
                         <li>
                             <Authority
                                 rightCode={SPECIAL_PROMOTION_QUERY}
@@ -2534,11 +2773,11 @@ class MySpecialActivities extends React.Component {
                                 </Button>
                             </Authority>
                         </li>
-                        {/* <li>
+                        <li>
                             <a onClick={this.toggleExpandState}>
                                 高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
                             </a>
-                        </li> */}
+                        </li>
                     </ul>
                 </div>
                 {this.renderAdvancedFilter()}
@@ -2560,6 +2799,8 @@ class MySpecialActivities extends React.Component {
             isActive,
             eventName,
             createScenes,
+	    eventCode,
+            auditStatus
         } = this.state;
         if (queryEventWay !== "" && queryEventWay !== undefined) {
             opt.eventWay = queryEventWay;
@@ -2582,6 +2823,13 @@ class MySpecialActivities extends React.Component {
             opt.isActive =
                 isActive == "-1" ? "-1" : isActive == "1" ? "1" : "0";
         }
+	
+	opt.eventCode = eventCode;
+	
+	if (auditStatus !== '' && auditStatus !== undefined) {
+            opt.auditStatus = auditStatus;
+        }
+	
         this.props.query({
             data: {
                 groupID: this.props.user.accountInfo.groupID,
@@ -2780,7 +3028,7 @@ class MySpecialActivities extends React.Component {
                 {/* 第一版只做群发礼品的复制功能*/}
                 {/* 摇奖活动增加复制,并且活动不是禁用状态  */}
                 {
-                    (record.eventWay === 53 || record.eventWay === 20) && (
+                    (record.eventWay === 53 || record.eventWay === 20 || record.eventWay === 69  || record.eventWay === 89 || record.eventWay === 88 || record.eventWay === 90) && (
                         // <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                         <a
                             href="#"
@@ -2820,12 +3068,15 @@ class MySpecialActivities extends React.Component {
                                     if (
                                         record.eventWay === 78 ||
                                         record.eventWay === 79 ||
-                                        record.eventWay === 83
+                                        record.eventWay === 83 ||
+                                        record.eventWay === 89
                                     ) {
                                         this.onV3Click(
                                             record.itemID,
                                             false,
-                                            record.eventWay
+                                            record.eventWay,
+                                            record.isActive,
+                                            'copy'
                                         );
                                         return;
                                     }
@@ -2841,12 +3092,14 @@ class MySpecialActivities extends React.Component {
                                         });
                                         return;
                                     }
-                                    this.props.toggleIsUpdate(true);
+                                this.permissionVerify(record.itemID, () => {
+                                    this.props.toggleIsUpdate(true)
                                     this.setState({
                                         isCopy: true,
-                                    });
+                                    })
                                     this.handleUpdateOpe(text, record, index);
-                                    // }
+                                // }
+                                })
                                 }
                             }}
                         >
@@ -2862,10 +3115,22 @@ class MySpecialActivities extends React.Component {
                             this.handleDecorationStart(record);
                         }}
                     >
-                        装修
+                        {record.eventWay == 69 ? '区域装修' : '装修'}
                         {/* {this.props.intl.formatMessage(STRING_SPE.dk46ld30bk34245)} */}
                     </a>
                 )}
+		{
+                    isDecorationAvailable(record) && record.eventWay == 69 && (
+                        <a
+                            href="#"
+                            onClick={() => {
+                                this.handleDecorationStart(record, 'allCountry')
+                            }}
+                        >
+                            全国装修
+                        </a>
+                    )
+                }
                 <a
                     href="#"
                     className={
@@ -2907,6 +3172,41 @@ class MySpecialActivities extends React.Component {
             </div>
         );
     };
+    // 权限校验
+    permissionVerify = async (itemID, cb) => {
+        if(isZhouheiya()) {
+            const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'specialPromotion/', '/api/v1/universal?'];
+            const datas = {
+                groupID: this.props.user.accountInfo.groupID,
+                accountID: this.props.user.accountInfo.accountID,
+                itemID
+            };
+            const method = `${api}checkEventDataAuth.ajax`;
+            const params = { service, type, data: datas, method };
+            const { data = {}, code, message: msg } = await axios.post(url + method, params);
+            try {
+                if(code == '000') {
+                    if(data.hasOperateAuth == 1) {
+                        cb()
+                    } else {
+                        message.warning('没有操作权限');
+                    }
+                } else {
+                    message.error(msg);
+                }
+            } catch (error) {
+                message.error('请求失败');
+            }
+        } else {
+            cb()
+        }
+    }
+
+    //【活动过期后】或【审批中】编辑按钮禁用
+    editIsDisabled = (record) => {
+        return isZhouheiya() && ((new Date(moment(record.eventEndDate, 'YYYY-MM-DD').format('YYYY-MM-DD')).getTime() < new Date(new Date(Date.now()).toLocaleDateString()).getTime()) || record.auditStatus == '1');
+    }
+
 
     renderTables() {
         const SmsSendStatus = [
@@ -3010,7 +3310,7 @@ class MySpecialActivities extends React.Component {
             },
         ];
 
-        const columns = [
+        let columns = [
             {
                 title: COMMON_LABEL.serialNumber,
                 dataIndex: "index",
@@ -3025,7 +3325,6 @@ class MySpecialActivities extends React.Component {
                     );
                 },
             },
-
             {
                 title: COMMON_LABEL.actions,
                 key: "operation",
@@ -3138,6 +3437,7 @@ class MySpecialActivities extends React.Component {
                                 entryId={SPECIAL_PROMOTION_MANAGE_PAGE}
                             >
                                 <a
+                                    style={{display: record.eventWay === 95 ? 'none' : 'inline'}}
                                     href="#"
                                     disabled={
                                         record.eventWay == "64"
@@ -3175,13 +3475,7 @@ class MySpecialActivities extends React.Component {
                                             );
                                             return;
                                         }
-                                        if (
-                                            record.eventWay === 78 ||
-                                            record.eventWay === 79 ||
-                                            record.eventWay === 83 ||
-                                            record.eventWay === 85 ||
-                                            record.eventWay === 23
-                                        ) {
+                                        if ([78, 79, 83, 85, 23, 95].includes(record.eventWay)) {
                                             this.handleEditActive(record)(() =>
                                                 this.onV3Click(
                                                     record.itemID,
@@ -3211,14 +3505,33 @@ class MySpecialActivities extends React.Component {
                                         if (record.eventWay === 87) {
                                             return this.handleNewEditActive(record, 'edit');
                                         }
-                                        this.handleEditActive(record)(() => {
-                                            this.props.toggleIsUpdate(true);
-                                            this.handleUpdateOpe(
-                                                text,
-                                                record,
-                                                index
-                                            );
-                                        });
+                                        this.permissionVerify(record.itemID, () => {
+                                            if (record.eventWay === 89) {
+                                                //积分换礼
+                                                this.handleEditActive(record)(() =>
+                                                    this.onV3Click(
+                                                        record.itemID,
+                                                        false,
+                                                        record.eventWay,
+                                                        record.isActive,
+                                                        'edit'
+                                                    )
+                                                );
+                                                return;
+                                            }
+
+                                            this.handleEditActive(record)(() => {
+                                                this.props.toggleIsUpdate(true)
+                                                // 不是集团经理角色并且是周黑鸭账号（并且审批状态是审批通过跟无需审批的）只能修改店铺
+                                                if(!isGeneral(this.props.user.accountInfo.roleType) && isZhouheiya(this.props.user.accountInfo.groupID) && (record.auditStatus == 2 || record.auditStatus == 4)) {
+                                                    //目前只针对周黑鸭的三个营销活动做此逻辑（H5领券、消费送礼）
+                                                    if([69, 88].includes(record.eventWay)) {
+                                                        this.setState({ onlyModifyShop: true });好的
+                                                    }
+                                                }
+                                                this.handleUpdateOpe(text, record, index);
+                                            })
+                                        })
 
                                         // }
                                         // }
@@ -3243,24 +3556,19 @@ class MySpecialActivities extends React.Component {
                                             return;
                                         }
                                         if (
-                                            record.eventWay === 78 ||
-                                            record.eventWay === 79 ||
-                                            record.eventWay === 83 ||
-                                            record.eventWay === 85 ||
-                                            record.eventWay === 23
+                                            [78, 79, 83, 85, 23, 89, 95].includes(record.eventWay)
                                         ) {
                                             this.onV3Click(
                                                 record.itemID,
                                                 true,
-                                                record.eventWay
+                                                record.eventWay,
+                                                record.isActive,
+                                                'view'
                                             );
                                             return;
                                         }
                                         if (
-                                            record.eventWay === 80 ||
-                                            record.eventWay === 66 ||
-                                            record.eventWay === 81 ||
-                                            record.eventWay === 82
+                                            [80, 66, 81, 82].includes(record.eventWay)
                                         ) {
                                             this.handleShowDetail({
                                                 record,
@@ -3311,13 +3619,11 @@ class MySpecialActivities extends React.Component {
                                             return;
                                         }
                                         // record.isActive != '0' || record.userCount != 0 || statusState ? null :
-                                        this.handleDelActive(record)(() =>
-                                            this.checkDeleteInfo(
-                                                text,
-                                                record,
-                                                index
-                                            )
-                                        );
+                                        this.permissionVerify(record.itemID,() => {
+                                            // record.isActive != '0' || record.userCount != 0 || statusState ? null :
+                                            this.handleDelActive(record)(() => this.checkDeleteInfo(text, record, index));
+                                        })
+
                                     }}
                                 >
                                     {COMMON_LABEL.delete}
@@ -3392,17 +3698,10 @@ class MySpecialActivities extends React.Component {
                                     return;
                                 }
                                 // record.isActive == '-1' || statusState ? null :
-                                this.handleSattusActive(record)(() =>
-                                    this.handleDisableClickEvent(
-                                        record.operation,
-                                        record,
-                                        index,
-                                        null,
-                                        `${this.props.intl.formatMessage(
-                                            STRING_SPE.db60c8ac0a3831197
-                                        )}`
-                                    )
-                                );
+                                this.permissionVerify(record.itemID,() => {
+                                    // record.isActive == '-1' || statusState ? null :
+                                    this.handleSattusActive(record)((isAudit) => this.handleDisableClickEvent(record.operation, record, index, null, isAudit === 'audit' ? '已成功发起审批，审批通过后自动启用' : `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`))
+                                })
                             }}
                             disabled={
                                 isBrandOfHuaTianGroupList(
@@ -3437,7 +3736,6 @@ class MySpecialActivities extends React.Component {
                     );
                 },
             },
-
             {
                 title: `${this.props.intl.formatMessage(
                     STRING_SPE.d4546grade4128
@@ -3466,7 +3764,7 @@ class MySpecialActivities extends React.Component {
                 dataIndex: "validDate",
                 key: "",
                 width: 180,
-                render: (validDate) => {
+                render: (validDate, record, index) => {
                     if (
                         validDate.start === "0" ||
                         validDate.end === "0" ||
@@ -3477,12 +3775,22 @@ class MySpecialActivities extends React.Component {
                             STRING_SPE.d31ei98dbgi21253
                         )}`;
                     }
-                    const t = `${moment(validDate.start, "YYYY-MM-DD").format(
-                        "YYYY-MM-DD"
-                    )} / ${moment(validDate.end, "YYYY-MM-DD").format(
-                        "YYYY-MM-DD"
-                    )}`;
-                    return <Tooltip title={t}>{t}</Tooltip>;
+                    let timeStr = null;
+                    if(record.eventWay == 95){
+                        timeStr = `${moment(validDate.start, "YYYY-MM-DD HH:mm").format(
+                            "YYYY-MM-DD HH:mm"
+                        )} / ${moment(validDate.end, "YYYY-MM-DD HH:mm").format(
+                            "YYYY-MM-DD HH:mm"
+                        )}`;
+                    }else{
+                        timeStr = `${moment(validDate.start, "YYYY-MM-DD").format(
+                            "YYYY-MM-DD"
+                        )} / ${moment(validDate.end, "YYYY-MM-DD").format(
+                            "YYYY-MM-DD"
+                        )}`;
+                    }
+                    
+                    return <Tooltip title={timeStr}>{timeStr}</Tooltip>;
                 },
             },
             {
@@ -3507,6 +3815,32 @@ class MySpecialActivities extends React.Component {
                     return result || "--";
                 },
             },
+	        {
+                title: 'BPM单号',
+                className: 'TableTxtCenter',
+                dataIndex: 'spNo',
+                key: 'spNo',
+                width: 120,
+                render: text => <Tooltip title={text}>{text}</Tooltip>,
+                isShow: () => {
+                    return isZhouheiya()
+                }
+            },
+            {
+                title: '审批状态',
+                className: 'TableTxtCenter',
+                dataIndex: 'auditStatus',
+                key: 'auditStatus',
+                width: 130,
+                // ellipsis: true,
+                render: (text, record) => {
+                    const items = this.cfg.auditStatus.find(item => item.value == record.auditStatus);
+                    return <span>{items ? items.label : '--'}</span>
+                },
+                isShow: () => {
+                    return isZhouheiya()
+                }
+            },
             {
                 title: `${this.props.intl.formatMessage(
                     STRING_SPE.de8g7jed1l4364
@@ -3517,7 +3851,7 @@ class MySpecialActivities extends React.Component {
                 // width: 300,
                 render: (text, record, index) => {
                     if (
-                        record.actionStamp === "" &&
+                        record.updateStamp === "" &&
                         record.createStamp === ""
                     ) {
                         return "--";
@@ -3525,7 +3859,7 @@ class MySpecialActivities extends React.Component {
                     const t = `${moment(
                         new Date(parseInt(record.createStamp))
                     ).format("YYYY-MM-DD HH:mm:ss")} / ${moment(
-                        new Date(parseInt(record.actionStamp))
+                        new Date(parseInt(record.updateStamp))
                     ).format("YYYY-MM-DD HH:mm:ss")}`;
                     return <Tooltip title={t}>{t}</Tooltip>;
                 },
@@ -3541,6 +3875,7 @@ class MySpecialActivities extends React.Component {
                 },
             },
         ];
+        columns = columns.filter(item => !item.isShow || item.isShow());
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
@@ -3550,7 +3885,7 @@ class MySpecialActivities extends React.Component {
                     columns={columns}
                     dataSource={this.state.dataSource}
                     loading={this.state.loading}
-                    scroll={{ x: 1499, y: "calc(100vh - 440px)" }}
+                    scroll={{ x: 1499, y: "calc(100vh - 360px)" }}
                     size="default"
                     pagination={{
                         pageSize: this.state.pageSizes,
@@ -3582,6 +3917,7 @@ class MySpecialActivities extends React.Component {
     checkDeleteInfo(text, record) {
         this.props.deleteSelectedRecord({
             ...record,
+            groupID: this.props.user.accountInfo.groupID,
             success: () => {
                 message.success(
                     `${this.props.intl.formatMessage(
@@ -3607,7 +3943,7 @@ class MySpecialActivities extends React.Component {
         //     onCancel: () => { },
         // });
     }
-    handleGiftsData = (response) => {
+    handleGiftsData = (response, type) => {
         const { eventWay, itemID, eventName, needCount = "" } = response.data;
         const user = this.props.user;
         let result = [];
@@ -3620,7 +3956,7 @@ class MySpecialActivities extends React.Component {
         }
         this.props.selectPromotionForDecoration({
             type: `${eventWay}`,
-            id: itemID,
+            id: type == 'allCountry' ? '1' : itemID,
             title: eventName,
             needCount,
             giftArr: result,
@@ -3628,7 +3964,7 @@ class MySpecialActivities extends React.Component {
         });
         jumpPage({ menuID: PROMOTION_DECORATION });
     };
-    successFn = (response) => {
+    successFn = (response, type) => {
         const _serverToRedux = false;
         const _promotionIdx = getSpecialPromotionIdx(
             `${this.state.editEventWay}`
@@ -3661,6 +3997,11 @@ class MySpecialActivities extends React.Component {
                 modalTitle: "复制活动信息",
             });
         }
+        if (type == 'view') {
+            this.setState({
+                modalTitle: '查看活动信息',
+            })
+        }
     };
 
     failFn = () => {
@@ -3669,14 +4010,14 @@ class MySpecialActivities extends React.Component {
         );
     };
 
-    handleDecorationStart = (record) => {
+    handleDecorationStart = (record, type) => {
         const user = this.props.user;
         this.props.fetchSpecialDetail({
             data: {
                 itemID: record ? record.itemID : this.state.currentItemID, // 点击重试时record为undefiend
                 groupID: user.accountInfo.groupID,
             },
-            success: this.handleGiftsData,
+            success: (res) => this.handleGiftsData(res, type),
             fail: this.failFn,
         });
     };
@@ -3686,8 +4027,11 @@ class MySpecialActivities extends React.Component {
         this.handleCopyUrl(record);
     };
 
-    handleCopyUrl = (record, mpId) => {
-        const { pushMessageMpID, channelContent, launchChannelID } = this.state;
+    handleCopyUrl = (record, mpId, type) => {
+        const { channelContent, launchChannelID, allWeChatAccountListForH5, allWeChatAccountList } = this.state;
+        const options = record && record.eventWay == 69 ? allWeChatAccountListForH5 : allWeChatAccountList;
+        const pushMessageMpID = options[0] ? options[0].mpID : undefined;
+        
         let mpID = mpId ? mpId : pushMessageMpID;
         let eventWayData, groupIdData, itemIdData;
         const testUrl = "https://dohko.m.hualala.com";
@@ -3695,7 +4039,7 @@ class MySpecialActivities extends React.Component {
         const actList = ["20", "30", "22"]; // 摇奖活动，积分兑换，报名活动
         if (record) {
             eventWayData = record.eventWay;
-            groupIdData = record.groupID;
+            groupIdData = this.props.user.accountInfo.groupID;
             itemIdData = record.itemID;
         } else {
             eventWayData = this.state.eventWay;
@@ -3752,22 +4096,47 @@ class MySpecialActivities extends React.Component {
         if(eventWay == '68') {
             url = url +    `/newm/recommendInvite?groupID=${groupID}&eventItemID=${itemID}`
         }*/
-        this.setState({
-            urlContent: urlMap[eventWayData],
-            eventWay: eventWayData,
-            qrCodeImage: "", // 打开一次清空上一次的img
-            qrItemID: itemIdData, // 当前活动itemID
-            isShowCopyUrl: true,
-            groupID: groupIdData,
-        });
+        if(eventWayData == 69) {
+            if(type == 'area') {
+                this.setState({
+                    urlContent: url + `/newm/getFreeGifts?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`
+                })
+            } else if (type == 'allParts') {
+                this.setState({
+                    urlContentAllParts: url + `/newm/getFreeGifts?groupID=${groupIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+                })
+            } else {
+                this.setState({
+                    urlContent: url + `/newm/getFreeGifts?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+                    urlContentAllParts: url + `/newm/getFreeGifts?groupID=${groupIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+                })
+            }
+            this.setState({
+                eventWay: eventWayData,
+                qrCodeImage: '', // 打开一次清空上一次的img
+                qrItemID: itemIdData, // 当前活动itemID
+                isShowCopyUrl: true,
+                groupID: groupIdData
+            })
+        } else {
+            this.setState({
+                urlContent: urlMap[eventWayData],
+                eventWay: eventWayData,
+                qrCodeImage: "", // 打开一次清空上一次的img
+                qrItemID: itemIdData, // 当前活动itemID
+                isShowCopyUrl: true,
+                groupID: groupIdData,
+            });
+        }
         // 获取小程序列表
         this.getAppList().then((r) => { });
     };
 
-    handleToCopyUrl = () => {
-        const { urlContent } = this.state;
-        if (copy(urlContent)) {
-            message.warn("复制成功");
+    handleToCopyUrl = (type) => {
+        const { urlContent, urlContentAllParts } = this.state;
+        const copyUrl = type == 'allParts' ? urlContentAllParts : urlContent;
+        if (copy(copyUrl)) {
+            message.warn('复制成功')
         } else {
             message.warn("复制失败");
         }
@@ -3791,7 +4160,7 @@ class MySpecialActivities extends React.Component {
                 itemID: _record ? _record.itemID : this.state.currentItemID, // 点击重试时record为undefiend
                 groupID: user.accountInfo.groupID,
             },
-            success: this.successFn,
+            success: (res) => this.successFn(res, arguments[3]),
             fail: this.failFn,
         });
         if (_record) {
@@ -3855,19 +4224,21 @@ class MySpecialActivities extends React.Component {
                 </div>
             );
         }
-        if (mySpecialActivities.status === "success") {
-            return (
-                <ActivityMain
-                    isCopy={_state.isCopy}
-                    isNew={_state.isNew}
-                    index={_state.index}
-                    callbackthree={(arg) => {
-                        if (arg == 3) {
-                            this.handleDismissUpdateModal();
-                        }
-                    }}
-                />
-            );
+        if (mySpecialActivities.status === 'success') {
+            return (<ActivityMain
+                onlyModifyShop={_state.onlyModifyShop}
+                isCopy={_state.isCopy}
+                isNew={_state.isNew}
+                index={_state.index}
+                callbackthree={(arg) => {
+                    if (arg == 3) {
+                        this.handleDismissUpdateModal();
+                    }
+                    if (arg == 'cancel') {
+                        this.handleDismissUpdateModal('cancel');
+                    }
+                }}
+            />);
         }
     }
 
@@ -3909,6 +4280,7 @@ class MySpecialActivities extends React.Component {
     };
     // 活动详情页
     renderModals() {
+        
         const mySpecialActivities = this.props.mySpecialActivities
             .get("$specialDetailInfo")
             .toJS();

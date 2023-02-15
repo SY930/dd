@@ -61,6 +61,8 @@ import {
     initShowCheckBox,
     clearCheckBoxData,
     renderRecommendGiftsDetail,
+    handleSubmitScoreConvertGifts,
+    handleSubmitConsumeGiveGifts
 } from "./SpecialPromotionDetailInfoHelp";
 import TicketBag from "../../BasicModules/TicketBag";
 import { axios } from "@hualala/platform-base";
@@ -76,22 +78,20 @@ import {
     upGradeInitPerfectCheckBox,
 } from "../upGradeReturnGift/StepThreeHelp";
 import { freeGetStep3Render } from "../freeGet/step3";
+import { h5GetStep3Render } from "../h5Get/step3";
+import { scoreConvertGiftStep3Render } from "../scoreConvertGift/step3";
+import { consumeGiveGiftStep3Render } from "../consumeGiveGift/step3";
+import Approval from "../../../containers/SaleCenterNEW/common/Approval";
+import { isZhouheiya } from "../../../constants/WhiteList";
+import Permission from './Permission';
+import { getDefaultGiftData, getDefaultRecommendSetting, MULTIPLE_LEVEL_GIFTS_CONFIG, descImage } from './SpecialPromotionConfig'
+import { setSensorsData } from "../../../helpers/util";
+import SensorsCodes from "../../../constants/SensorsCodes";
 
 const moment = require("moment");
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-
-const getDefaultRecommendSetting = (recommendType = 1) => ({
-    recommendType,
-    rechargeRate: undefined,
-    consumeRate: undefined,
-    pointRate: undefined,
-    rewardRange: 0,
-    presentValue: undefined,
-    redPackageLimitValue: undefined,
-    redPackageRate: undefined,
-});
 
 const roundToDecimal = (number, bit = 2) => +number.toFixed(bit);
 
@@ -101,74 +101,6 @@ const getIntervalID = () => {
     return uuid;
 };
 
-const getDefaultGiftData = (typeValue = 0, typePropertyName = "sendType") => ({
-    // 膨胀所需人数
-    needCount: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品数量
-    giftCount: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品数量
-    giftTotalCount: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 免费活动礼品分数
-    giftTotalCopies: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品ID和name
-    giftInfo: {
-        giftName: null,
-        giftItemID: null,
-        validateStatus: "success",
-        msg: null,
-    },
-    effectType: "1",
-    // 礼品生效时间
-    giftEffectiveTime: {
-        value: "0",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品有效期
-    giftValidDays: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    giftOdds: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    [typePropertyName]: typeValue,
-});
-
-const MULTIPLE_LEVEL_GIFTS_CONFIG = [
-    {
-        type: "63",
-        propertyName: "lastConsumeIntervalDays",
-        levelLabel: COMMON_SPE.d1e0750k82809,
-        levelAffix: COMMON_SPE.k6hk1aa1,
-    },
-    {
-        type: "75",
-        propertyName: "needCount",
-        levelLabel: COMMON_SPE.k6hk1aid,
-        levelAffix: COMMON_SPE.k6hk1aqp,
-    },
-];
-const limitType = ".jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF";
 @injectIntl
 class SpecialDetailInfo extends Component {
     constructor(props) {
@@ -398,7 +330,50 @@ class SpecialDetailInfo extends Component {
                     ? thirdCouponData
                     : [], // 选择的微信第三方优惠券
             pointItemID,
+            approvalInfo: {},//审批字段
+            exchangeType: '0', //兑换类型
+            goodsData: [], //商品
+            couponData: [], //优惠券
+
+            consumeCondition: '1', //活动条件
+            consumeUnit: '1',
+            activityList: [
+                {
+                    conditionValue: '',//消费满
+                    giveType: [],
+                    couponList: [getDefaultGiftData()],
+                    integrate: {
+                        returnWay: 7,
+                        returnVal: ''
+                    },
+                    card: {
+                        returnWay: 7,
+                        returnVal: ''
+                    },
+                    couponShow: true,
+                    integrateShow: true,
+                    cardShow: true,
+                }
+            ],//888
+            amountType: '0',
+            goodScopeRequest: {
+                containType: 1,
+                participateType: 1,
+                exclusiveType: 1,
+                containData: {
+                    category: [],
+                    goods: []
+                },
+                exclusiveData: {
+                    category: [],
+                    goods: []
+                }
+            },
+            giftConfImagePath: data[0] ? data[0].giftConfImagePath : '',
         };
+
+        this.rightControl = Permission(props.user.accountInfo.groupID).find(item => props.type === item.key);
+        this.__bagFlag__ = true;
     }
     componentDidMount() {
         const {
@@ -411,7 +386,9 @@ class SpecialDetailInfo extends Component {
             finish: isLast ? this.handleSubmit : undefined,
             next: !isLast ? this.handleSubmit : undefined,
         });
-        this.props.fetchGiftListInfo();
+        this.props.fetchGiftListInfo({
+            accountID: user.accountInfo.accountID
+        });
         if (type == 67) {
             const opts = {
                 _groupID: user.accountInfo.groupID,
@@ -507,7 +484,179 @@ class SpecialDetailInfo extends Component {
         if (type == 61) {
             upGradeInitPerfectCheckBox.call(this);
         }
+        
+        if (!this.props.isNew) {
+            //积分换礼回显
+            if(type == 89) {
+                this.echoScoreConvertGift();
+            }
+            //消费送礼回显
+            if(type == 88) {
+                this.echoConsumeGiveGift();
+            }
+        }
+
     }
+
+    //回显积分换礼type=89
+    echoScoreConvertGift = () => {
+        const giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
+        if(!giftInfo || !giftInfo.length) {
+            return;
+        }
+        if(giftInfo[0].presentType == 1) {
+            this.setState({
+                exchangeType: '1',
+                couponData: giftInfo.map(item => ({
+                    ...item,
+                    effectTime: item.effectTime.slice(0,8),
+                    validUntilDate: item.validUntilDate.slice(0,8)
+                }))
+            })
+        } else {
+            this.setState({
+                exchangeType: '0',
+                goodsData: giftInfo.map(item => ({
+                    ...item,
+                    goodsName: item.giftName,
+                    goodsID: item.giftID,
+                    brandID: item.giftBrandID,
+                    fullName: item.categoryFullName,
+                    unit: item.giftUnitName,
+                    brandName: item.giftBrandName
+                }))
+            })
+        }
+    }
+
+    //回显消费送礼type=88
+    echoConsumeGiveGift = () => {
+        const giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
+        const consumeType = this.props.specialPromotion.getIn(["$eventInfo", "consumeType"])
+        const amountType = this.props.specialPromotion.getIn(["$eventInfo", "amountType"])
+        let goodScopeRequest = this.props.specialPromotion.getIn(['$eventInfo', 'goodScopeRequest']);
+        goodScopeRequest = goodScopeRequest ? goodScopeRequest.toJS() : {
+            containType: 1,
+            participateType: 1,
+            exclusiveType: 1,
+            containData: {
+                category: [],
+                goods: []
+            },
+            exclusiveData: {
+                category: [],
+                goods: []
+            }
+        }
+        let consumeCondition = '1';
+        let consumeUnit = '1';
+        let activityList = [];
+        switch (consumeType) {
+            case 4:
+                consumeCondition = '1';
+                consumeUnit = '2';
+                break;
+            case 5:
+                consumeCondition = '3';
+                consumeUnit = '2';
+                break;
+            case 6:
+                consumeCondition = '2';
+                consumeUnit = '2';
+                break;
+            case 7:
+                consumeCondition = '4';
+                consumeUnit = '2';
+                break;
+            case 8:
+                consumeCondition = '1';
+                consumeUnit = '1';
+                break;
+            case 9:
+                consumeCondition = '3';
+                consumeUnit = '1';
+                break;
+            case 10:
+                consumeCondition = '2';
+                consumeUnit = '1';
+                break;
+            case 11:
+                consumeCondition = '4';
+                consumeUnit = '1';
+                break;
+        }
+
+        let giftInfoObj = {};
+        giftInfo.forEach((item, index) => {
+            if(!giftInfoObj[item.sortIndex - 1]) {
+                giftInfoObj[item.sortIndex - 1] = [item];
+            } else {
+                giftInfoObj[item.sortIndex - 1].push(item);
+            }
+        })
+        Object.keys(giftInfoObj).forEach(key => {
+            let giftItem = {
+                conditionValue: giftInfoObj[key][0].conditionValue,
+                couponShow: true,
+                integrateShow: true,
+                cardShow: true,
+                giveType: [],
+                couponList: [],
+                integrate: {
+                    returnWay: 7,
+                    returnVal: ''
+                },
+                card: {
+                    returnWay: 7,
+                    returnVal: ''
+                },
+            }
+            giftInfoObj[key].forEach(item => {
+                if(item.presentType == 2) {
+                    giftItem.giveType.push('2');
+                    giftItem.integrate = {
+                        returnWay: item.giftGetRule,
+                        returnVal: item.giftGetRuleValue
+                    }
+                }
+                if(item.presentType == 5) {
+                    giftItem.giveType.push('3');
+                    giftItem.card = {
+                        returnWay: item.giftGetRule,
+                        returnVal: item.giftGetRuleValue
+                    }
+                }
+                if(item.presentType == 1) {
+                    giftItem.giveType.push('1');
+                    let giftData = getDefaultGiftData();
+                    giftData.effectType = item.effectType + '';
+                    giftData.giftInfo.giftName = item.giftName + ' -【' + item.giftID + '】';
+                    giftData.giftInfo.giftItemID = item.giftID;
+                    giftData.giftInfo.itemID = item.itemID;
+                    giftData.giftCount.value = item.giftCount;
+                    giftData.giftValidDays.value = item.giftValidUntilDayCount;
+                    giftData.giftEffectiveTime.value = item.effectType != "2" 
+                        ? item.giftEffectTimeHours 
+                        : [
+                            moment(item.effectTime, "YYYYMMDD"),
+                            moment(item.validUntilDate, "YYYYMMDD"),
+                        ];
+
+                    giftItem.couponList.push(giftData);
+                }
+            })
+            activityList.push(giftItem);
+        })
+
+        this.setState({
+            consumeCondition,
+            consumeUnit,
+            amountType: amountType != undefined ? amountType + '' : '0',
+            activityList,
+            goodScopeRequest
+        })
+    }
+
     getMultipleLevelConfig = () => {
         const { type } = this.props;
         return MULTIPLE_LEVEL_GIFTS_CONFIG.find(
@@ -596,23 +745,46 @@ class SpecialDetailInfo extends Component {
             default:
                 return [getDefaultGiftData()];
         }
-    };
+    }
+
+    validateDateIsHasIntersection = (segments = []) => {
+        segments.forEach((item, index) => {
+            if(!item.getDate.value || !item.getDate.value.length || segments.find((row, i) => {
+                if(index != i && 
+                    row.getDate.value && 
+                    row.getDate.value.length && 
+                    ((item.getDate.value[0].format("YYYYMMDD") <= row.getDate.value[1].format("YYYYMMDD") && item.getDate.value[0].format("YYYYMMDD") >= row.getDate.value[0].format("YYYYMMDD")) || 
+                     (item.getDate.value[1].format("YYYYMMDD") <= row.getDate.value[1].format("YYYYMMDD") && item.getDate.value[1].format("YYYYMMDD") >= row.getDate.value[0].format("YYYYMMDD")) )) {
+                    return true;
+                }
+                return false;
+            })) {
+                item.getDate.validateStatus = 'error';
+                item.getDate.msg = `在活动范围内并且阶梯日期之间不能有交集`;
+            } else {
+                item.getDate.validateStatus = 'success';
+                item.getDate.msg = null;
+            }
+        })
+        return segments;
+    }
+
     componentWillReceiveProps(np) {
         if (!this.props.isNew) {
             const b = np.specialPromotion.get("$giftInfo").toJS();
             const { presentType = "", giftID, giftTotalCount } = b[0] || [{}];
-            const { freeGetLimit } = this.state;
-            if (this.props.type == "30" && presentType === 4) {
-                const { couponPackageInfos } = this.state;
+            const { freeGetLimit, couponPackageInfos = [] } = this.state;
+            if (this.props.type == "30" && presentType === 4 && this.__bagFlag__ && couponPackageInfos.length) {
                 const bag = (couponPackageInfos || []).filter(
                     (x) => x.couponPackageID === giftID
                 );
+                this.__bagFlag__ = false
                 this.setState({
                     sendTypeValue: "1",
                     bag,
+                    giftTotalCountBag: giftTotalCount == '0' ? '不限制' : giftTotalCount
                 });
             }
-
             if (
                 this.props.type == "21" &&
                 giftTotalCount &&
@@ -625,11 +797,32 @@ class SpecialDetailInfo extends Component {
                 }
             }
         }
+        if(this.props.type == 69 && this.props.isNew) {
+            const startDate = this.props.specialPromotion.getIn(['$eventInfo', 'eventStartDate']);
+            const endDate = this.props.specialPromotion.getIn(['$eventInfo', 'eventEndDate']);
+            const data = this.state.data;
+            //礼品只有一个并且可领取日期只有一个并且可领取日期为空时赋默认值活动时间
+            if(startDate && endDate && data.length == 1) {
+                if(data[0].segments.length == 1 && data[0].segments[0].getDate.value.length == 0) {
+                    data[0].segments[0].getDate.value = [
+                        moment(startDate, "YYYYMMDD"),
+                        moment(endDate, "YYYYMMDD"),
+                    ]
+                    this.validateDateIsHasIntersection(data[0].segments)
+                    this.setState({ data });
+                }
+            }
+        }
     }
+
+    componentWillUnmount() {
+        this.__bagFlag__ = true;
+    }
+
     async getBag() {
         const { user } = this.props;
         const { groupID } = user.accountInfo;
-        const data = { groupID, couponPackageType: "2" };
+        const data = { groupID, couponPackageType: "2", pageSize: 10000 };
         const [service, type, api, url] = [
             "HTTP_SERVICE_URL_PROMOTION_NEW",
             "post",
@@ -714,7 +907,7 @@ class SpecialDetailInfo extends Component {
             //线上餐厅送礼保存的是微信三方券信息
             thirdCouponData = giftInfo;
         }
-        if (!isThirdCoupon) {
+        if (!isThirdCoupon && type != 69) {
             giftInfo.forEach((gift, index) => {
                 if (
                     (this.props.type == "52" || this.props.type == "64") &&
@@ -745,9 +938,16 @@ class SpecialDetailInfo extends Component {
                               moment(gift.validUntilDate, "YYYYMMDD"),
                           ];
                 data[index].effectType = `${gift.effectType}`;
-                data[index].giftInfo.giftName = gift.giftName;
+                if(isZhouheiya()) {
+                    data[index].giftInfo.giftName = gift.giftName + ' -【' + gift.giftID + '】';
+                } else {
+                    data[index].giftInfo.giftName = gift.giftName;
+                }
                 if (this.props.type == "30" && gift.presentType === 4) {
                     data[index].giftInfo.giftName = "";
+                }
+                if (this.props.type == '30') {
+                    data[index].giftConfImagePath = gift.giftConfImagePath;
                 }
                 data[index].needCount.value = gift.needCount || 0;
                 data[index].giftInfo.giftItemID = gift.giftID;
@@ -763,9 +963,7 @@ class SpecialDetailInfo extends Component {
                 } else {
                     data[index].giftTotalCount.value = gift.giftTotalCount;
                 }
-                data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(
-                    2
-                );
+                data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
                 data[
                     index
                 ].lastConsumeIntervalDays = gift.lastConsumeIntervalDays
@@ -783,6 +981,67 @@ class SpecialDetailInfo extends Component {
             });
         }
 
+	    if(type == 69 && !this.props.isCopy) {
+            giftInfo.forEach((gift, index) => {
+                if (data[index] !== undefined) {
+                    data[index].sendType = gift.sendType || 0;
+                    data[index].recommendType = gift.recommendType || 0;
+                } else {
+                    data[index] = getDefaultGiftData(gift.sendType, 'sendType');
+                }
+                data[index].giftEffectiveTime.value =
+                    gift.effectType != "2"
+                        ? gift.giftEffectTimeHours
+                        : [
+                            moment(gift.effectTime, "YYYYMMDD"),
+                            moment(gift.validUntilDate, "YYYYMMDD"),
+                        ];
+                data[index].effectType = `${gift.effectType}`;
+                if(isZhouheiya()) {
+                    data[index].giftInfo.giftName = gift.giftName + ' -【' + gift.giftID + '】';
+                } else {
+                    data[index].giftInfo.giftName = gift.giftName;
+                }
+                data[index].needCount.value = gift.needCount || 0;
+                data[index].giftInfo.giftItemID = gift.giftID;
+                data[index].giftInfo.itemID = gift.itemID;
+                data[index].giftValidDays.value = gift.giftValidUntilDayCount;
+                data[index].presentType = gift.presentType
+                data[index].giftCount.value = gift.giftCount;
+                data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
+                data[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays
+                    ? `${gift.lastConsumeIntervalDays}`
+                    : undefined;
+
+                //H5领券
+                data[index].region.value = gift.region;
+                (gift.segments || []).forEach((item, n) => {
+                    if(item.startDate && item.endDate) {
+                        if(!data[index].segments[n]) {
+                            data[index].segments.push({
+                                getDate: {
+                                    value: [],
+                                    validateStatus: "success",
+                                    msg: null,
+                                }, //领取日期
+                                giftTotalCount: {
+                                    value: "",
+                                    validateStatus: "success",
+                                    msg: null,
+                                }, //领取总数
+                                id: Date.now().toString(36) + n,
+                            })
+                        }
+                        data[index].segments[n].getDate.value = [
+                            moment(item.startDate, "YYYYMMDD"),
+                            moment(item.endDate, "YYYYMMDD"),
+                        ]
+                    }
+                    data[index].segments[n].giftTotalCount.value = item.giftTotalCount;
+                })
+            });
+        } 
+	
         if (this.props.type == "68") {
             const typeList = [
                 "1#1",
@@ -1008,7 +1267,15 @@ class SpecialDetailInfo extends Component {
     getGiftInfo = (data) => {
         const giftArr = data.map((giftInfo, index) => {
             let gifts;
-            if (giftInfo.effectType != "2") {
+            if(giftInfo.effectType == '99' || giftInfo.effectType == '4' || giftInfo.effectType == '5'){
+                gifts = {
+                    effectType: giftInfo.weekEffectType || '4',
+                    giftID: giftInfo.giftInfo.giftItemID,
+                    itemID: giftInfo.giftInfo.itemID,
+                    giftName: giftInfo.giftInfo.giftName,
+                    giftType: giftInfo.giftInfo.parentId,
+                };
+            }else if(giftInfo.effectType != "2"){
                 // 相对期限
                 gifts = {
                     effectType: giftInfo.effectType,
@@ -1019,7 +1286,7 @@ class SpecialDetailInfo extends Component {
                     giftName: giftInfo.giftInfo.giftName,
                     giftType: giftInfo.giftInfo.parentId,
                 };
-            } else {
+            }else {
                 // 固定期限
                 gifts = {
                     effectType: "2",
@@ -1027,19 +1294,19 @@ class SpecialDetailInfo extends Component {
                         giftInfo.giftEffectiveTime.value[0] &&
                         giftInfo.giftEffectiveTime.value[0] != "0"
                             ? parseInt(
-                                  giftInfo.giftEffectiveTime.value[0].format(
-                                      "YYYYMMDD"
-                                  )
-                              )
+                                giftInfo.giftEffectiveTime.value[0].format(
+                                    "YYYYMMDD"
+                                )
+                            )
                             : "",
                     validUntilDate:
                         giftInfo.giftEffectiveTime.value[1] &&
                         giftInfo.giftEffectiveTime.value[1] != "0"
                             ? parseInt(
-                                  giftInfo.giftEffectiveTime.value[1].format(
-                                      "YYYYMMDD"
-                                  )
-                              )
+                                giftInfo.giftEffectiveTime.value[1].format(
+                                    "YYYYMMDD"
+                                )
+                            )
                             : "",
                     giftID: giftInfo.giftInfo.giftItemID,
                     giftName: giftInfo.giftInfo.giftName,
@@ -1047,6 +1314,7 @@ class SpecialDetailInfo extends Component {
                     giftType: giftInfo.giftInfo.parentId,
                 };
             }
+
             if (
                 this.props.type != "20" &&
                 this.props.type != "30" &&
@@ -1064,8 +1332,29 @@ class SpecialDetailInfo extends Component {
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
             gifts.presentType = giftInfo.presentType
-                ? giftInfo.presentType
-                : "1";
+            if(this.props.type == '69') {
+                gifts = {
+                    ...gifts,
+                    region: giftInfo.region.value,
+                    segments: this.handleSegmentsData(giftInfo.segments)
+                }
+                gifts.giftTotalCount = gifts.segments.reduce((sum, cur) => {
+                    return sum + cur.giftTotalCount
+                }, 0);
+
+                if(this.props.isNew || this.props.isCopy) {
+                    gifts = {
+                        ...gifts,
+                        ...giftInfo._allItem,
+                        presentType: 7,
+                        giftCount: '1',
+                        sendType: '0',
+                        giftEffectTimeHours: giftInfo._allItem.effectGiftTimeHours,
+                        giftValidUntilDayCount: giftInfo._allItem.validUntilDays,
+                        effectTime: giftInfo._allItem.EGiftEffectTime
+                    }
+                }
+            }
             if (giftInfo.needCount) {
                 if (typeof giftInfo.needCount === "object") {
                     gifts.needCount = giftInfo.needCount.value
@@ -1081,6 +1370,15 @@ class SpecialDetailInfo extends Component {
         });
         return giftArr;
     };
+
+    handleSegmentsData = (segments) => {
+        return segments.map(item => ({
+            startDate: item.getDate.value.length == 2 ? item.getDate.value[0].format("YYYYMMDD") : '',
+            endDate: item.getDate.value.length == 2 ? item.getDate.value[1].format("YYYYMMDD") : '',
+            giftTotalCount: item.giftTotalCount.value
+        }))
+    }
+
     checkNeedCount = (needCount, index) => {
         const _value = parseFloat(needCount.value);
         // 只有膨胀大礼包校验此字段
@@ -1102,11 +1400,15 @@ class SpecialDetailInfo extends Component {
     };
 
     handleSubmit = (isPrev) => {
-        const { type } = this.props;
-        if (type === "68") {
-            return handleSubmitRecommendGifts.call(this, isPrev);
-        } else if (type === "23") {
-            return handleSubmitOnLineReturnGifts.call(this, isPrev);
+        const { type } = this.props
+        if (type === '68') {
+            return handleSubmitRecommendGifts.call(this, isPrev)
+        } else if (type === '23') {
+            return handleSubmitOnLineReturnGifts.call(this, isPrev)
+        } else if (type === '89') {
+            return handleSubmitScoreConvertGifts.call(this, isPrev)
+        }  else if (type === '88') {
+            return handleSubmitConsumeGiveGifts.call(this, isPrev)
         } else {
             return this.handleSubmitOld(isPrev);
         }
@@ -1229,8 +1531,9 @@ class SpecialDetailInfo extends Component {
                 return true;
             }
         }
-        const { sendTypeValue } = this.state;
+        const { sendTypeValue, giftTotalCountBag, giftConfImagePath } = this.state;
         if (type === "30" && sendTypeValue === "1") {
+            if (!Number(giftTotalCountBag)) { message.warning('请填写礼品总数'); return false }
             const { bag } = this.state;
             if (bag[0]) {
                 const { couponPackageID } = bag[0];
@@ -1239,6 +1542,8 @@ class SpecialDetailInfo extends Component {
                     giftID: couponPackageID,
                     presentType: 4,
                     giftOdds: "3",
+                    giftTotalCount: giftTotalCountBag,
+                    giftConfImagePath,
                 };
                 this.props.setSpecialGiftInfo([params]);
                 const { shareTitle, shareImagePath } = this.state;
@@ -1264,6 +1569,27 @@ class SpecialDetailInfo extends Component {
                 ruleInfo.effectType != "2"
                     ? "giftValidDays"
                     : "giftEffectiveTime";
+
+            let giftValidDaysOrEffectObj = {};
+
+            if(ruleInfo.effectType == '99' || ruleInfo.effectType == '4' || ruleInfo.effectType == '5'){
+                giftValidDaysOrEffectObj = {
+                    weekEffectType: ruleInfo.weekEffectType,
+                }
+            }else {
+                giftValidDaysOrEffectObj = {
+                    [giftValidDaysOrEffect]:
+                    ruleInfo.effectType != "2"
+                        ? this.checkGiftValidDays(
+                              ruleInfo.giftValidDays,
+                              index
+                          )
+                        : this.checkGiftValidDays(
+                              ruleInfo.giftEffectiveTime,
+                              index
+                          )
+                }
+            }
             if (
                 this.props.type != "20" &&
                 this.props.type != "30" &&
@@ -1282,19 +1608,16 @@ class SpecialDetailInfo extends Component {
                     ),
                     giftOdds: this.checkGiftOdds(ruleInfo.giftOdds),
                     needCount: this.checkNeedCount(ruleInfo.needCount, index),
-                    [giftValidDaysOrEffect]:
-                        ruleInfo.effectType != "2"
-                            ? this.checkGiftValidDays(
-                                  ruleInfo.giftValidDays,
-                                  index
-                              )
-                            : this.checkGiftValidDays(
-                                  ruleInfo.giftEffectiveTime,
-                                  index
-                              ),
+                    ...giftValidDaysOrEffectObj
                 });
                 // check gift count
-                return tempData;
+                if(this.props.type == "69") {
+                    tempData.giftCount.validateStatus = 'success';
+                    tempData.giftValidDays.validateStatus = 'success';
+
+                    tempData.region = this.checkGiftRegion(ruleInfo.region);
+                }
+                return tempData
             }
 
             // check total count
@@ -1305,13 +1628,7 @@ class SpecialDetailInfo extends Component {
                 giftInfo: this.checkGiftInfo(ruleInfo.giftInfo),
                 giftOdds: this.checkGiftOdds(ruleInfo.giftOdds),
                 needCount: this.checkNeedCount(ruleInfo.needCount, index),
-                [giftValidDaysOrEffect]:
-                    ruleInfo.effectType != "2"
-                        ? this.checkGiftValidDays(ruleInfo.giftValidDays, index)
-                        : this.checkGiftValidDays(
-                              ruleInfo.giftEffectiveTime,
-                              index
-                          ),
+                ...giftValidDaysOrEffectObj
             });
         });
         let validateFlag = validatedRuleData.reduce((p, ruleInfo) => {
@@ -1351,6 +1668,29 @@ class SpecialDetailInfo extends Component {
             return res + parseFloat(cur.giftOdds.value);
         }, 0);
         data = validatedRuleData;
+	    if(type == 69) {
+            //H5领券校验可领取日期
+            let isPassValidate = true;
+            data.forEach(item => {
+                item.segments = this.validateDateIsHasIntersection(item.segments);
+                item.segments.forEach(row => {
+                    if(!(row.giftTotalCount.value > 0)) {
+                        row.giftTotalCount.validateStatus = 'error';
+                        row.giftTotalCount.msg = '礼品总数必须大于0';
+                    } else {
+                        row.giftTotalCount.validateStatus = 'success';
+                        row.giftTotalCount.msg = null;
+                    }
+                    if(row.getDate.validateStatus == 'error' || row.giftTotalCount.validateStatus == 'error') {
+                        isPassValidate = false;
+                    }
+                })
+            })
+            this.setState({ data });
+            if(!isPassValidate) {
+                return;
+            }
+        }
         this.setState({ data });
         if (
             (type === "60" &&
@@ -1436,6 +1776,14 @@ class SpecialDetailInfo extends Component {
                 this.props.setSpecialBasicInfo(shareInfo);
             }
             if (["30"].includes(type)) {
+                if (!giftInfo[0].giftName && sendTypeValue == '0') {
+                    message.warning('请填写礼品名称')
+                    return false
+                }
+                if (sendTypeValue == '0') {
+                     giftInfo[0].presentType = 1;
+                     giftInfo[0].giftConfImagePath = giftConfImagePath
+                }
                 const { shareTitle, shareImagePath } = this.state;
                 const shareInfo = { shareTitle, shareImagePath };
                 this.props.setSpecialBasicInfo(shareInfo);
@@ -1477,7 +1825,27 @@ class SpecialDetailInfo extends Component {
                     v.giftTotalCopies = giftTotalCopies;
                 });
             }
-            this.props.setSpecialGiftInfo(giftInfo); //发起action
+            let giftIdsArr = [];
+            giftInfo.forEach((item) => {
+                if(item.giftID){giftIdsArr.push(item.giftID)};
+            })
+            //埋点事件第三步
+            // setSensorsData(SensorsCodes.sensorsThirdStepId[this.props.type] ? SensorsCodes.sensorsThirdStepId[this.props.type] : "", {
+            //     gift_point: this.state.givePoints ? Number(this.state.presentValue) : "",
+            //     gift_coupon: giftIdsArr.join(',')
+            // });
+            this.props.setSpecialGiftInfo(giftInfo);//发起action
+            //H5领券
+            if (["69"].includes(type)) {
+                const { approvalInfo, userCount } = this.state;
+                if(!approvalInfo.activityCost || !approvalInfo.activityRate || !approvalInfo.estimatedSales || !approvalInfo.auditRemark) {
+                    return;
+                }
+                this.props.setSpecialBasicInfo({
+                    ...approvalInfo,
+                    userCount: this.props.isCopy ? 0 : userCount
+                });
+            }
 
             return true;
         }
@@ -1611,6 +1979,17 @@ class SpecialDetailInfo extends Component {
             ...giftInfo,
             validateStatus: "success",
             msg: "",
+        };
+    };
+    // 校验适用区域
+    checkGiftRegion = (region) => {
+        if (region.value) {
+            return region;
+        }
+        return {
+            msg: '请输入适用区域',
+            validateStatus: "error",
+            value: "",
         };
     };
     gradeChange = (gifts, typeValue) => {
@@ -2043,6 +2422,43 @@ class SpecialDetailInfo extends Component {
         );
     };
 
+    renderScoreConvertImage = (title, { key, image }, index) => {
+        const cropperRatio = index === '0' ? 1044 / 842 : 200 / 200
+        return (
+            <FormItem
+                    label={title}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    style={{ position: "relative" }}
+                >
+                    <Row>
+                        <Col span={6}>
+                            <CropperUploader
+                                className={styles.uploadCom}
+                                width={120}
+                                height={110}
+                                cropperRatio={cropperRatio}
+                                limit={2048}
+                                allowedType={["image/png", "image/jpeg"]}
+                                value={image}
+                                uploadTest="上传图片"
+                                onChange={(value) =>
+                                    this.onRestImg({
+                                        key,
+                                        value,
+                                    })
+                                }
+                            />
+                        </Col>
+                        <Col span={18} className={styles.grayFontPic}>
+                            {descImage[index]}
+                        </Col>
+                    </Row>
+                </FormItem>
+        )
+    }
+
     renderShareInfo3 = () => {
         // const { type } = this.props;
         const { shareTitle, shareImagePath, shareTitlePL } = this.state;
@@ -2062,55 +2478,7 @@ class SpecialDetailInfo extends Component {
                         onChange: this.handleShareTitleChange,
                     })(<Input placeholder={shareTitlePL} />)}
                 </FormItem>
-                <FormItem
-                    label="分享图片"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                    style={{ position: "relative" }}
-                >
-                    <Row>
-                        <Col span={6}>
-                            <CropperUploader
-                                className={styles.uploadCom}
-                                width={120}
-                                height={110}
-                                cropperRatio={200 / 200}
-                                limit={2048}
-                                allowedType={["image/png", "image/jpeg"]}
-                                value={shareImagePath}
-                                uploadTest="上传图片"
-                                onChange={(value) =>
-                                    this.onRestImg({
-                                        key: "shareImagePath",
-                                        value,
-                                    })
-                                }
-                            />
-                        </Col>
-                        <Col span={18} className={styles.grayFontPic}>
-                            <p
-                                style={{
-                                    position: "relative",
-                                    top: 20,
-                                    left: 70,
-                                }}
-                            >
-                                小程序分享图
-                                <br />
-                                图片建议尺寸：1044*842
-                                <br />
-                                支持PNG、JPG格式，大小不超过2M
-                            </p>
-                        </Col>
-                    </Row>
-                    {/* <PhotoFrame
-                        restaurantShareImagePath={restaurantShareImagePath}
-                        shareImagePath={shareImagePath}
-                        onChange={this.onRestImg}
-                        type={type}
-                    /> */}
-                </FormItem>
+                {this.renderScoreConvertImage('分享图片', { key: 'shareImagePath', image: shareImagePath }, '0')}
             </div>
         );
     };
@@ -4154,10 +4522,17 @@ class SpecialDetailInfo extends Component {
     };
     // type 30
     renderPointDuihuan() {
-        const { bag, sendTypeValue } = this.state;
+        const { bag, sendTypeValue, giftTotalCountBag } = this.state;
         const { user, type, disabled } = this.props;
         const { groupID } = user.accountInfo;
         const css = disabled ? styles.disabledModal : "";
+        const preErr =
+        +giftTotalCountBag < 1 || +giftTotalCountBag > 999999
+            ? "error"
+            : "success";
+    const preErrText =
+        (+giftTotalCountBag < 1 || +giftTotalCountBag > 999999) &&
+        "请输入大于1小于等于999999的正整数";
         return (
             <div style={{ position: "relative" }}>
                 <Row>
@@ -4181,6 +4556,35 @@ class SpecialDetailInfo extends Component {
                                 onChange={this.onBagChange}
                             />
                         </Col>
+                        {
+                            giftTotalCountBag === '不限制' ? <Col span={20} offset={3}>礼品总数： 不限制</Col> :
+                                <Col span={20} >
+                                    <FormItem
+                                        label={"礼品总数"}
+                                        labelCol={{ span: 6 }}
+                                        wrapperCol={{ span: 10 }}
+                                        className={""}
+                                        validateStatus={preErr}
+                                        help={preErrText}
+                                        required={true}
+                                    >
+                                        <div className={styles.giftCountTips}>
+                                            <Input
+                                                value={giftTotalCountBag}
+                                                onChange={({ target }) => { this.setState({ giftTotalCountBag: target.value }) }}
+                                                type="number"
+                                            />
+                                            <Tooltip title="当前兑换活动可发出的券包总数">
+                                                <Icon
+                                                    type={"question-circle"}
+                                                    style={{ color: "#787878" }}
+                                                    className={styles.cardLevelTreeIcon}
+                                                />
+                                            </Tooltip>
+                                        </div>
+                                    </FormItem>
+                                </Col> 
+                        }
                     </Row>
                 ) : (
                     <Row>
@@ -4205,8 +4609,20 @@ class SpecialDetailInfo extends Component {
         );
     }
 
+    renderApproverSet = () => {
+        return (
+            <Approval type="special" onApprovalInfoChange={(val) => {
+                this.setState({
+                    approvalInfo: {
+                        ...val
+                    }
+                })
+            }} />
+        )
+    }
+
     render() {
-        const { giveCoupon, couponValue } = this.state;
+        const { giveCoupon, couponValue, giftConfImagePath = '' } = this.state;
         const { type, isBenefitJumpSendGift = false } = this.props;
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
@@ -4225,6 +4641,21 @@ class SpecialDetailInfo extends Component {
         if (type == "21") {
             // 提出免费领取第三步
             return freeGetStep3Render.call(this);
+        }
+
+        if (type == '69') {
+            // 提出H5领券第三步
+            return h5GetStep3Render.call(this)
+        }
+
+        if (type == '89') {
+            // 提出积分换礼第三步
+            return scoreConvertGiftStep3Render.call(this)
+        }
+
+        if (type == '88') {
+            // 提出消费送礼第三步
+            return consumeGiveGiftStep3Render.call(this)
         }
 
         const userCount = this.props.specialPromotion.getIn([
@@ -4292,6 +4723,7 @@ class SpecialDetailInfo extends Component {
                     </Row>
                 )}
                 {type === "30" && this.renderPointDuihuan()}
+                {type === '30' && this.renderScoreConvertImage('礼品图片', { key: 'giftConfImagePath', image: giftConfImagePath }, 1)} 
                 {type === "60" && renderThree.call(this, type)}
                 {type === "53" &&
                     renderThree.call(this, type, isBenefitJumpSendGift)}

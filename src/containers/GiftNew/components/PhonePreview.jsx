@@ -27,6 +27,12 @@ import caipinduihuanquan2 from '../../../assets/caipinduihuanquan-2.png';
 import caipinduihuanquan3 from '../../../assets/caipinduihuanquan-3.png';
 import daijinquanBg from '../../../assets/daijinquan-bg.png';
 
+import duihuanquan1 from '../../../assets/duihuanquan-1.png';
+import youhuiquan1 from '../../../assets/youhuiquan-1.png';
+
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
+import { getAccountInfo } from 'helpers/util'
+
 const RED_PACKET_MAIN = 'http://res.hualala.com/basicdoc/58873207-f2d1-4489-82de-79ea54ac0f7a.png'
 
 // 所有的礼品类型中预览分3类 常用券类(代金券 菜品券), 充值积分券, 权益券
@@ -134,6 +140,10 @@ class PhonePreview extends PureComponent {
     foodsboxString() {
         const { foodsbox, discountType, giftType } = this.props;
         if (giftType == '111' && discountType == 0) {
+            const { groupID } = getAccountInfo()
+            if (isZhouheiya(groupID)) {
+                return '本券对店铺所有商品适用'
+            }
             return '本券对店铺所有菜品适用'
         }
         const {
@@ -637,6 +647,7 @@ class PhonePreview extends PureComponent {
             giftType,
             applyScene,
         } = this.props;
+	const { groupID } = getAccountInfo()
         const imgUrl = {
             '10':{
                 '0':daijinquan1,
@@ -655,6 +666,20 @@ class PhonePreview extends PureComponent {
             },
             '81': daijinquan4
         }
+	
+	if (isZhouheiya(groupID)) {
+            imgUrl['20'] = {
+                '0': youhuiquan1,
+                '1': caipinyouhuiquan2,
+                '2': caipinyouhuiquan3,
+            }
+            imgUrl['21'] = {
+                '0': duihuanquan1,
+                '1': caipinduihuanquan2,
+                '2': caipinduihuanquan3,
+            }
+        }
+	
         let imgSrc = '';
         if(giftType == '81'){
             imgSrc = imgUrl[giftType]

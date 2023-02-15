@@ -174,6 +174,9 @@ class NewAddCategorys extends React.Component {
                                 phraseList && phraseList.map((cat) => {
                                     return (
                                         <Tag
+                                            style={{
+                                                marginBottom: '5px'
+                                            }}
                                             key={cat.itemID}
                                             closable={true}
                                             onClose={(e) => {

@@ -79,7 +79,7 @@ class Detail extends Component {
         const newParams = { ...queryParams3, ...params,  ...ids };
         // 把查询需要的参数缓存
         this.setState({ queryParams3: newParams, loading3: true });
-        getTotalList({ ...ids, ...newParams, getWay: '10' }).then((obj) => {
+        getTotalList({ ...ids, ...newParams, getWayList: [10, 19] }).then((obj) => {
             const { pageObj, list } = obj;
             this.setState({ pageObj3: pageObj, list3: list, loading3: false });
         });
@@ -203,7 +203,7 @@ class Detail extends Component {
         const { queryParams, queryParams2, isExist, popVisible, sameItemID } = this.state;
         const { detail: { couponPackageInfo = [], couponPackageGiftConfigs = [] } } = this.props;
         const { couponPackageImage, couponPackageName, createTime, couponPackageID,
-            couponPackageDesciption, remainStock = 0, sendCount = 0 } = couponPackageInfo;
+            couponPackageDesciption, remainStock = 0, sendCount = 0, limitStockForEvent, couponPackageType } = couponPackageInfo;
         const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
         const resetStock = remainStock === -1 ? '不限制' : remainStock;
@@ -239,7 +239,7 @@ class Detail extends Component {
                     <li>
                         <h3>券包数据</h3>
                         <div>
-                            <TotalTable list={[{remainStock: resetStock, sendCount}]} />
+                            <TotalTable list={[{remainStock: resetStock, sendCount}]} isOld={limitStockForEvent == 1} couponPackageType={couponPackageType} />
                             <InfoTable list={couponPackageGiftConfigs} />
                         </div>
                     </li>
@@ -290,7 +290,7 @@ class Detail extends Component {
                                 />
                             </TabPane>
                             <TabPane tab="赠送" key="3">
-                                <PresentForm ids={ids} num={remainStock} />
+                                <PresentForm ids={ids} num={remainStock} isOld={limitStockForEvent == 1} couponPackageType={couponPackageType}/>
                             </TabPane>
                             <TabPane tab="退款" key="4">
                                 <QueryForm type={3} onRefund={this.onOpenModal} onQuery={this.onQueryList3} />

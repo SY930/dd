@@ -5,6 +5,7 @@ import DateRange from '../../PromotionV3/Camp/DateRange';
 import DateTag from '../../PromotionV3/Camp/DateTag';
 import TimeRange from '../../PromotionV3/Camp/TimeRange';
 import Advance from '../../PromotionV3/Camp/Advance';
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
 const imgURI = 'http://res.hualala.com/';
 const href = 'javascript:;';
@@ -66,7 +67,7 @@ const formItems1 = {
     sceneList: {
         type: 'custom',
         label: '投放类型',
-        options: [{ label: '弹窗海报图', value: '1' }, { label: 'banner广告', value: '2' }],
+        options: [{ label: '弹窗海报图', value: '1' }, { label: 'banner广告', value: '2' }, { label: '开屏页', value: '21' }],
         defaultValue: '1',
         render: () => (<p />),
     },
@@ -77,6 +78,12 @@ const formItems1 = {
         defaultValue: [1],
         render: () => (<p />),
         rules: ['required'],
+    },
+    launchSceneList: {
+        type: 'custom',
+        label: '投放小程序',
+        rules: ['required'],
+        render: () => (<p />),
     },
     shopIDList: {
         type: 'custom',
@@ -91,10 +98,22 @@ const formItems1 = {
         placeholder: '请输入活动说明，最多1000个字符',
         rules: ['description2'],
     },
+    tagLst: {
+        label: '标签',
+        type: 'custom',
+        render: (d, form) => d()(
+            <CategoryFormItem 
+                decorator={d}
+                form={form}
+                key='tagLst'
+                phraseType='2'
+            />
+        ),
+    }
 };
 
-const KEY1 = ['eventType', 'eventName', 'eventCode', 'clientType'];
-const KEY2 = ['sceneList', 'triggerSceneList', 'shopIDList', 'eventRemark'];
+const KEY1 = ['eventType', 'eventName', 'eventCode', 'tagLst', 'clientType'];
+const KEY2 = ['sceneList', 'triggerSceneList', 'launchSceneList', 'shopIDList', 'eventRemark'];
 const KEY = ['clientTip'];
 
 const formKeys1 = [...KEY1, KEY, ...KEY2];

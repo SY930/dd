@@ -254,7 +254,8 @@ class ShopSelectModal extends Component {
                         onChange={this.handleChange}
                         onFilterKeyChange={this.handleFilterKeyChange}
                         onGroupNameChange={this.handleGroupNameChange}
-
+                        disabledShops={this.props.disabledShops}
+                        groupID={this.props.groupID}
                     />
                 </Spin>
             </Modal>

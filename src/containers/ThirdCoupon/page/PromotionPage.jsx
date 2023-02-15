@@ -14,6 +14,10 @@ const EVENT_STATUS = {
     13: '审核未通过',
     11: '审核中',
 };
+const ENROLLSCENETYPE = {
+    MINI_APP: '小程序报名场景',
+    VOUCHER: '券报名场景',
+}
 
 class PromotionPage extends Component {
     constructor(props) {
@@ -95,8 +99,8 @@ class PromotionPage extends Component {
                 <Form onSubmit={this.handleSubmit} layout="inline">
                     <FormItem
                         label="投放名称"
-                        labelCol={{ span: 6 }}
-                        wrapperCol={{ span: 18 }}
+                        labelCol={{ span: 7 }}
+                        wrapperCol={{ span: 17 }}
                     >
                         {getFieldDecorator('eventName', {
                         })(
@@ -117,19 +121,6 @@ class PromotionPage extends Component {
                             />
                         )}
                     </FormItem>
-                    {/* <FormItem
-                        label="支付宝会场大促计划名称"
-                        labelCol={{ span: 9 }}
-                        wrapperCol={{ span: 15 }}
-                        style={{ width: '400px' }}
-                    >
-                        {getFieldDecorator('marketingName', {
-                        })(
-                            <Input
-                                placeholder="请输入活动名"
-                            />
-                        )}
-                    </FormItem> */}
                     <FormItem>
                         <Button type="primary" className={styles.speBtn} htmlType="submit">
                             <Icon type="search" />
@@ -172,10 +163,11 @@ class PromotionPage extends Component {
                                             })}
                                             >{EVENT_STATUS[item.eventStatus] || '--'}</span>
                                         </div>
-                                        {/* <div>
-                                            <p>关联优惠券：</p>
-                                            <span>{this.getLinkCoupon(item.giftConfInfos)}</span>
+                                        <div>
+                                            {/* <p>投放场景：</p>
+                                            <span>{ENROLLSCENETYPE[item.enrollSceneType] || '--'}</span> */}
                                         </div>
+                                        {/*
                                         <div>
                                             <p>剩余数量：</p>
                                             <span>0/1000</span>
@@ -277,6 +269,7 @@ class ViewCouponContent extends Component {
                         </div>
                         <div>
                             <p>投放时间： <span>{moment(new Date(Number(viewData.createStamp)), 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}</span></p>
+                            <p>投放场景： <span>{ENROLLSCENETYPE[viewData.enrollSceneType] || '--'}</span></p>
                         </div>
                     </Col>
                     <Col span={24} className={styles.relationCoupon__table}>

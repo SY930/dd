@@ -6,7 +6,8 @@ import {
 import { connect } from 'react-redux';
 import { fetchData, axiosData } from 'helpers/util';
 import styles from '../GiftAdd/Crm.less';
-import PriceInput from "../../SaleCenterNEW/common/PriceInput";
+import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 
 const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
@@ -52,7 +53,10 @@ class PushMessageMpID extends Component {
     }
     componentDidMount() {
         this.queryWechatMpInfo();
-        this.getMiniProgramsAppIdList();
+        const { formData: { groupID } } = this.props;
+        if (!isZhouheiya(groupID)) {
+            this.getMiniProgramsAppIdList();
+        }
     }
     queryWechatMpInfo = () => {
         const { shopList} = this.props;

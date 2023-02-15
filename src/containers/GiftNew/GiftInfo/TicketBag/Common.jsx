@@ -63,8 +63,14 @@ const wayOpts = [
     { value: '12', label: '摇奖活动赠送' },
     { value: '13', label: '储值套餐赠送' },
     { value: '14', label: '定额卡充值赠送' },
+    { value: '15', label: '商城售卖' },
+    { value: '16', label: '积分兑换发放' },
+    { value: '17', label: 'openAPI发放' },
     { value: '18', label: '下单抽抽乐' },
+    { value: '19', label: '限时秒杀' },
+    { value: '124', label: '券包' },
     { value: '166', label: '消费送礼活动' },
+
 ];
 const stockOpts = [
     { value: '1', label: '不限制' },
@@ -151,6 +157,9 @@ const keys1 = ['a', 'couponPackageType', 'c', 'sellTime', 'd', 'couponPackageNam
 'couponPackagePrice', 'settleUnitID', 'defaultCardTypeID','remainStock', 'e','maxBuyCount', 'shopInfos', 'f', 'buySelectShop','isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
 const keys2 = ['a', 'couponPackageType', 'c', 'couponPackageName', 'couponPackageValue',
 'couponPackagePrice2', 'remainStock', 'e', 'couponPackageDesciption', 'couponPackageImage'];
+
+const acitveKeys =  ['a', 'couponPackageType', 'c', 'couponPackageName', 'couponPackageValue',
+'couponPackagePrice2', 'couponPackageDesciption', 'couponPackageImage']; // 创建新的活动、商城投放没有券包库存
 
 const formItems = {
     couponPackageType: {
@@ -254,10 +263,10 @@ const formItems = {
 
     maxBuyCount: {
         type: 'text',
-        label: '可购买次数',
+        label: '可购买数量',
         defaultValue:'',
         props: {
-            placeholder: '请输入每人可购买次数，不填表示不限制',
+            placeholder: '请输入每人可购买数量，不填表示不限制',
         },
         rules: [{
             validator: (rule, value, callback) => {
@@ -666,5 +675,5 @@ export {
     formItems, imgURI, formKeys, href, formItemLayout,
     keys1, keys2, keys3, keys4, keys5,keys7,keys8,keys9,keys10,keys11,keys12, DF, TF, monthList, weekList, weekMap,
     qFormKeys, qFormItems, dFormKeys, dFormItems, pFormKeys, pFormItems, pFormKeys2,
-    dFormKeys2, dFormKeys3, refundItems, couponImage, stockItems,
+    dFormKeys2, dFormKeys3, refundItems, couponImage, stockItems, acitveKeys
 }

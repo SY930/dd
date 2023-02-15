@@ -18,6 +18,7 @@ import {axiosData} from "../../../helpers/util";
 import AccountNoSelector from "../../SpecialPromotionNEW/common/AccountNoSelector";
 import MsgSelector from "../../SpecialPromotionNEW/common/MsgSelector";
 import { debounce } from 'lodash';
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -72,6 +73,7 @@ class SendGiftPanel extends Component {
         this.handleWhenToEffectChange = this.handleWhenToEffectChange.bind(this);
         this.handleSmsGateChange = this.handleSmsGateChange.bind(this);
         this.handleCellNoChange = this.handleCellNoChange.bind(this);
+        this.handleCardNoChange = this.handleCardNoChange.bind(this);
         this.handleSubmitDebounced = debounce(this.handleSubmit.bind(this), 400);
         this.handleSmgInfoChange = this.handleSmgInfoChange.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
@@ -104,7 +106,8 @@ class SendGiftPanel extends Component {
         if (!flag) {
             return;
         }
-        const { accountNo, cellNo, availableSmsCount, smsGate } = this.state;
+        const { accountNo, cellNo, availableSmsCount, smsGate, cardNo } = this.state;
+        const isZhy = isZhouheiya(this.props.groupID)
         const sendFlag = smsGate == '1' || smsGate == '3' || smsGate == '4';
         if (sendFlag) {
             if (!availableSmsCount) {
@@ -120,8 +123,29 @@ class SendGiftPanel extends Component {
             params.sourceType = 60
             axiosData('/coupon/couponEntityService_sendCoupons.ajax', params, {}, {path: 'data'}, )
                 .then(res => {
-                    this.cancelSendModal()
-                    messageService.success(`向手机号为 ${cellNo} 的用户发券成功!`, 4);
+                    //this.cancelSendModal()
+		    this.setState({
+                        loading: false,
+                        validatingStatus: null,
+                        cellNo: '',
+                        cardNo: ''
+                    }, () => {
+
+                        if (isZhy) {
+                            this.props.form.resetFields(['cardNo']);
+                            this.props.form.setFieldsValue({ cardNo: '' });
+                        } else {
+                            this.props.form.resetFields(['cellNo']);
+                            this.props.form.setFieldsValue({ cellNo: { number: '' } });
+			    this.props.hideModal()
+                        }
+                    });
+
+                    if (isZhy) {
+                        messageService.success(`向会员卡号为 ${cardNo} 的用户发券成功!`, 4);
+                    } else {
+                        messageService.success(`向手机号为 ${cellNo} 的用户发券成功!`, 4);
+                    }                    
                 })
                 .catch(err => {
                     this.setState({
@@ -179,7 +203,16 @@ class SendGiftPanel extends Component {
             params.accountNo = accountNo;
         }
 
-        params = {...params, validUntilDays, giftNum, customerMobile, smsGate, operateRemark };
+
+
+        params = { ...params, validUntilDays, giftNum, customerMobile, smsGate, operateRemark };
+
+        const isZhy = isZhouheiya(this.props.groupID)
+
+        if (isZhy) {
+            params.cardNo = this.state.cardNo
+        }
+
         return params;
     }
 
@@ -248,6 +281,11 @@ class SendGiftPanel extends Component {
             cellNo: +strVal
         })
     }
+    handleCardNoChange(val) {
+        this.setState({
+            cardNo: val.target.value,
+        })
+    }
     handleRemarkChange = (e) => {
         this.setState({
             operateRemark: e.target.value,
@@ -266,6 +304,66 @@ class SendGiftPanel extends Component {
         })
     }
 
+renderCardNo() {
+        const { getFieldDecorator } = this.props.form;
+        return (<FormItem
+            label={'会员卡号'}
+            className={styles.FormItemStyle}
+            style={{
+                margin: '1em 0'
+            }}
+            labelCol={{ span: 4 }}
+            hasFeedback
+            required
+            wrapperCol={{ span: 17 }}
+        >
+            {getFieldDecorator('cardNo', {
+                onChange: this.handleCardNoChange,
+                rules: [
+                    {
+                        validator: (rule, v, cb) => {
+                            if (!v) {
+                                return cb('会员卡号为必填项');
+                            }
+                            const cardNoString = String(v);
+
+                            if (cardNoString.length < 2) {
+                                return cb('会员卡号最少为2位');
+                            }
+
+                            if (cardNoString.length > 40) {
+                                return cb('最多支持40个字符');
+                            }
+
+                            if (/[^\w\/]/ig.test(cardNoString)) {
+                                return cb('可输入数字+字母');
+                            }
+
+                            const cardNo = cardNoString.substring(0, 3)
+                            if (cardNo === '666' || cardNo === '777') {
+                                return cb('不支持输入666、777开头卡号')
+                            }
+
+
+                            axiosData('/crm/customerService_checkCustomerByMobile.ajax', { cardNO: cardNoString }, {}, { path: 'data' })
+                                .then((res = {}) => {
+                                    if (res.cardNO && res.cardNO != '0') {
+                                        cb()
+                                    } else {
+                                        cb('没有找到对应的会员卡号')
+                                    }
+                                })
+                                .catch(e => {
+                                    cb('没有找到对应的会员卡号')
+                                })
+                        }
+
+                    },
+                ]
+            })(<Input />)}
+        </FormItem>);
+    }
+    
     renderCellNo() {
         const { getFieldDecorator } = this.props.form;
         return (<FormItem
@@ -549,10 +647,11 @@ class SendGiftPanel extends Component {
     }
 
     render() {
+        const { groupID } = this.props
         return (
             <Row>
                 <Col span={24}>
-                    {this.renderCellNo()}
+                {isZhouheiya(groupID) ? this.renderCardNo() : this.renderCellNo()}
                 </Col>
                 <Col span={19} offset={5}>
                     {this.renderGift()}

@@ -1,4 +1,5 @@
 import { SALE_LABEL } from 'i18n/common/salecenter';
+import { RetailMenuID } from './WhiteList'
 /**
  * 集团视角新建营销活动页面 5个大分类的constants
  *
@@ -26,6 +27,7 @@ export const BASIC_PROMOTION_MAP = {
     '2070': '累计次数减免',
     '1021': '称重买赠',
     '10071': '拼团活动',
+    '2090': '配色费减免',
 }
 
 export const GIFT_MAP = {
@@ -38,7 +40,7 @@ export const GIFT_MAP = {
     '80': '会员权益券',
     '90': '礼品定额卡',
     '100': '活动券',
-    '91': '线上礼品卡',
+    '91': '微信礼品卡',
     '110': '买赠券',
     '111': '折扣券',
     '22': '配送券',
@@ -207,6 +209,17 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         right: 10,
         bottom: 0,
     },
+    {
+        title: 'H5领券',
+        isSpecial: true,
+        tags: [SALE_LABEL.k5krn6z9],
+        signs: ['wx'],
+        text: SALE_LABEL.k67b4rb2,
+        example: '',
+        key: '69',
+        right: 17,
+        bottom: 0,
+    },
 ];
 
 /**
@@ -343,43 +356,43 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
  */
 export const REPEAT_PROMOTION_TYPES = [
     {
-        title: '用券送礼（原消费券返券）',
+        title: "用券送礼（原消费券返券）",
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        text: '会员消费了A券返B券，消费B券返C券，循环返券拉动复购',
-        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
-        signs: ['pos', 'wx', 'app'],
-        example: '',
-        key: '81',
+        text: "会员消费了A券返B券，消费B券返C券，循环返券拉动复购",
+        tags: ["pos", SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
+        signs: ["pos", "wx", "app"],
+        example: "",
+        key: "81",
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: new Date('2022/04/12').getTime(),
+        isNew: new Date("2022/04/12").getTime()
     },
     {
-        title: '微信支付有礼',
+        title: "微信支付有礼",
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        text: '微信支付成功页投放微信支付商家券，引导用户领券',
-        tags: ['新微信'],
-        signs: ['wx'],
-        example: '',
-        key: '80',
+        text: "微信支付成功页投放微信支付商家券，引导用户领券",
+        tags: ["新微信"],
+        signs: ["wx"],
+        example: "",
+        key: "80",
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: new Date('2022/04/12').getTime(),
+        isNew: new Date("2022/04/12").getTime()
     },
     {
-        title: '集点卡',
+        title: "集点卡",
         isSpecial: true,
-        text: '消费后获得集点，促进会员多次消费',
-        tags: ['新微信', '小程序'],
-        signs: ['wx', 'app'],
-        example: '',
-        key: '75',
+        text: "消费后获得集点，促进会员多次消费",
+        tags: ["新微信", "小程序"],
+        signs: ["wx", "app"],
+        example: "",
+        key: "75",
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: new Date('2022/04/12').getTime(),
+        isNew: new Date("2022/04/12").getTime()
     },
     // 群发礼品
     {
@@ -387,10 +400,10 @@ export const REPEAT_PROMOTION_TYPES = [
         isSpecial: true,
         text: SALE_LABEL.k67b4t5q,
         signs: [],
-        example: '',
-        key: '53',
+        example: "",
+        key: "53",
         right: 3,
-        bottom: 0,
+        bottom: 0
     },
     // 群发短信
     {
@@ -398,83 +411,83 @@ export const REPEAT_PROMOTION_TYPES = [
         isSpecial: true,
         text: SALE_LABEL.k67b4te2,
         signs: [],
-        example: '',
-        key: '50',
+        example: "",
+        key: "50",
         right: 13,
-        bottom: 6,
+        bottom: 6
     },
     // 消费返礼品
     {
         title: SALE_LABEL.k5m4q0ae,
-        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
-        signs: ['pos', 'wx', 'app'],
+        tags: ["pos", SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
+        signs: ["pos", "wx", "app"],
         isSpecial: false,
         text: SALE_LABEL.k67b4tme,
         example: SALE_LABEL.k67cporj,
-        key: '3010',
+        key: "3010",
         right: 17,
-        bottom: 7,
+        bottom: 7
     },
     // 消费返积分
     {
         title: SALE_LABEL.k5m4q0iq,
-        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
-        signs: ['pos', 'wx', 'app'],
+        tags: ["pos", SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
+        signs: ["pos", "wx", "app"],
         isSpecial: false,
         text: SALE_LABEL.k67b4tuq,
         example: SALE_LABEL.k67cpozv,
-        key: '3020',
+        key: "3020",
         right: 13,
-        bottom: 3,
+        bottom: 3
     },
     // 积分兑换
     {
         title: SALE_LABEL.k67b2qfo,
-        tags: [SALE_LABEL.k5krn6z9, '小程序'],
-        signs: ['wx', 'app'],
+        tags: [SALE_LABEL.k5krn6z9, "小程序"],
+        signs: ["wx", "app"],
         isSpecial: true,
         text: SALE_LABEL.k67b4u32,
-        example: '',
-        key: '30',
+        example: "",
+        key: "30",
         right: 18,
-        bottom: 8,
+        bottom: 8
     },
     {
         title: SALE_LABEL.k67b2qo0,
-        tags: ['pos'],
+        tags: ["pos"],
         isSpecial: false,
         text: SALE_LABEL.k67b4ube,
         example: SALE_LABEL.k67cpp87,
-        key: '1080',
+        key: "1080",
         right: 6,
         bottom: 13,
         isOffline: true
     },
     {
         title: SALE_LABEL.k67b2qwc,
-        tags: ['pos'],
+        tags: ["pos"],
         isSpecial: false,
         text: SALE_LABEL.k67b4ujq,
         example: SALE_LABEL.k67cppgj,
-        key: '2070',
+        key: "2070",
         right: 22,
         bottom: 13,
         isOffline: true
     },
     {
-        title: '千人千面',
+        title: "千人千面",
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        text: '可根据设置条件筛选用户，推送不同的营销活动',
+        text: "可根据设置条件筛选用户，推送不同的营销活动",
         tags: [SALE_LABEL.k639vgbm],
-        signs: ['app'],
-        example: '',
-        key: '85',
+        signs: ["app"],
+        example: "",
+        key: "85",
         right: 16,
         bottom: 6,
-        isNew: new Date('2022/04/12').getTime(),
+        isNew: new Date("2022/04/12").getTime()
     },
     {
-        title: '消费送礼',
+        title: "消费送礼",
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '消费后获得奖励将使顾客下次光临的时间大大提前',
         tags: ['pos', SALE_LABEL.k639vgbm],
@@ -483,8 +496,55 @@ export const REPEAT_PROMOTION_TYPES = [
         key: '87',
         right: 16,
         bottom: 6,
-        isNew: new Date('2022/04/12').getTime(),
+        isNew: new Date("2022/04/12").getTime()
     },
+    // 积分换礼（周黑鸭）
+    {
+        title: '积分换礼',
+        tags: ['pos'],
+        signs: ['pos'],
+        isSpecial: true,
+        text: SALE_LABEL.k67b4u32,
+        example: '',
+        key: '89',
+        right: 18,
+        bottom: 8,
+    },
+    // 消费送礼（周黑鸭）
+    {
+        title: '消费送礼',
+        tags: ['pos'],
+        signs: ['pos'],
+        isSpecial: true,
+        text: SALE_LABEL.k67b4tme,
+        example: SALE_LABEL.k67cporj,
+        key: '88',
+        right: 17,
+        bottom: 7,
+    },
+    // 群发礼品（周黑鸭）
+    {
+        title: SALE_LABEL.k67b2pz0,
+        isSpecial: true,
+        text: SALE_LABEL.k67b4t5q,
+        signs: [],
+        example: '',
+        key: '90',
+        right: 3,
+        bottom: 0,
+    },
+    {
+        title: "限时秒杀",
+        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        text: "限时超低价格购买商品，吸引客户参与活动，提升顾客消费粘性",
+        tags: [SALE_LABEL.k639vgbm],
+        signs: ["app"],
+        example: "",
+        key: "95",
+        right: 16,
+        bottom: 6
+        // isNew: new Date("2022/04/12").getTime()
+    }
 ];
 
 /**
@@ -569,6 +629,8 @@ export const SALE_PROMOTION_TYPES = [
         right: 2,
         bottom: -14,
         isHot: true,
+        isZhy: true,
+        menuID: RetailMenuID, // 零售促销展示的活动
     },
     {
         title: SALE_LABEL.k67b2sac,
@@ -580,6 +642,8 @@ export const SALE_PROMOTION_TYPES = [
         key: '1010',
         right: 10,
         bottom: 0,
+        isZhy: true,
+        menuID: RetailMenuID,
     },
     {
         title: SALE_LABEL.k67b2sio,
@@ -602,6 +666,8 @@ export const SALE_PROMOTION_TYPES = [
         key: '1050',
         right: 15,
         bottom: 5,
+        isZhy: true,
+        menuID: RetailMenuID,
     },
     {
         title: SALE_LABEL.k67b3uk0,
@@ -613,6 +679,8 @@ export const SALE_PROMOTION_TYPES = [
         key: '1070',
         right: 14,
         bottom: 12,
+        isZhy: true,
+        menuID: RetailMenuID,
     },
     {
         title: SALE_LABEL.k5m5auib,
@@ -646,6 +714,8 @@ export const SALE_PROMOTION_TYPES = [
         key: '2010',
         right: 14,
         bottom: 5,
+        isZhy: true,
+        menuID: RetailMenuID,
     },
     {
         isSpecial: false,
@@ -657,6 +727,8 @@ export const SALE_PROMOTION_TYPES = [
         key: '1030',
         right: 16,
         bottom: 11,
+        isZhy: true,
+        menuID: RetailMenuID,
     },
     {
         isSpecial: false,
@@ -674,11 +746,13 @@ export const SALE_PROMOTION_TYPES = [
         title: SALE_LABEL.k67b3vpo,
         text: SALE_LABEL.k67cp3fm,
         example: SALE_LABEL.k67g7rpg,
-        tags: ['pos', '微信'],
-        signs: ['pos', 'wx'],
+        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
+        signs: ['pos', 'wx', 'app'],
         key: '1060',
         right: 0,
         bottom: 1,
+        isZhy: true,
+        menuID: RetailMenuID,
     },
     {
         isSpecial: false,
@@ -701,6 +775,8 @@ export const SALE_PROMOTION_TYPES = [
         key: '2050',
         right: 0,
         bottom: -3,
+        isZhy: true,
+        menuID: RetailMenuID,
     },
     {
         isSpecial: false,
@@ -758,6 +834,17 @@ export const SALE_PROMOTION_TYPES = [
         right: 15,
         bottom: 0,
         filter: true, // 可过滤
+    },
+    {
+        title: '配送费减免',
+        text: '外卖下单可享受配送费减免',
+        example: '',
+        tags: ['小程序'],
+        signs: ['app'],
+        key: '2090',
+        // right: 2,
+        // bottom: -14,
+        isHot: true,
     },
 ];
 

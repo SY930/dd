@@ -1,4 +1,4 @@
-import { Checkbox, Row, Col, Form, Icon, Input, Select, Radio, Button } from 'antd';
+import { Checkbox, Row, Col, Form, Icon, Input, Select, Radio, Button, Modal } from 'antd';
 import _ from "lodash";
 import { Component } from 'react';
 import { connect } from 'react-redux';
@@ -66,7 +66,6 @@ class ActivityConditions extends Component {
             let formDatas = {};
             let scoreformDatas = {};
             let cardNumformDatas = {};
-            // console.log(nextProps.eventGiftConditionList, 'nextProps.eventGiftConditionList')
             nextProps.eventGiftConditionList.forEach((item) => {
                 let { gifts = [] } = item;
                 let id = uuid++;
@@ -187,7 +186,6 @@ class ActivityConditions extends Component {
 
     onSelectBag = (item, id) => {
         const { couponForm } = this.state;
-        const form = this.conditionForms[id];
         couponForm.setFieldsValue({ couponName: item })
         this.onToggleModal();
     }
@@ -202,7 +200,7 @@ class ActivityConditions extends Component {
 
     onChangeGiftPresentType = ({ target }, id) => {
         const { value } = target;
-        const form = this.conditionForms[id]
+        const form = this.conditionForms[id];
         form.setFieldsValue({ giftPresentType: value })
         this.setState({
             flag: !this.state.flag,
@@ -298,10 +296,11 @@ class ActivityConditions extends Component {
         formItems.couponName = {
             ...formItems.couponName,
             render: (d, form) => {
-                const { giftPresentType = 1, couponName: formCouponName } = form ? form.getFieldsValue() : {};
+                const { giftPresentType = 1, couponName: formCouponName, presentType } = form ? form.getFieldsValue() : {};
                 if (giftPresentType == 1) { return null }
-                return (
-                    <FormItem>
+                if (presentType && presentType.includes(1) && giftPresentType == 4) {
+                    return (
+                        <FormItem>
                         {d({
                             rules: [{
                                 required: true,
@@ -321,14 +320,15 @@ class ActivityConditions extends Component {
 
                         )}
                     </FormItem>
-                )
+                    )
+                 }
+                return null
             },
         }
         return formItems;
     }
 
     onPlusGift = (data) => {
-        console.log('onPlusGift', data);
     }
 
     onMinusGift = (pid) => {
@@ -344,8 +344,7 @@ class ActivityConditions extends Component {
 
     renderAddGifts = (data, id) => {
         const form = this.conditionForms[id]
-        const { giftPresentType = 1 } = form ? form.getFieldsValue() : {}
-
+        const { giftPresentType = 1 } = form ? form.getFieldsValue() : {};
         if (data.presentType && data.presentType.includes(1) && giftPresentType == 1) {
             if (data && data.giftList) {
                 return <AddGifts

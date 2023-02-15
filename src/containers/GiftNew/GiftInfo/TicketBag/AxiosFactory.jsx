@@ -290,8 +290,52 @@ async function postStock(data) {
     return false;
 }
 
+/**
+ * 查看券包是否被引用
+ */
+async function httpCheckBeforeDeleteCouponPackage(data) {
+    const method = `${api}checkBeforeDeleteCouponPackage.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: {saveMoneyNameList = [], promotionEventNameList = [], quotaCardNameList = [], shopGoodNameList = []} } = response;
+    if (code === '000') {
+        if (msg == '券包已发出，发放类型为周期发放礼品的券包不可停用') {
+            return msg;
+        }
+        if (
+            saveMoneyNameList.length == 0 &&
+            promotionEventNameList.length == 0 &&
+            quotaCardNameList.length == 0 &&
+            shopGoodNameList.length == 0
+        ) {
+            return []
+        } else {
+            return [
+                {
+                    label: '储值套餐',
+                    list: saveMoneyNameList
+                },
+                {
+                    label: '营销活动',
+                    list: promotionEventNameList
+                },
+                {
+                    label: '定额卡',
+                    list: quotaCardNameList
+                },
+                {
+                    label: '商品',
+                    list: shopGoodNameList
+                }
+            ]
+        }
+    }
+    message.error(msg);
+    return false;
+}
+
 export {
     putTicketBag, getTicketList, getGroupCardTypeList, getCardTypeList, deleteTicketBag, getTicketBagInfo, getTotalList,
     postTicketBag, getPhoneValid, putSendTicket, postRefund, getSettleList, getWechatMpInfo,
-    getImgTextList, getBagBatch, getQrCodeImg, postStock
+    getImgTextList, getBagBatch, getQrCodeImg, postStock, httpCheckBeforeDeleteCouponPackage
 }

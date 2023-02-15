@@ -200,6 +200,7 @@ class GrabRedPacket extends React.Component {
                     consumeTotalAmount,
                     maxPartInPerson,
                     smsTemplate,
+                    tagLst,
                 } = formData;
                 if (smsGate != 0 && smsGate != 2) {
                     if (!accountNo) {
@@ -287,7 +288,8 @@ class GrabRedPacket extends React.Component {
                             maxPartInPerson,
                             eventName,
                             smsTemplate,
-                            shopRange
+                            shopRange,
+                            tagLst: tagLst ? tagLst.join(',') : '',
                         },
                         gifts: giftList.concat(giftList2)
                     }

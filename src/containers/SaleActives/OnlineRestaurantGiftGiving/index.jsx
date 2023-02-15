@@ -77,6 +77,7 @@ class OnlineRestaurantGiftGiving extends Component {
                     ...item,
                     giftIDNumber: item.giftID,
                     countType: item.effectType == 3 ? "1" : "0",
+                    giftEffectTimeHours: item.giftEffectTimeHours ? String(item.giftEffectTimeHours) : '',
                     rangeDate:
                         item.effectType == 2 &&
                         item.effectTime &&
@@ -86,6 +87,7 @@ class OnlineRestaurantGiftGiving extends Component {
                                   moment(item.validUntilDate, "YYYYMMDDHHmmss"),
                               ]
                             : [],
+                    effectType: item.effectType == 2 ? 2 : 1,
                 };
             }),
             timeList: timeList.length
@@ -153,6 +155,9 @@ class OnlineRestaurantGiftGiving extends Component {
         if (this.state.ruleForm) {
             this.state.ruleForm.setFieldsValue({ gifts: formData.gifts });
         }
+        if(formData.tagLst){
+            formData.tagLst = formData.tagLst.split(',');
+        }
         return formData;
     };
 
@@ -210,6 +215,7 @@ class OnlineRestaurantGiftGiving extends Component {
             countCycleDays: values.countCycleDays,
             autoRegister:
                 values.autoRegister != undefined ? values.autoRegister : 1,
+            tagLst: Array.isArray(values.tagLst) ? values.tagLst.join(',') : '',
         };
         let params = {
             event,

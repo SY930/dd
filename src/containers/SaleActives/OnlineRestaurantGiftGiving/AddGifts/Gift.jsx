@@ -25,6 +25,10 @@ export default class Gift extends Component {
             const options = value == "0" ? timeOpts : dayOpts;
             this.setState({
                 options,
+            }, () => {
+                if(this.props.formData.countType == '1') {
+                    this.form.setFieldsValue({ giftEffectTimeHours: this.props.formData.giftEffectTimeHours });
+                }
             });
             if (this.isInit) {
                 // 控制初始化，暂时处理方式

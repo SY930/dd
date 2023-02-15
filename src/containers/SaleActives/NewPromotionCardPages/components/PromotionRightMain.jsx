@@ -114,10 +114,14 @@ class PromotionRightMain extends Component {
             foodScopeList = [],
             cardLevelIDList,
             cardLevelRangeType,
-            defaultCardType
+            defaultCardType,
+            tagLst,
         } = data;
         if (orderTypeList) {
             data.orderTypeList = orderTypeList.split(',')
+        }
+        if (tagLst && !Array.isArray(tagLst)) {
+            data.tagLst = tagLst.split(',');
         }
         if (eventStartDate) {
             data.eventRange = [moment(eventStartDate), moment(eventEndDate)];
@@ -142,13 +146,21 @@ class PromotionRightMain extends Component {
                 }
             })
         }
-        if (data.hasMutexDepend) {
-            if (eventMutexDependRuleInfos && eventMutexDependRuleInfos.length > 0) {
-                data.mutexDependType = eventMutexDependRuleInfos.some(item => item.targetID == 0) ? 1 : 2;
-            }
+        if (eventMutexDependRuleInfos && eventMutexDependRuleInfos.length > 0) {
+            // 互斥开关
+            data.hasMutexDepend = eventMutexDependRuleInfos.some(item => item.ruleType == 10) ? 1 : 0;
+            data.mutexDependType = data.hasMutexDepend ? eventMutexDependRuleInfos.some(item => item.targetID == 0 && item.ruleType == 10) ? 1 : 2 : 1;
+
+            data.hasOnSaleDepend = eventMutexDependRuleInfos.some(item => item.ruleType == 20) ? 1 : 0;
+            data.onSaleDependType = data.hasOnSaleDepend ? eventMutexDependRuleInfos.some(item => item.targetID == 0 && item.ruleType == 20) ? 1 : 2 : 1;
+
+            data.hasBenefitsDepend = eventMutexDependRuleInfos.some(item => [31, 32].includes(item.ruleType)) ? 1 : 0;
+
+            data.hasAssetsDepend = eventMutexDependRuleInfos.some(item => [33, 34].includes(item.ruleType)) ? 1 : 0;
         }
+        // 互斥配置
         if (data.mutexDependType == 2) {
-            data.NoShareBenifit = eventMutexDependRuleInfos.map(item => {
+            data.NoShareBenifit = eventMutexDependRuleInfos.filter(item => item.ruleType == 10).map(item => {
                 return {
                     promotionIDStr: item.targetID,
                     sharedType: item.ruleType,
@@ -156,6 +168,16 @@ class PromotionRightMain extends Component {
                 }
             });
         }
+        if (data.onSaleDependType == 2) {
+            data.onSaleNoShareBenifit = eventMutexDependRuleInfos.filter(item => item.ruleType == 20).map(item => (item.targetID));
+        }
+        if (data.hasBenefitsDepend) {
+            data.benefitsOptions = eventMutexDependRuleInfos.filter(item => [31, 32].includes(item.ruleType)).map(item => (item.ruleType));
+        }
+        if (data.hasAssetsDepend) {
+            data.assetsOptions = eventMutexDependRuleInfos.filter(item => [33, 34].includes(item.ruleType)).map(item => (item.ruleType));
+        }
+
         if (cardLevelRangeType == 2) { // 会员等级
             data.cardScopeType = {
                 cardLevelIDList,
@@ -272,7 +294,7 @@ class PromotionRightMain extends Component {
                 const { hasMutexDepend } = getFieldsValue();
                 return (
                     <Row>
-                        <Col offset={5}>
+                        <Col offset={6}>
                             {
                                 hasMutexDepend && decorator({
                                     key: 'mutexDependType',
@@ -302,7 +324,7 @@ class PromotionRightMain extends Component {
                     <Row>
                         <Col span={24}>
                             {
-                                hasMutexDepend && mutexDependType == 2 && <FormItem label='不共享优惠' style={{ display: 'flex' }} className={styles.NoShareBenifit}>
+                                !!hasMutexDepend && mutexDependType == 2 && <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 17, offset: 1 }} label='不共享优惠' style={{ display: 'flex' }} className={styles.NoShareBenifit}>
                                     {
                                         hasMutexDepend &&
                                         decorator({
@@ -531,6 +553,10 @@ class PromotionRightMain extends Component {
         } else if (key == 'shopIDList') {
             setFieldsValue({
                 shopIDList: value
+            })
+        }else if(key == 'tagLst'){
+            setFieldsValue({
+                tagLst: value
             })
         }
     }
