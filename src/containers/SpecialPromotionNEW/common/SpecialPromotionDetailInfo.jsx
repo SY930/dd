@@ -408,6 +408,28 @@ class SpecialDetailInfo extends Component {
             const shareTitle = "送您一份心意，共享美食优惠！";
             const shareTitlePL = shareTitle;
             const shareSubtitlePL = "选填，请输入副标题";
+            
+            const b = this.props.specialPromotion.get("$giftInfo").toJS();
+            const { giftTotalCount, stockType } = b[0] || [{}];
+            let { freeGetLimit } = this.state;
+            if(giftTotalCount){
+                if(stockType == 1){
+                    if(giftTotalCount == 2147483647){
+                        freeGetLimit = '0';
+                    }
+                    if(giftTotalCount != 2147483647){
+                        freeGetLimit = '1';
+                    }
+                }
+                if(stockType == 2){
+                    freeGetLimit = '2'
+                }
+                this.setState({
+                    freeGetLimit
+                })
+            }
+
+
             if (this.props.isNew) {
                 this.setState({ shareTitle });
             }
@@ -772,8 +794,8 @@ class SpecialDetailInfo extends Component {
     componentWillReceiveProps(np) {
         if (!this.props.isNew) {
             const b = np.specialPromotion.get("$giftInfo").toJS();
-            const { presentType = "", giftID, giftTotalCount } = b[0] || [{}];
-            const { freeGetLimit, couponPackageInfos = [] } = this.state;
+            const { presentType = "", giftID, giftTotalCount, stockType } = b[0] || [{}];
+            let { freeGetLimit, couponPackageInfos = [] } = this.state;
             if (this.props.type == "30" && presentType === 4 && this.__bagFlag__ && couponPackageInfos.length) {
                 const bag = (couponPackageInfos || []).filter(
                     (x) => x.couponPackageID === giftID
@@ -784,17 +806,6 @@ class SpecialDetailInfo extends Component {
                     bag,
                     giftTotalCountBag: giftTotalCount == '0' ? '不限制' : giftTotalCount
                 });
-            }
-            if (
-                this.props.type == "21" &&
-                giftTotalCount &&
-                freeGetLimit == "0"
-            ) {
-                if (giftTotalCount !== 2147483647) {
-                    this.setState({
-                        freeGetLimit: "1",
-                    });
-                }
             }
         }
         if(this.props.type == 69 && this.props.isNew) {
@@ -1416,7 +1427,7 @@ class SpecialDetailInfo extends Component {
 
     handleSubmitOld = (isPrev) => {
         if (isPrev) return true;
-        const { type } = this.props;
+        const { type, userCount } = this.props;
         let giftTotalCount = "";
         let giftTotalCopies = "";
         let flag = true;
@@ -1458,6 +1469,7 @@ class SpecialDetailInfo extends Component {
             giftGetRule,
             perfectReturnGiftCheckBoxStatus,
             upGradeReturnGiftCheckBoxStatus,
+            freeGetLimit,
             ...instantDiscountState
         } = this.state;
 
@@ -1820,9 +1832,15 @@ class SpecialDetailInfo extends Component {
             );
 
             if (type == "21" && giftTotalCount) {
+                if(freeGetLimit == 1 && giftTotalCopies != 2147483647 && giftTotalCopies < userCount){
+                    message.warning("礼品份数不能小于活动已发出次数");
+                    this.props.form.validateFields(['giftTotalCopies']);
+                    return 
+                }
                 giftInfo.forEach((v) => {
                     v.giftTotalCount = giftTotalCount;
                     v.giftTotalCopies = giftTotalCopies;
+                    v.stockType = freeGetLimit == 2 ? 2 : 1;
                 });
             }
             let giftIdsArr = [];
@@ -1837,7 +1855,7 @@ class SpecialDetailInfo extends Component {
             this.props.setSpecialGiftInfo(giftInfo);//发起action
             //H5领券
             if (["69"].includes(type)) {
-                const { approvalInfo, userCount } = this.state;
+                const { approvalInfo } = this.state;
                 if(!approvalInfo.activityCost || !approvalInfo.activityRate || !approvalInfo.estimatedSales || !approvalInfo.auditRemark) {
                     return;
                 }
@@ -4790,6 +4808,7 @@ function mapStateToProps(state) {
         rightPackageList: state.sale_mySpecialActivities_NEW.get('$rightPackageList').toJS(),
         rightCardList: state.sale_mySpecialActivities_NEW.get('$rightCardList').toJS(),
         disabled: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']) > 0,
+        userCount: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']),
         isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
     }
 }

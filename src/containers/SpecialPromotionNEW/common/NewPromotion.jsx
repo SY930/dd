@@ -308,7 +308,6 @@ export default class NewPromotion extends React.Component {
     }
 
     handleCancel(cb, index) {
-        console.log(99999999)
         this.props.callbacktwo(3);
         // this.props.clear();
     }
