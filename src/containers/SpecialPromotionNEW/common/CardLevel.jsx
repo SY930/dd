@@ -14,15 +14,17 @@ import { Form, Select, Radio, TreeSelect, Icon, Col } from "antd";
 import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterGetExcludeCardLevelIds,
+    getGroupCRMCustomAmount,
 } from "../../../redux/actions/saleCenterNEW/specialPromotion.action";
 import styles from "../../SaleCenterNEW/ActivityPage.less";
 import { fetchPromotionScopeInfo } from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
-import { fetchSpecialCardLevel } from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
+import { fetchSpecialCardLevel, queryGroupMembersList } from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
 import ExcludeCardTable from "./ExcludeCardTable";
 import { injectIntl } from "i18n/common/injectDecorator";
 import { STRING_SPE } from "i18n/common/special";
 import { isEditPromotionCode } from "../../../constants/promotionEditCode";
 import _ from 'lodash';
+import { axiosData } from '../../../helpers/util'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -42,12 +44,15 @@ class CardLevel extends React.Component {
         this.state = {
             cardInfo: [],
             cardLevelIDList: [],
+            memberGroup: [],//会员群体
             getExcludeCardLevelIds: [], // 不同的活动，可能是卡类，可能是卡等级
             getExcludeCardLevelIdsStatus: false,
             tableDisplay: false,
             cardLevelRangeType: "0",
             allCheckDisabel: false,
             defaultCardType: "",
+            customerRangeConditionIDs: [],
+            groupMembersID: ''
         };
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRadioChange = this.handleRadioChange.bind(this);
@@ -64,6 +69,15 @@ class CardLevel extends React.Component {
         this.props.fetchSpecialCardLevel({
             data: opts,
         });
+        this.props.queryGroupMembersList({
+            _groupID: user.accountInfo.groupID, // 集团id
+            pageNo: 1,
+            pageSize: 2000,
+        });
+        if (!this.props.specialPromotion.get('customerCount')) {
+            this.props.getGroupCRMCustomAmount()
+        }
+        this.queryTagData();
         const cardLevelRangeType = this.props.cardLevelRangeType;
         const thisEventInfo = this.props.specialPromotion
             .get("$eventInfo")
@@ -115,6 +129,72 @@ class CardLevel extends React.Component {
                 }
             );
         }
+        if(this.props.type == '21') {
+            this.setState({
+                groupMembersID: thisEventInfo.cardGroupID,
+                customerRangeConditionIDs: thisEventInfo.customerRangeConditionIDs,
+            })
+        }
+    }
+     //获取标签树
+     queryTagData = () => {
+        const params = {
+            groupID: this.props.user.accountInfo.groupID,
+            tagTypeIDs: '1,2,3,4,5'
+        }
+        axiosData(
+            '/tag/tagService_queryAllTagsByTagTypeID.ajax',
+            params,
+            {},
+            { path: '' }
+        ).then((res) => {
+            if (res.code === '000') {
+                const filters = this.orgCateData(res.data.tagTypes, res.data.tagRuleDetails)
+                this.setState({
+                    filters,
+                })
+            } else {
+                message.error(res.message)
+            }
+        })
+    }
+    orgCateData = (arr = [], details = []) => {
+        arr = arr.filter((item)=>{
+            return item.categoryEntries && item.categoryEntries.length > 0
+        })
+        return arr.map((item, index) => {
+            return {
+                ...item,
+                label: item.tagTypeName,
+                key: item.tagTypeID,
+                value: item.tagTypeID,
+                children: item.categoryEntries.map((every) => {
+                    return {
+                        ...every,
+                        key: every.tagCategoryID,
+                        value: every.tagCategoryID,
+                        label: every.tagCategoryName,
+                        children: this.getChildren(every.tagRuleIDs, details)
+                    }
+                }),
+            }
+        })
+    }
+
+    getChildren(tags, details) {
+        let child = []
+        tags && tags.length > 0 && tags.map((i) => {
+            details.map((j) => {
+                if (j.tagRuleID == i) {
+                    child.push({
+                        key: j.tagRuleID,
+                        value: j.tagRuleID,
+                        label: j.tagName,
+                    })
+                }
+            })
+        })
+        return child
     }
 
     componentWillReceiveProps(nextProps) {
@@ -257,6 +337,20 @@ class CardLevel extends React.Component {
                 fun();
             }
         }
+        if(this.props.type == '21') {
+            // 获取会员群体
+            if (nextProps.mySpecialActivities.$groupMembers) {
+                if (nextProps.mySpecialActivities.$groupMembers.groupMembersList instanceof Array && nextProps.mySpecialActivities.$groupMembers.groupMembersList.length > 0) {
+                    this.setState({
+                        memberGroup: nextProps.mySpecialActivities.$groupMembers.groupMembersList,
+                    })
+                } else {
+                    this.setState({
+                        memberGroup: [],
+                    })
+                }
+            }
+        }
     }
     handleSelectChange(value) {
         let { cardInfo = [], defaultCardType = "" } = this.state;
@@ -294,13 +388,16 @@ class CardLevel extends React.Component {
             });
     }
     handleRadioChange(e) {
+        this.setState({ cardLevelRangeType: e.target.value })
+        this.props.onChange && this.props.onChange({ cardLevelRangeType: e.target.value });
         const opts = {
-            cardLevelRangeType: e.target.value,
             cardLevelIDList: [],
             defaultCardType: "",
         };
-        this.setState(opts);
-        this.props.onChange && this.props.onChange(opts);
+        if(e.target.value == '0' || e.target.value == '2') {
+            this.setState(opts);
+            this.props.onChange && this.props.onChange(opts);
+        }
     }
     handleDefaultCardTypeChange = (value) => {
         this.setState({ defaultCardType: value });
@@ -314,9 +411,8 @@ class CardLevel extends React.Component {
             defaultCardType = "",
         } = this.state;
         const DefaultCardTypes =
-            cardLevelRangeType == 0
-                ? cardInfo
-                : cardInfo.filter((cat) => {
+            cardLevelRangeType == 2
+                ? cardInfo.filter((cat) => {
                     // 若当前卡类的cardTypeLevelList的ids和用户已选的cardLevelIDList有交集，就返回该新用户注册卡类
                     const thisCatIds = cat.cardTypeLevelList.map(
                         (card) => card.cardLevelID
@@ -324,7 +420,7 @@ class CardLevel extends React.Component {
                     return (
                         _.intersection(thisCatIds, cardLevelIDList).length > 0
                     );
-                });
+                }) : cardInfo;
         return (
             <FormItem
                 validateStatus={defaultCardType ? "success" : "error"}
@@ -369,10 +465,37 @@ class CardLevel extends React.Component {
             </FormItem>
         );
     };
+    //会员群体
+    renderOptions = () => {
+        const memberGroup = this.state.memberGroup;
+        const options = [];
+        memberGroup.map((groupMembers, index) => {
+            options.push(
+                <Option key={groupMembers.groupMembersID} value={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【共${groupMembers.totalMembers}人】`}</Option>
+            )
+        });
+        return options;
+    }
     render() {
         const { getFieldDecorator } = this.props.form;
         const { cardInfo = [], defaultCardType } = this.state;
         let getExcludeCardLevelIds = [];
+        const totalCustomerCount = this.props.specialPromotion.get('customerCount');
+        const labelProps1 = {
+            treeData: this.state.filters,
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+            searchPlaceholder: '请选择会员标签',
+            multiple: true,
+            onChange: (e) => { this.setState({ customerRangeConditionIDs: e }) },
+            style: {
+                width: 472, 
+                maxHeight:96,
+                overflow:'auto',
+                borderRadius:'3px'
+            },
+            dropdownStyle: { maxHeight: 275, overflow: 'auto' },
+        };
         if (this.props.type == "52") {
             getExcludeCardLevelIds = this.props.getExcludeCardLevelIds;
         } else {
@@ -478,9 +601,52 @@ class CardLevel extends React.Component {
                                         STRING_SPE.d170093144c11061
                                     )}`}
                             </Radio>
+                            {this.props.type == "21" ? <Radio key={"3"} value={"3"}>会员群体</Radio> : null}
+                            {this.props.type == "21" ? <Radio key={"4"} value={"4"}>会员标签</Radio> : null}
                         </RadioGroup>
                     </FormItem>
                 ) : null}
+                {
+                    this.state.cardLevelRangeType == "3" ? (
+                        <FormItem label={"会员群体"} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }} className={styles.FormItemStyle}>
+                            {getFieldDecorator('groupMembersID', {
+                                rules: [{
+                                    required: true,
+                                    message: `请选择会员群体`,
+                                }],
+                                initialValue: this.state.groupMembersID
+                            })(
+                                <Select
+                                    showSearch
+                                    notFoundContent={`未搜索到结果`}
+                                    onChange={(e) => { this.setState({ groupMembersID: e.target.value }) }}
+                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                    style={{ width: '100%' }}
+                                    placeholder='请选择会员群体'
+                                    getPopupContainer={(node) => node.parentNode}
+                                >
+                                    <Option key={'0'}>{totalCustomerCount ? `全部会员【共${totalCustomerCount}】人` : `全部会员`}</Option>
+                                    {this.renderOptions()}
+                                </Select>
+                            )}
+                        </FormItem>
+                    ) : null
+                }
+                {
+                    this.state.cardLevelRangeType == "4" ? (
+                        <FormItem label={"会员标签"} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }} className={styles.FormItemStyle}>
+                            {getFieldDecorator('customerRangeConditionIDs', {
+                                rules: [{
+                                    required: true,
+                                    message: `请选择会员标签`,
+                                }],
+                                initialValue: this.state.customerRangeConditionIDs
+                            })(
+                                <TreeSelect {...labelProps1} className={styles.treeSelect}/>
+                            )}
+                        </FormItem>
+                    ) : null
+                }
                 {this.props.type == "61" ||
                     this.state.cardLevelRangeType == "2" ? (
                     <FormItem
@@ -588,6 +754,7 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
+        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
         groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn([
             "$specialDetailInfo",
             "data",
@@ -613,6 +780,10 @@ const mapDispatchToProps = (dispatch) => {
         saleCenterGetExcludeCardLevelIds: (opts) => {
             dispatch(saleCenterGetExcludeCardLevelIds(opts));
         },
+        queryGroupMembersList: (opts) => {
+            dispatch(queryGroupMembersList(opts));
+        },
+        getGroupCRMCustomAmount: opts => dispatch(getGroupCRMCustomAmount(opts)),
     };
 };
 
