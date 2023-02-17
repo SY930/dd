@@ -429,29 +429,29 @@ export const REPEAT_PROMOTION_TYPES = [
         bottom: 6
     },
     // 消费返礼品
-    {
-        title: SALE_LABEL.k5m4q0ae,
-        tags: ["pos", SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
-        signs: ["pos", "wx", "app"],
-        isSpecial: false,
-        text: SALE_LABEL.k67b4tme,
-        example: SALE_LABEL.k67cporj,
-        key: "3010",
-        right: 17,
-        bottom: 7
-    },
+    // {
+    //     title: SALE_LABEL.k5m4q0ae,
+    //     tags: ["pos", SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
+    //     signs: ["pos", "wx", "app"],
+    //     isSpecial: false,
+    //     text: SALE_LABEL.k67b4tme,
+    //     example: SALE_LABEL.k67cporj,
+    //     key: "3010",
+    //     right: 17,
+    //     bottom: 7
+    // },
     // 消费返积分
-    {
-        title: SALE_LABEL.k5m4q0iq,
-        tags: ["pos", SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
-        signs: ["pos", "wx", "app"],
-        isSpecial: false,
-        text: SALE_LABEL.k67b4tuq,
-        example: SALE_LABEL.k67cpozv,
-        key: "3020",
-        right: 13,
-        bottom: 3
-    },
+    // {
+    //     title: SALE_LABEL.k5m4q0iq,
+    //     tags: ["pos", SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
+    //     signs: ["pos", "wx", "app"],
+    //     isSpecial: false,
+    //     text: SALE_LABEL.k67b4tuq,
+    //     example: SALE_LABEL.k67cpozv,
+    //     key: "3020",
+    //     right: 13,
+    //     bottom: 3
+    // },
     // 积分兑换
     {
         title: SALE_LABEL.k67b2qfo,
