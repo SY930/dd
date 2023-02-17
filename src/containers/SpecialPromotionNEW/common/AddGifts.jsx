@@ -353,14 +353,16 @@ class AddGifts extends React.Component {
             <div className={[selfStyle.listWrapper, isAttached ? selfStyle.isAttached : ''].join(' ')}>
                 {this.renderItems()}
                 { // 膨胀大礼包固定3档礼品，不可添加, 免费领取固定1个礼品，不可添加
-                    (this.state.infos.length < 10 && type != '66' && type != '30' && this.state.maxCount > 1 && theme !== 'green') && (
+                    //开卡赠送活动(52)礼品档位增加至12个  20230301迭代
+                    (this.state.infos.length < (type == '52' ? 12 : 10) && type != '66' && type != '30' && this.state.maxCount > 1 && theme !== 'green') && (
                         <div className={selfStyle.addLink} onClick={this.add}>
                             + {this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n936298)}
                         </div>
                     )
                 }
                 {
-                    (this.state.infos.length < 10 && type != '66' && type != '30' && this.state.maxCount > 1 && theme === 'green') && (
+                    //开卡赠送活动(52)礼品档位增加至12个  20230301迭代
+                    (this.state.infos.length < (type == '52' ? 12 : 10) && type != '66' && type != '30' && this.state.maxCount > 1 && theme === 'green') && (
                         <Button style={{ display: 'flex', alignItems: 'center', color: 'rgba(0, 0, 0, 0.65)' }} className={selfStyle.addLink} onClick={this.add}>
                             <Icon type="plus" />点击添加礼品
                         </Button>
