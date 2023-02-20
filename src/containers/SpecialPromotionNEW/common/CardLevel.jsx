@@ -601,13 +601,13 @@ class CardLevel extends React.Component {
                                         STRING_SPE.d170093144c11061
                                     )}`}
                             </Radio>
-                            {this.props.type == "21" ? <Radio key={"3"} value={"3"}>会员群体</Radio> : null}
-                            {this.props.type == "21" ? <Radio key={"4"} value={"4"}>会员标签</Radio> : null}
+                            {this.props.type == "21" ? <Radio key={"5"} value={"5"}>会员群体</Radio> : null}
+                            {this.props.type == "21" ? <Radio key={"7"} value={"7"}>会员标签</Radio> : null}
                         </RadioGroup>
                     </FormItem>
                 ) : null}
                 {
-                    this.state.cardLevelRangeType == "3" ? (
+                    this.state.cardLevelRangeType == "5" ? (
                         <FormItem label={"会员群体"} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }} className={styles.FormItemStyle}>
                             {getFieldDecorator('groupMembersID', {
                                 rules: [{
@@ -619,7 +619,7 @@ class CardLevel extends React.Component {
                                 <Select
                                     showSearch
                                     notFoundContent={`未搜索到结果`}
-                                    onChange={(e) => { this.setState({ groupMembersID: e.target.value }) }}
+                                    onChange={(e) => { this.setState({ groupMembersID: e }) }}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                     style={{ width: '100%' }}
                                     placeholder='请选择会员群体'
@@ -633,7 +633,7 @@ class CardLevel extends React.Component {
                     ) : null
                 }
                 {
-                    this.state.cardLevelRangeType == "4" ? (
+                    this.state.cardLevelRangeType == "7" ? (
                         <FormItem label={"会员标签"} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }} className={styles.FormItemStyle}>
                             {getFieldDecorator('customerRangeConditionIDs', {
                                 rules: [{

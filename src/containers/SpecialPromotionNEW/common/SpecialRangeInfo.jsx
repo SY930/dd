@@ -81,7 +81,6 @@ class SpecialRangeInfo extends React.Component {
                 type: 'shop', //shop | area
             },
             orgs: [],
-            memberGroup: [],
         };
 
         this.handlePrev = this.handlePrev.bind(this);
@@ -246,22 +245,6 @@ class SpecialRangeInfo extends React.Component {
     handlePrev() {
         return this.handleSubmit(true)
     }
-    componentWillReceiveProps(nextProps) {
-        if(this.props.type == '21') {
-            // 获取会员群体
-            if (nextProps.mySpecialActivities.$groupMembers) {
-                if (nextProps.mySpecialActivities.$groupMembers.groupMembersList instanceof Array && nextProps.mySpecialActivities.$groupMembers.groupMembersList.length > 0) {
-                    this.setState({
-                        memberGroup: nextProps.mySpecialActivities.$groupMembers.groupMembersList,
-                    })
-                } else {
-                    this.setState({
-                        memberGroup: [],
-                    })
-                }
-            }
-        }
-    }
     handleSubmit(isPrev) {
         let nextFlag = true;
         let formValues = {}
@@ -319,20 +302,9 @@ class SpecialRangeInfo extends React.Component {
         };
         const { groupMembersID, customerRangeConditionIDs } = formValues
         if(this.props.type == '21') {
-            if(this.state.cardLevelRangeType == '3') {
-                let groupMembers = {};
-                this.state.memberGroup.map((info, index) => {
-                    if (groupMembersID == info.groupMembersID) {
-                        groupMembers = info;
-                    }
-                })
-                opts = Object.assign(opts, {
-                    cardGroupID: groupMembersID || '0',
-                    cardGroupName: groupMembers.groupMembersName,
-                    cardCount: groupMembers.totalMembers,
-                    cardGroupRemark: groupMembers.groupMembersRemark,     
-                })
-            } else if(this.state.cardLevelRangeType == '4') {
+            if(this.state.cardLevelRangeType == '5') {
+                opts.cardGroupID = groupMembersID
+            } else if(this.state.cardLevelRangeType == '7') {
                 opts.customerRangeConditionIDs = customerRangeConditionIDs
             }
         }
@@ -1286,7 +1258,6 @@ const mapStateToProps = (state) => {
         queryCanUseShopStatus: state.sale_specialPromotion_NEW.getIn(['addStatus', 'availableShopQueryStatus']),
         specialPromotionInfo: state.sale_specialPromotion_NEW,
         isUpdate:state.sale_myActivities_NEW.get('isUpdate'),
-        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
     }
 };
 
