@@ -149,12 +149,12 @@ export default class PrizeContent extends React.Component {
     }
     // 相对有效期 OR 固定有效期
     renderValidOptions = (info, index) => {
-        const { handleGiftValidDaysChange, handleDependTypeChange, handleGiftEffectiveTimeChange, handleRangePickerChange } = this.props;
-        const a = info.giveCoupon.value.giftValidDays.value
+        const { handleGiftValidDaysChange, handleDependTypeChange, handleGiftEffectiveTimeChange, handleRangePickerChange, handleWeekEffectTypeeChange } = this.props;
+        const a = info.giveCoupon.value.giftValidDays.value;
         if (info.giveCoupon.value.effectType != '2') {
             return (
                 <div>
-                    <FormItem
+                    { ['1','3'].includes(info.giveCoupon.value.dependType) ? <FormItem
                         // wrapperCol={{ span: 12 }}
                         className={style.FormItemSecondStyle}
                         validateStatus={info.giveCoupon.value.giftValidDays.validateStatus}
@@ -170,7 +170,7 @@ export default class PrizeContent extends React.Component {
                             value={{ number: info.giveCoupon.value.giftValidDays.value }}
                             onChange={(val) => { handleGiftValidDaysChange(val, index); }}
                         />
-                    </FormItem>
+                    </FormItem> : null }
                     <FormItem
                         // wrapperCol={{ span: 12 }}
                         className={style.FormItemSecondStyle}
@@ -183,30 +183,48 @@ export default class PrizeContent extends React.Component {
                         <Select
                             className={style.LittleSelect}
                             size="default"
-                            value={info.giveCoupon.value.dependType == '1' ? '1' : '3'}
+                            value={`${info.giveCoupon.value.dependType}`}
                             onChange={(val) => { handleDependTypeChange(val, index); }}
                         >
                             <Option value='1' key={1}>{this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n925113)}</Option>
                             <Option value='3' key={3}>{this.props.intl.formatMessage(STRING_SPE.d1e04rqggt261)}</Option>
+                            <Option value='4' key={4}>按周期</Option>
                         </Select>
-                        <Select
-                            size="default"
-                            className={style.middleSelect}
-                            value={
-                                typeof info.giveCoupon.value.giftEffectiveTime.value === 'object' ?
-                                    '0' :
-                                    `${info.giveCoupon.value.giftEffectiveTime.value}`
-                            }
-                            onChange={(val) => { handleGiftEffectiveTimeChange(val, index) }}
-                            getPopupContainer={(node) => node.parentNode}
-                        >
-                            {
-                                (info.giveCoupon.value.dependType == '1' ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)
-                                    .map((item, index) => {
-                                        return (<Option value={item.value} key={index}>{item.label}</Option>);
+                        {info.giveCoupon.value.dependType == '4' ? (
+                            // 周期
+                            <RadioGroup
+                                value={`${info.giveCoupon.value.effectType}`}
+                                onChange={e => {
+                                    handleWeekEffectTypeeChange(e.target.value, index)
+                                }}
+                            >
+                                {
+                                    [{ value: '4', label: '当周有效' }, { value: '5', label: '当月有效' }].map((item, index) => {
+                                        return <Radio value={item.value} key={index}>{item.label}</Radio>
                                     })
-                            }
-                        </Select>
+                                }
+                            </RadioGroup>
+                        ) : (
+                            <Select
+                                size="default"
+                                className={style.middleSelect}
+                                value={
+                                    typeof info.giveCoupon.value.giftEffectiveTime.value === 'object' ?
+                                        '0' :
+                                        `${info.giveCoupon.value.giftEffectiveTime.value}`
+                                }
+                                onChange={(val) => { handleGiftEffectiveTimeChange(val, index) }}
+                                getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    (info.giveCoupon.value.dependType == '1' ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)
+                                        .map((item, index) => {
+                                            return (<Option value={item.value} key={index}>{item.label}</Option>);
+                                        })
+                                }
+                            </Select>
+                        )}
+
                     </FormItem>
                 </div>
             );

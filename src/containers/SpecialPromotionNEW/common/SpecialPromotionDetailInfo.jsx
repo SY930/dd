@@ -1278,7 +1278,7 @@ class SpecialDetailInfo extends Component {
     getGiftInfo = (data) => {
         const giftArr = data.map((giftInfo, index) => {
             let gifts;
-            if(giftInfo.effectType == '99' || giftInfo.effectType == '4' || giftInfo.effectType == '5'){
+            if((giftInfo.effectType == '99' || giftInfo.effectType == '4' || giftInfo.effectType == '5') && this.props.type == '53'){
                 gifts = {
                     effectType: giftInfo.weekEffectType || '4',
                     giftID: giftInfo.giftInfo.giftItemID,

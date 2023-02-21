@@ -100,6 +100,16 @@ const formKeys2 = [
     "effectType",
     "rangeDate",
 ];
+
+const formKeys3 = [
+    "giftID",
+    "giftIDNumber",
+    "giftCount",
+    "effectType",
+    "countType",
+    "weekEffectType"
+]
+
 const formItems = {
     giftID: {
         type: "custom",
@@ -150,6 +160,7 @@ const formItems = {
         options: [
             { label: "按小时", value: "0" },
             { label: "按天", value: "1" },
+            { label: "按周期", value: '4' },
         ],
     },
     giftEffectTimeHours: {
@@ -182,6 +193,16 @@ const formItems = {
         label: "固定有效期",
         rules: ["required"],
     },
+    weekEffectType: {
+        // 接口定义有坑，选择相对有效期按小时的时候，对应的是effectType值为3
+        type: "radio",
+        label: "相对有效期",
+        defaultValue: "4",
+        options: [
+            { label: "当周有效", value: "4" },
+            { label: "当月有效", value: "5" },
+        ],
+    },
 };
 
 export {
@@ -191,6 +212,7 @@ export {
     formKeys2,
     timeOpts,
     dayOpts,
+    formKeys3,
 };
 
 export const initVal = {
