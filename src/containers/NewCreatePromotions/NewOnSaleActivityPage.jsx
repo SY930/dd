@@ -60,8 +60,6 @@ import {
     specialPromotionBasicDataAdapter,
 } from '../../redux/actions/saleCenterNEW/types';
 
-
-const CONTAIN_GROUPID_SHOW = ['317964', '189702']; // 拼团秒杀只针对茶百道显示
 const REDUCE_SHIPPING_GROUPID = ['11157', '189702', '89447', '28007'] // 配送费减免仅针对白名单集团开发
 
 
@@ -91,6 +89,8 @@ class NewOnSaleActivityPage extends Component {
         ifJumpSelfDefine: false,
         currentPlatformIndex: 0,
         sceneMap: {0: '', 1: 'app', 2: 'pos', 3: 'wx'},
+        isUseSeckillWhiteList: false,
+        isDeliveryReduceWhiteList: false
     }
 
     componentDidMount() {
@@ -98,6 +98,16 @@ class NewOnSaleActivityPage extends Component {
         this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' }).then((res) => {
             this.setState({ authLicenseData: res })
         });
+        checkAcessWhiteList("use_seckill").then((bool) => {// 拼团秒杀只针对茶百道显示
+            this.setState({
+                isUseSeckillWhiteList: bool
+            })
+        })
+        checkAcessWhiteList("delivery_reduce").then((bool) => {
+            this.setState({
+                isDeliveryReduceWhiteList: bool
+            })
+        })
         sensorsAutoTrack("促销活动");
     }
     componentWillReceiveProps(nextProps) {
@@ -344,16 +354,16 @@ class NewOnSaleActivityPage extends Component {
     }
 
     render() {
-        const { whiteList, v3visible, curKey, currentPlatformIndex } = this.state;
+        const { whiteList, v3visible, curKey, currentPlatformIndex, isUseSeckillWhiteList, isDeliveryReduceWhiteList } = this.state;
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
         const { intl } = this.props;
         const k6316iio = intl.formatMessage(SALE_STRING.k6316iio);
-        let salePromotionType = REDUCE_SHIPPING_GROUPID.includes(String(groupID)) ? SALE_PROMOTION_TYPES : SALE_PROMOTION_TYPES.filter(item => item.title !== '配送费减免')
+        let salePromotionType = isDeliveryReduceWhiteList ? SALE_PROMOTION_TYPES : SALE_PROMOTION_TYPES.filter(item => item.title !== '配送费减免')
         let ALL_PROMOTION_CATEGORIES = [
             {
                 title: k6316iio,
-                list: CONTAIN_GROUPID_SHOW.includes(String(groupID)) ? salePromotionType : salePromotionType.filter(item => !item.filter),
+                list: isUseSeckillWhiteList ? salePromotionType : salePromotionType.filter(item => !item.filter),
             },
         ]
         

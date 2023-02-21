@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
 import guideImg from './assets/guide.png';
 import { queryShareRuleDetail, queryShareRuleDetailList } from './AxiosFactory';
+import { checkAcessWhiteList } from '../../helpers/util';
 import { ACCOUNTLIST } from './Config';
 import { injectIntl } from './IntlDecor';
 import PromotionSelectorModal from "./PromotionSelectorModal";
@@ -128,6 +129,11 @@ class CreateShareRulesModal extends Component {
       default:
         tagsSource = []
     }
+    checkAcessWhiteList('share_rules_500').then((boolen) => {
+        this.setState({
+            isGroupWithFiveHundreds: boolen
+        })
+    })
     this.setState({
       options,
       shareGroupArrA,
@@ -527,7 +533,7 @@ class CreateShareRulesModal extends Component {
   renderInnerGroupCont() {//组内共享
     let tags = [];
     const options = this.getAllOptions();
-    const { tagsSource, groupData } = this.state;
+    const { tagsSource, groupData, isGroupWithFiveHundreds } = this.state;
     const { groupID } = this.props;
     options.forEach((item, index) => {
       if (groupData.length > 0) {
@@ -557,7 +563,7 @@ class CreateShareRulesModal extends Component {
               })}
             </Col>
           </Col>
-          <Button icon="plus" className={tagsArr.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('0')}>添加(至多添加{ACCOUNTLIST.indexOf(groupID) > -1 ? 500 : 100}个)</Button>
+          <Button icon="plus" className={tagsArr.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('0')}>添加(至多添加{isGroupWithFiveHundreds ? 500 : 100}个)</Button>
         </FormItem>
       </Col>
     )

@@ -46,7 +46,7 @@ import selfStyle from './style.less'
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
-import { axiosData } from '../../helpers/util';
+import { axiosData, checkAcessWhiteList} from '../../helpers/util';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base'
 import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
@@ -56,7 +56,6 @@ import ManyFace from '../PromotionV3/ManyFace'; // 千人千面
 import { jumpPage, closePage } from '@hualala/platform-base';
 import newPromotionCardPageConfig from '../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
 import { updateCurrentPromotionPageAC } from '../SaleActives/NewPromotionCardPages/store/action';
-import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList.js";
 import { zhouheiyaMarketingtype } from '../../constants/WhiteList'
 
 // 跳转到带装修的活动设置页面
@@ -84,6 +83,12 @@ class PromotionCreateModal extends Component {
     }
     componentDidMount() {
         this.getWhite();
+        //消费送礼白名单校验
+        checkAcessWhiteList('consume_send_gifts').then((boolen) => {
+            this.setState({
+                isConsumeWhiteList: boolen
+            })
+        })
     }
     getWhite(){
         axiosData(
@@ -362,7 +367,7 @@ class PromotionCreateModal extends Component {
     renderModalContent() {
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
-        const {whiteList, v3visible, curKey} = this.state;
+        const {whiteList, v3visible, curKey, isConsumeWhiteList} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
@@ -373,10 +378,10 @@ class PromotionCreateModal extends Component {
         const k6316i20 = intl.formatMessage(SALE_STRING.k6316i20);
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         let REPEAT_PROMOTION_TYPES_FILTER = REPEAT_PROMOTION_TYPES;
-        if (!consumeGivingWhiteList.includes(groupID)) {
+        if (!isConsumeWhiteList) {
+            console.log('1112222----')
             REPEAT_PROMOTION_TYPES_FILTER = REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '87');
         }
-
         const ALL_PROMOTION_CATEGORIES = [
             {
                 title: k6316hto,

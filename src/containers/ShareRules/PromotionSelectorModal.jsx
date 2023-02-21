@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FilterSelector from '../../components/common/FilterSelector';
 import { ACCOUNTLIST } from './Config';
+import { checkAcessWhiteList } from '../../helpers/util';
 
 export const FILTERS = [{
   name: 'basicPromotion',
@@ -59,11 +60,18 @@ class PromotionSelectorModal extends Component {
     loading: false,
     options: null,
     filters: FILTERS,
+    isGroupWithFiveHundreds: false
   }
 
   selected = this.props.defaultValue
   groupName = null;
-
+  componentDidMount(){
+    checkAcessWhiteList('share_rules_500').then((bool) => {
+        this.setState({
+            isGroupWithFiveHundreds: bool
+        })
+    })
+  }
   handleGroupNameChange = (value = {}) => {
     if (value) {
       this.groupName = value
@@ -80,7 +88,7 @@ class PromotionSelectorModal extends Component {
 
   handleOk = () => {
     const { groupID, shareRuleType } = this.props;
-    if (ACCOUNTLIST.indexOf(groupID) > -1 && shareRuleType == '0') {
+    if (isGroupWithFiveHundreds && shareRuleType == '0') {
       if (this.selected && this.selected.length > 500) {
         message.warning('最多选择500个活动')
         return

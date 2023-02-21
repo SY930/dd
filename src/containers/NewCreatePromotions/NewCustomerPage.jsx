@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import registerPage from '../../../index';
 import { NEW_SALE_BOX, SALE_CENTER_PAYHAVEGIFT } from "../../constants/entryCodes";
-import { axiosData, checkAuthLicense } from '../../helpers/util';
+import { axiosData, checkAuthLicense, checkAcessWhiteList } from '../../helpers/util';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
@@ -92,13 +92,11 @@ import { setThemeClass } from '../../utils/index'
 const activityList = [
     '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82'
 ]
-const CONTAIN_GROUPID_SHOW = ['317964', '189702']; // 拼团秒杀只针对茶百道显示
 @registerPage([NEW_SALE_BOX], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
 @injectIntl()
 class NewCustomerPage extends Component {
-
     state = {
         whiteList: [],
         basicModalVisible: false,
@@ -114,6 +112,7 @@ class NewCustomerPage extends Component {
         isJumpNew: true,
         ifJumpSetData: false,
         ifJumpSelfDefine: false,
+        isUseSeckillWhiteList: false
     }
 
     componentDidMount() {
@@ -124,6 +123,11 @@ class NewCustomerPage extends Component {
         this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' }).then((res) => {
             this.setState({ authLicenseData: res })
         });
+        checkAcessWhiteList("use_seckill").then((bool) => {
+            this.setState({
+                isUseSeckillWhiteList: bool
+            })
+        })
 
     }
     componentWillReceiveProps(nextProps) {
@@ -731,7 +735,7 @@ class NewCustomerPage extends Component {
     }
 
     render() {
-        const { whiteList, v3visible, curKey } = this.state;
+        const { whiteList, v3visible, curKey, isUseSeckillWhiteList } = this.state;
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
         const { intl } = this.props;
@@ -769,7 +773,7 @@ class NewCustomerPage extends Component {
             },
             {
                 title: k6316iio,
-                list: CONTAIN_GROUPID_SHOW.includes(String(groupID)) ? SALE_PROMOTION_TYPES : SALE_PROMOTION_TYPES.filter(item => !item.filter),
+                list:  isUseSeckillWhiteList ? SALE_PROMOTION_TYPES : SALE_PROMOTION_TYPES.filter(item => !item.filter),
             },
             {
                 title: '管家活动',
