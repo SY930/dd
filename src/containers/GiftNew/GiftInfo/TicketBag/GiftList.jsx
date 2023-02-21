@@ -46,7 +46,7 @@ class GiftList extends Component {
             dataSource: [],
             total: 0,
             expand: false,
-            tagLst: [], // 标签
+            tagLst: '', // 标签
         };
         this.setTableRef = el => this.tableRef = el;
         this.queryFroms = null;
@@ -115,7 +115,7 @@ class GiftList extends Component {
             if (err) return;
             const params = { 
                 ...values,
-                tags: this.state.tagLst,
+                tags: this.state.tagLst ? [this.state.tagLst] : undefined,
             };
             this.setState({
                 queryParams: { 
@@ -218,7 +218,7 @@ class GiftList extends Component {
             if (err) return;
             const params = {
                 ...values,
-                tags: this.state.tagLst,
+                tags: this.state.tagLst ? [this.state.tagLst] : undefined,
             };
             this.setState({
                 queryParams: { pageNo: 1, pageSize: queryParams.pageSize || 1, action, ...params },
@@ -259,7 +259,7 @@ class GiftList extends Component {
     toggleExpandState = () => {
         this.setState({
             expand: !this.state.expand,
-            tagLst: [],
+            tagLst: '',
         });
     }
 
@@ -308,7 +308,7 @@ class GiftList extends Component {
                             <Form inline>
                                 <FormItem label='标签' style={{ width: 220 }} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
                                     <Select
-                                        style={{ width: 120 }}
+                                        style={{ width: 150 }}
                                         allowClear={true}
                                         placeholder=""
                                         onChange={this.changeCategoryFormItem}
