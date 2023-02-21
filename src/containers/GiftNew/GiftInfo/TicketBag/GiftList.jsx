@@ -1,6 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Button, Table, Icon, message, Form } from 'antd';
+import { Row, Col, Button, Table, Icon, message, Form, Select } from 'antd';
 import styles from '../GiftInfo.less';
 import styles2 from '../../../SaleCenterNEW/ActivityPage.less';
 import BaseForm from '../../../../components/common/BaseForm';
@@ -35,6 +35,7 @@ class GiftList extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            phraseList: [],
             loading: false,
             exportLoading: false,
             visible: false,
@@ -53,6 +54,25 @@ class GiftList extends Component {
     componentDidMount() {
         this.onQueryList(searchDefaultPageParams);
         document.addEventListener('keydown', this.handleEnterKey);
+        this.getPhraseList()
+    }
+
+    getPhraseList = () => {
+        axiosData(
+            '/promotion/phrasePromotionService_query.ajax',
+            {
+                phraseType: '3'
+            },
+            {},
+            { path: 'data' },
+            'HTTP_SERVICE_URL_CRM'
+        ).then(res => {
+            const phraseList = res.phraseList || [];
+            this.setState({
+                phraseList
+            })
+        }).catch((error) => {
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -95,7 +115,7 @@ class GiftList extends Component {
             if (err) return;
             const params = { 
                 ...values,
-                tags: this.state.tagLst.join(','),
+                tags: this.state.tagLst,
             };
             this.setState({
                 queryParams: { 
@@ -198,7 +218,7 @@ class GiftList extends Component {
             if (err) return;
             const params = {
                 ...values,
-                tags: this.state.tagLst.join(','),
+                tags: this.state.tagLst,
             };
             this.setState({
                 queryParams: { pageNo: 1, pageSize: queryParams.pageSize || 1, action, ...params },
@@ -287,13 +307,20 @@ class GiftList extends Component {
                             this.state.expand && 
                             <Form inline>
                                 <FormItem label='标签' style={{ width: 220 }} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-                                    <CategoryFormItem 
+                                    <Select
+                                        style={{ width: 120 }}
+                                        allowClear={true}
+                                        placeholder=""
                                         onChange={this.changeCategoryFormItem}
-                                        key='tagLst'
-                                        phraseType='3'
-                                        selectedPhrases={this.state.tagLst}
-                                        hideBtn={true}
-                                    />
+                                    >
+                                        {this.state.phraseList.map((tag, index) => {
+                                            return (
+                                                <Select.Option key={`${index}`} value={`${tag.name}`}>
+                                                    {tag.name}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
                                 </FormItem>
                             </Form>
                         }
