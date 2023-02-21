@@ -140,6 +140,7 @@ class FullCutDetailInfo extends React.Component {
             ruleInfo = [{
                 start: _rule.stageAmount,
                 end: _rule.freeAmount,
+                last: _rule.freeMaxAmount,
                 validationStatus: 'success',
                 helpMsg: null,
             }];
@@ -217,6 +218,7 @@ class FullCutDetailInfo extends React.Component {
                     stageType: 1,
                     stageAmount: ruleInfo[0].start,
                     freeAmount: ruleInfo[0].end,
+                    freeMaxAmount: ruleInfo[0].last,
                 }
             }
             // save state to redux
@@ -303,6 +305,7 @@ class FullCutDetailInfo extends React.Component {
     onCustomRangeInputChange(value, index) {
         const _start = value.start;
         const _end = value.end;
+        const _last = value.last;
         let _validationStatus,
             _helpMsg;
         if (isZhouheiya(this.props.user.groupID)) {
@@ -320,6 +323,10 @@ class FullCutDetailInfo extends React.Component {
             } else {
                 _validationStatus = 'error';
                 _helpMsg = SALE_LABEL.k5gdz0vu
+            }
+            if(_last && isNaN(_last)) {
+                _validationStatus = 'error';
+                _helpMsg = '最高优惠请输入合法数字'
             }
         }
         const _tmp = this.state.ruleInfo;
@@ -347,6 +354,7 @@ class FullCutDetailInfo extends React.Component {
         _tmp[index] = {
             start: _start,
             end: _end,
+            last: _last,
             validationStatus: _validationStatus,
             helpMsg: _helpMsg,
         };
@@ -420,12 +428,16 @@ class FullCutDetailInfo extends React.Component {
             const _value = {
                 start: null,
                 end: null,
+                last: null,
             };
             if (ruleInfo.start) {
                 _value.start = ruleInfo.start;
             }
             if (ruleInfo.end) {
                 _value.end = ruleInfo.end;
+            }
+            if (ruleInfo.last) {
+                _value.last = ruleInfo.last;
             }
 
             return (
@@ -439,6 +451,8 @@ class FullCutDetailInfo extends React.Component {
                             style={{ width: '85%', marginLeft: '40px' }}
                         >
                             <CustomRangeInput
+                                promotionType={'2010'}
+                                ruleType={`${this.state.ruleType}`}
                                 addonBefore={
                                     <Select
                                         size="default"

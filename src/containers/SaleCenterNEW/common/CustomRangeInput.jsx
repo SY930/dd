@@ -28,6 +28,7 @@ class CustomRangeInput extends React.Component {
         this.state = {
             start: value ? value.start : null,
             end: value ? value.end : null,
+            last: value ? value.last : null,
             addonBefore: this.props.addonBefore || SALE_LABEL.k5nh214x,
             addonAfter: this.props.addonAfter || k5ezdbiy,
             addonAfterUnit: this.props.addonAfterUnit,
@@ -83,11 +84,62 @@ class CustomRangeInput extends React.Component {
         }
     }
 
+    onLastChange = (value) => {
+        this.setState({
+            last: value.number,
+        });
+        const onChange = this.props.onChange;
+        if (onChange) {
+            onChange(Object.assign({}, this.state, { last: value.number }));
+        }
+    }
+
     render() {
         const {
             firstInputAppend,
-            discountMode
+            discountMode,
+            promotionType,
+            ruleType,
         } = this.props
+        if(promotionType == '2010' && (ruleType == '1' || ruleType == '4')) {
+            return (
+                <Row className={styles.rightInput} gutter={6} style={{ display: 'flex', alignItems: 'center' }}>
+                    <Col span={12}>
+                        <PriceInput
+                            disabled={this.props.disabled}
+                            addonBefore={this.state.addonBefore}
+                            placeholder={this.props.startPlaceHolder}
+                            addonAfter={this.state.addonAfter}
+                            onChange={this.onStartChange}
+                            value={{ number: this.state.start }}
+                            modal={"float"}
+                        />
+                    </Col>
+                    <Col style={{ margin: '0 5px' }}>减</Col>
+                    <Col span={4}>
+                        <PriceInput
+                            discountMode={this.props.discountMode}
+                            placeholder={this.props.endPlaceHolder}
+                            addonAfter={this.state.addonAfterUnit}
+                            onChange={this.onEndChange}
+                            value={{ number: this.state.end }}
+                            modal={"float"}
+                        />
+                    </Col>
+                    <Col style={{ margin: '0 5px' }}>最高优惠</Col>
+                    <Col span={4}>
+                        <PriceInput
+                            discountMode={this.props.discountMode}
+                            placeholder={'不填则不限制'}
+                            addonAfter={'元'}
+                            onChange={this.onLastChange}
+                            value={{ number: this.state.last }}
+                            modal={"float"}
+                        />
+                    </Col>
+                </Row>
+            )
+        }
         return (
             <Row
                 className={styles.rightInput}
