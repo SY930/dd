@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
@@ -49,6 +50,8 @@ class ConnectedScopeListSelector extends Component {
                 noDish={this.props.noDish}
                 noExclude={this.props.noExclude}
                 dishIndex={this.props.dishIndex}
+                handleChangeSubRule={this.props.handleChangeSubRule}
+                subRule={this.props.subRule}
                 scopeTip={this.props.promotionType === '2020' ? (
                     <CloseableTip content={
                         <div>

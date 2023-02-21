@@ -64,6 +64,7 @@ class DiscountDetailInfo extends React.Component {
             display: !this.props.isNew,
             maxCount: 3,
             discountFlag: true,
+            subRule: 1,
             ...this.initState(),
         };
         this.onCustomRangeInputChange = this.onCustomRangeInputChange.bind(this);
@@ -133,7 +134,8 @@ class DiscountDetailInfo extends React.Component {
             //周黑鸭需求
             countType: _rule.countType ? _rule.countType : '1',
             maxFreeLimitType: _rule.maxFreeLimitType ? _rule.maxFreeLimitType : '0',
-            maxFreeAmount: _rule.maxFreeAmount
+            maxFreeAmount: _rule.maxFreeAmount,
+            subRule: Number(_rule.subRule)
         };
     }
 
@@ -156,6 +158,16 @@ class DiscountDetailInfo extends React.Component {
                 participateType: 1
             }
         }
+    }
+
+
+    handleChangeSubRule = (e) => {
+        const { target } = e;
+        const { value } = target;
+        this.setState({
+            'subRule': value,
+        })
+
     }
 
     handleSubmit = (cbFn) => {
@@ -188,8 +200,8 @@ class DiscountDetailInfo extends React.Component {
                 requiredLst: this.state.requiredLst,
                 maxFreeLimitType: this.state.maxFreeLimitType,
                 maxFreeAmount: this.state.maxFreeAmount,
-                countType: this.state.countType
-
+                countType: this.state.countType,
+                subRule: this.state.subRule,
             };
             this.props.setPromotionDetail({
                 rule,
@@ -208,7 +220,8 @@ class DiscountDetailInfo extends React.Component {
                     requiredLst: this.state.requiredLst,
                     maxFreeLimitType: this.state.maxFreeLimitType,
                     maxFreeAmount: this.state.maxFreeAmount,
-                    countType: this.state.countType
+                    countType: this.state.countType,
+                    subRule: this.state.subRule,
                 }
                 this.props.setPromotionDetail({
                     rule,
@@ -636,6 +649,8 @@ class DiscountDetailInfo extends React.Component {
                         <ConnectedScopeListSelector
                             component={component}
                             isShopMode={this.props.isShopFoodSelectorMode}
+                            handleChangeSubRule={this.handleChangeSubRule}
+                            subRule={this.state.subRule}
                         />
                         : null}
                     {isZhouheiya(this.props.user.accountInfo.groupID) && this.state.isDishVisibleIndex !== '1' ?

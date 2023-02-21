@@ -8,6 +8,7 @@ import {
     Col,
     Tooltip,
     Popconfirm,
+    Icon,
 } from 'antd';
 import styles from '../ActivityPage.less';
 import FoodSelector from '../../../components/common/FoodSelector'
@@ -579,6 +580,23 @@ class NoThresholdDiscountFoodSelector extends Component {
                 {
                     this.state.categoryOrDish == 1 ? this.renderDishsSelectionBox() : this.renderCategorySelectionBox()
                 }
+                  <FormItem
+                    label={'配菜是否参与计算'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup value={this.props.subRule} onChange={this.props.handleChangeSubRule} defaultValue={1}>
+                        <Radio key={1} value={1}>参与</Radio>
+                        <Radio key={0} value={0}>不参与</Radio>
+                        <Tooltip title={'配菜包括配菜、子菜、做法加价等'}>
+                            <Icon
+                                type="question-circle-o"
+                                className={styles.question}
+                            />
+                        </Tooltip>
+                    </RadioGroup>
+                </FormItem>
             </div>
         );
     }
