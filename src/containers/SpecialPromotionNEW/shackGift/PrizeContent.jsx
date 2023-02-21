@@ -197,6 +197,7 @@ export default class PrizeContent extends React.Component {
                                 onChange={e => {
                                     handleWeekEffectTypeeChange(e.target.value, index)
                                 }}
+                                style={{ marginLeft: '8px' }}
                             >
                                 {
                                     [{ value: '4', label: '当周有效' }, { value: '5', label: '当月有效' }].map((item, index) => {
