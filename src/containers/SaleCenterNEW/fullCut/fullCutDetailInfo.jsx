@@ -218,7 +218,7 @@ class FullCutDetailInfo extends React.Component {
                     stageType: 1,
                     stageAmount: ruleInfo[0].start,
                     freeAmount: ruleInfo[0].end,
-                    freeMaxAmount: ruleInfo[0].last,
+                    freeMaxAmount: ruleInfo[0].last ? ruleInfo[0].last : undefined,
                 }
             }
             // save state to redux
@@ -327,6 +327,10 @@ class FullCutDetailInfo extends React.Component {
             if(_last && isNaN(_last)) {
                 _validationStatus = 'error';
                 _helpMsg = '最高优惠请输入合法数字'
+            }
+            if(_last && Number(_last) <= 0) {
+                _validationStatus = 'error';
+                _helpMsg = '最高优惠需大于0'
             }
         }
         const _tmp = this.state.ruleInfo;
@@ -448,7 +452,7 @@ class FullCutDetailInfo extends React.Component {
                             className={styles.FormItemStyle}
                             validateStatus={ruleInfo.validationStatus}
                             help={ruleInfo.helpMsg}
-                            style={{ width: '85%', marginLeft: '40px' }}
+                            style={this.state.ruleType == '2' || this.state.ruleType == '3' ? { width: '85%', marginLeft: '40px' } : { marginLeft: '40px' }}
                         >
                             <CustomRangeInput
                                 promotionType={'2010'}
