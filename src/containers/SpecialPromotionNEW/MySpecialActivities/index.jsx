@@ -337,10 +337,11 @@ class MySpecialActivities extends React.Component {
             paramsValueList: [],
             eventCode: "", //活动编码
             expand: false,//高级查询展开收起
-	    //周黑鸭新增
-	    auditStatus: '', // 审批状态
+	        //周黑鸭新增
+	        auditStatus: '', // 审批状态
             onlyModifyShop: false, //是否只能修改门店
             urlContentAllParts: '', //H5全国二维码
+            isConsumeWhiteList: false
         };
         this.cfg = {
             eventWay: [
@@ -2575,7 +2576,7 @@ class MySpecialActivities extends React.Component {
         const opts = [];
         let groupID = this.props.user.accountInfo.groupID;
         // 消费送礼白名单
-        if (!isConsumeWhiteList) {
+        if (!this.state.isConsumeWhiteList) {
             this.cfg.eventWay = this.cfg.eventWay.filter(item => item.value != '87');
         }
         this.cfg.eventWay.forEach((item, index) => {
