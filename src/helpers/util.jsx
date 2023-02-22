@@ -900,7 +900,7 @@ export const formatEventRange = (eventRange) => {
 
 //白名单校验(接口链接http://wiki.hualala.com/pages/viewpage.action?pageId=86214528)
 export function checkAcessWhiteList(param = ""){
-    axiosData(
+    return axiosData(
         '/promotion/configService_queryConfig.ajax',
         { "configKey": param },
         null,
