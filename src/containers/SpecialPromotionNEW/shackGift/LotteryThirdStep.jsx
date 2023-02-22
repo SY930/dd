@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon, Tabs, message, Form, Row, Col, Input } from 'antd';
+import { Button, Icon, Tabs, message, Form, Row, Col, Input, Switch } from 'antd';
 import PrizeContent from './PrizeContent';
 import style from './LotteryThirdStep.less'
 import { deflate } from 'zlib';
@@ -43,7 +43,7 @@ class LotteryThirdStep extends React.Component {
         const {
             infos,
         } = this.initState();
-        const {shareTitle, shareImagePath} = props.specialPromotion.$eventInfo || {}
+        const {shareTitle, shareImagePath, shareOpen } = props.specialPromotion.$eventInfo || {}
         this.state = {
             activeKey: '0',
             infos,
@@ -54,6 +54,7 @@ class LotteryThirdStep extends React.Component {
             redPackets: [],
             shareTitle: shareTitle || '',
             shareImagePath: shareImagePath || '',
+            shareOpen: !props.isNew ? (shareOpen == 1 ? true : false) : true,
             shareTitlePL: '积分浪费太可惜，快来兑好礼~'
         }
     }
@@ -1041,7 +1042,7 @@ class LotteryThirdStep extends React.Component {
 
     handleSubmit = () =>{
         const { specialPromotion, setSpecialGiftInfo, user, setSpecialBasicInfo} = this.props;
-        const { shareImagePath, shareTitle } = this.state;
+        const { shareImagePath, shareTitle, shareOpen } = this.state;
         if(this.checkEveryDataVaild()){
             const { infos } = this.state;
             infos.map((item, index) => {
@@ -1067,7 +1068,7 @@ class LotteryThirdStep extends React.Component {
                 }
             })
             setSpecialGiftInfo(tempArr);
-            setSpecialBasicInfo({ shareImagePath, shareTitle })
+            setSpecialBasicInfo({ shareImagePath, shareTitle, shareOpen: shareOpen ? 1 : 0 })
             return true;
         }
     }
@@ -1144,48 +1145,66 @@ class LotteryThirdStep extends React.Component {
 
 
     renderShareInfo = () => {
-        const { shareTitle, shareImagePath, shareTitlePL } = this.state;
+        const { shareTitle, shareImagePath, shareTitlePL, shareOpen = true } = this.state;
         return (
             <div className={style.separate}>
                 <h3 style={{ display: 'inline-block', marginLeft: 0 }}>分享设置</h3> <span>（仅支持自定义小程序分享文案和图片，H5为默认设置 ）</span>
                 <FormItem
-                    label="分享标题"
-                    // className={style.FormItemStyle}
+                    label="是否可分享"
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                   {
-                       this.props.form.getFieldDecorator('shareTitle',{
-                           rules: [{ max: 35, message: '最多35个字符'}],
-                           initialValue: shareTitle, 
-                           onChange: this.handleShareTitleChange,
-                       })( <Input placeholder={shareTitlePL} />)
-                   }
+                    <Switch
+                        checkedChildren="是"
+                        unCheckedChildren="否"
+                        defaultChecked={true}
+                        checked={shareOpen}
+                        onChange={(value) => { this.handleShareImageChangne({ key: 'shareOpen', value }) }}
+                    />
                 </FormItem>
-                <FormItem
-                    label="分享图片"
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <Row>
-                        <Col span={6} >
-                            <CropperUploader
-                                className={style.uploadCom}
-                                width={120}
-                                height={110}
-                                cropperRatio={200 / 200}
-                                limit={2048}
-                                allowedType={['image/png', 'image/jpeg']}
-                                value={shareImagePath}
-                                uploadTest='上传图片'
-                                onChange={value => this.handleShareImageChangne({key: 'shareImagePath', value})}
-                            />
-                        </Col>
-                        <Col span={18} className={style.grayFontPic} >
-                            <p style={{ position: 'relative', top: 20, left: 70, }}>小程序分享图<br />图片建议尺寸：1044*842<br />支持PNG、JPG格式，大小不超过2M</p>
-                        </Col>
-                    </Row>
-                </FormItem>
+                {
+                    shareOpen && <div>
+                        <FormItem
+                            label="分享标题"
+                            // className={style.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            {
+                                this.props.form.getFieldDecorator('shareTitle', {
+                                    rules: [{ max: 35, message: '最多35个字符' }],
+                                    initialValue: shareTitle,
+                                    onChange: this.handleShareTitleChange,
+                                })(<Input placeholder={shareTitlePL} />)
+                            }
+                        </FormItem>
+                        <FormItem
+                            label="分享图片"
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            <Row>
+                                <Col span={6} >
+                                    <CropperUploader
+                                        className={style.uploadCom}
+                                        width={120}
+                                        height={110}
+                                        cropperRatio={200 / 200}
+                                        limit={2048}
+                                        allowedType={['image/png', 'image/jpeg']}
+                                        value={shareImagePath}
+                                        uploadTest='上传图片'
+                                        onChange={value => this.handleShareImageChangne({ key: 'shareImagePath', value })}
+                                    />
+                                </Col>
+                                <Col span={18} className={style.grayFontPic} >
+                                    <p style={{ position: 'relative', top: 20, left: 70, }}>小程序分享图<br />图片建议尺寸：1044*842<br />支持PNG、JPG格式，大小不超过2M</p>
+                                </Col>
+                            </Row>
+                        </FormItem>
+                    </div>
+                }
+
             </div>
         );
     }
