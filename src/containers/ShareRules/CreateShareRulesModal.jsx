@@ -44,6 +44,7 @@ class CreateShareRulesModal extends Component {
       shareGroupArrB: {},
       selectedActivityArr: [],
       filterArr: [],//活动过滤
+      isGroupWithFiveHundreds: false
     };
     this.debouncedHandleOk = _.debounce(this.handleOk, 400)
     this.debouncedChangeRuleName = this.debouncedChangeRuleName.bind(this)
