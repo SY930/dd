@@ -208,6 +208,7 @@ class SeckillInLimitedTime extends Component {
     };
 
     onSubmit = payload => {
+        console.log(payload,'paylODA=========')
         const { itemID, isActive } = this.props;
         const { event: {eventStartDate, eventEndDate}, timeList, gifts, startTimeStr, endTimeStr} = payload;
         let startTime = null;
@@ -231,9 +232,9 @@ class SeckillInLimitedTime extends Component {
             const allData = {
                 timeList: timeList,
                 event: {
-                    ...event,
                     itemID,
-                    isActive: isActive == "0" ? 0 : 1
+                    isActive: isActive == "0" ? 0 : 1,
+                    ...payload.event,
                 },
                 gifts
             };
