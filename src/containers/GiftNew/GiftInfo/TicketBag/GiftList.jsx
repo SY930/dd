@@ -289,11 +289,11 @@ class GiftList extends Component {
                                 // onChange={(key, value) => this.handleFormChange(key, value)}
                                 />
                             </li>
-                            <li style={{display: 'flex', alignItems: 'center'}} className={styles2.categoryFormItemLi}>
+                            {/* <li style={{display: 'flex', alignItems: 'center'}} className={styles2.categoryFormItemLi}>
                                 <a style={{ margin: '0 10px' }} onClick={this.toggleExpandState}>
                                     高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
                                 </a>
-                            </li>
+                            </li> */}
                             <li>
                                 <Authority rightCode={GIFT_LIST_QUERY}>
                                     <Button type="primary" style={{ marginLeft: 10 }} onClick={() => this.onQueryList(searchDefaultPageParams)}>
