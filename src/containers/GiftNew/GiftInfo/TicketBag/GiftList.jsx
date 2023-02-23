@@ -176,7 +176,7 @@ class GiftList extends Component {
             g.createBy = g.createBy == undefined ? '--' : g.createBy;
             g.modifyBy = g.modifyBy == undefined ? '--' : g.modifyBy;
             g.operator = `${g.createBy} / ${g.modifyBy}`;
-            g.giftRule = g.giftRule.split('</br>');
+            g.giftRule = (g.giftRule || '').split('</br>');
             g.num = i + 1 + (_pageSize * (_pageNo - 1));
             g.usingTimeType = (g.usingTimeType || '').split(',');
             g.usingDateType = (g.usingDateType || '').split(',');
