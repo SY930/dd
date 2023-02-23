@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import registerPage from '../../../index';
 import { NEW_ON_SALE_ACTIVITY_BOX } from "../../constants/entryCodes";
-import { axiosData, checkAuthLicense, sensorsAutoTrack, getMenuID, isRetailMenuID } from '../../helpers/util';
+import { axiosData, checkAuthLicense, sensorsAutoTrack, getMenuID, isRetailMenuID, checkAcessWhiteList } from '../../helpers/util';
 import { COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
