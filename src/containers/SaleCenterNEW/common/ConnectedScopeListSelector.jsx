@@ -51,7 +51,9 @@ class ConnectedScopeListSelector extends Component {
                 noExclude={this.props.noExclude}
                 dishIndex={this.props.dishIndex}
                 handleChangeSubRule={this.props.handleChangeSubRule}
+                handleChangeSubRuleFoods={this.props.handleChangeSubRuleFoods}
                 subRule={this.props.subRule}
+                subRuleFoods={this.props.subRuleFoods}
                 scopeTip={this.props.promotionType === '2020' ? (
                     <CloseableTip content={
                         <div>
