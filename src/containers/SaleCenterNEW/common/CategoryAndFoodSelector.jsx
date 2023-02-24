@@ -531,7 +531,7 @@ class CategoryAndFoodSelector extends Component {
                 {
                     this.state.categoryOrDish == 1 ? this.renderDishsSelectionBox() : this.renderCategorySelectionBox()
                 }
-                 <FormItem
+                { this.props.promotionType == '2020' && <FormItem
                     label={'配菜是否参与计算'}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -547,7 +547,7 @@ class CategoryAndFoodSelector extends Component {
                             />
                         </Tooltip>
                     </RadioGroup>
-                </FormItem>
+                </FormItem>}
             </div>
         );
     }

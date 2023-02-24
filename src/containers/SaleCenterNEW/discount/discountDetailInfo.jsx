@@ -112,7 +112,6 @@ class DiscountDetailInfo extends React.Component {
         } else {
             _ruleType = _rule.stageType == '2' ? (_scopeLstLength == 0 ? '1' : '2') : '0';
         }
-        console.log("🚀 ~ file: discountDetailInfo.jsx:114 ~ DiscountDetailInfo ~ _ruleType:", _ruleType)
 
         return {
             ruleType: _ruleType,
