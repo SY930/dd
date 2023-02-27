@@ -79,6 +79,9 @@ class StepTwo extends React.Component {
             filters:[],
             selectedTags:[],
             tagIncludes:[],
+            amountType: '1', // 消费次数规则
+            consumeRuleAmountStatus: 'success', // 消费次数状态
+            consumeRuleAmountValue: '', 
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -89,6 +92,9 @@ class StepTwo extends React.Component {
         this.renderShopsOptions = this.renderShopsOptions.bind(this);
         this.editBoxForShopsChange = this.editBoxForShopsChange.bind(this);
         this.handleCountCycleDaysChange = this.handleCountCycleDaysChange.bind(this);
+        this.handleConsumeRuleAmountChange = this.handleConsumeRuleAmountChange.bind(this);
+        this.handleAmountTypeChange = this.handleAmountTypeChange.bind(this);
+
     }
 
     componentDidMount() {
@@ -157,6 +163,11 @@ class StepTwo extends React.Component {
                         },
                     }
                 }
+                addUpOpts.amountType = specialPromotion.amountType;
+                addUpOpts.consumeRuleAmount = specialPromotion.consumeRuleAmount;
+                addUpOpts.consumeRuleAmountValue = specialPromotion.consumeRuleAmount;
+                console.log('_TODO specialPromotion', specialPromotion);
+
             }
             const opts = {
                 message: specialPromotion.smsTemplate,
@@ -363,6 +374,16 @@ class StepTwo extends React.Component {
             this.props.form.setFieldsValue({ 'give': this.state.numberValue })
         });
     }
+    handleAmountTypeChange(value){
+        console.log('_TODO 1', value);
+         this.setState({
+            amountType: value,
+            consumeRuleAmountValue: 0,
+        }, () => {
+            this.props.form.setFieldsValue({ 'consumeRuleAmount': this.state.consumeRuleAmountValue })
+        });
+    }
+
     handleNumberChange(value) {
         const consumeType = this.state.consumeType;
         if (consumeType % 2 === 0) { // 消费累计金额满 每满
@@ -391,6 +412,21 @@ class StepTwo extends React.Component {
             }
         }
     }
+    handleConsumeRuleAmountChange(value){
+        console.log('_TODO value', value);
+        let pattern = /^((([1-9]\d{0,4}))(\.\d{0,2})?$)|(0\.\d{0,2}?$)/;
+        if (pattern.test(value.number) || value.number == 0) {
+            this.setState({
+                consumeRuleAmountStatus: 'success',
+                consumeRuleAmountValue: value.number
+            })
+        }else{
+            this.setState({
+                consumeRuleAmountStatus: 'error',
+            })
+        }
+    }
+
     handleSubmit() {
         let flag = true;
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
@@ -401,6 +437,10 @@ class StepTwo extends React.Component {
         if (this.state.giveStatus == 'error') {
             flag = false;
         }
+        if (this.state.consumeRuleAmountStatus == 'error') {
+            flag = false;
+        }
+
         const opts = this.props.type == '70' || this.props.type == '64' ?
             {
                 smsTemplate: this.state.message,
@@ -429,8 +469,11 @@ class StepTwo extends React.Component {
             }
         }
         if (this.props.type == '62') {
-            const { consumeType, numberValue,selectedTags,localType } = this.state;
+            const { consumeType, numberValue,selectedTags,localType, amountType, consumeRuleAmountValue } = this.state;
             opts.consumeType = consumeType;
+            opts.amountType = amountType;
+            opts.consumeRuleAmount = consumeRuleAmountValue;
+
             if(localType == 7){
                 opts.customerRangeConditionIDs = selectedTags.map(item => item.tagRuleID)
             }else{
@@ -659,6 +702,17 @@ class StepTwo extends React.Component {
             },
             dropdownStyle: { maxHeight: 275, overflow: 'auto' },
         };
+        const amountTypeSelect = (
+            <Select 
+                onChange={this.handleAmountTypeChange}
+                value={this.state.amountType}
+                getPopupContainer={(node) => node.parentNode}
+            >
+                <Option key="1" value={1}>账单金额不足</Option>
+                <Option key="2" value={2}>实收金额不足</Option>
+            </Select>
+        );
+
         return (
             <Form>
                 {
@@ -744,27 +798,32 @@ class StepTwo extends React.Component {
                                     </FormItem> : null
                             }
                             
-                            <FormItem
-                                label={`累计条件`}
-                                className={styles.FormItemStyle}
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 17 }}
-                                validateStatus={this.state.giveStatus}
-                                help={this.state.giveStatus == 'success' ? null : `${this.props.intl.formatMessage(STRING_SPE.d17013b4f2ba72)}${tip}`}
-                            >
-                                {this.props.form.getFieldDecorator('give', {
-                                    rules: [{
-                                        required: true,
-                                        message: `${this.props.intl.formatMessage(STRING_SPE.d5g3303e750262)}`,
-                                    }],
-                                    initialValue: this.state.numberValue,
-                                })(<PriceInput
-                                    onChange={this.handleNumberChange}
-                                    addonBefore={giveSelect}
-                                    addonAfter={this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}` : `${this.props.intl.formatMessage(STRING_SPE.d2164523635bb18198)}`}
-                                />)
-                                }
-                            </FormItem>
+                            {
+                                this.state.consumeType % 2 != 0 && 
+                                <FormItem
+                                    label='消费次数规则'
+                                    className={styles.FormItemStyle}
+                                    labelCol={{ span: 4 }}
+                                    wrapperCol={{ span: 17 }}
+                                    validateStatus={this.state.consumeRuleAmountStatus}
+                                    help={this.state.consumeRuleAmountStatus == 'success' ? null : '支持正数，小数点后2位，数值范围0~99999元'}
+                                >
+                                    {
+                                        this.props.form.getFieldDecorator('consumeRuleAmount', {
+                                            rules: [{
+                                                required: true,
+                                                message: '1111',
+                                            }],
+                                            initialValue: this.state.consumeRuleAmountValue,
+                                        })(<PriceInput
+                                            onChange={this.handleConsumeRuleAmountChange}
+                                            addonBefore={amountTypeSelect}
+                                            addonAfter='不累计为消费次数'
+                                        />)
+                                    }
+                                </FormItem>
+                            }
+
                         </div> 
                         : 
                         (this.props.type == '70' || this.props.type == '64' ? null :
