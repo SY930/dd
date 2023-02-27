@@ -304,8 +304,13 @@ class SpecialRangeInfo extends React.Component {
         if(this.props.type == '21') {
             if(this.state.cardLevelRangeType == '5') {
                 opts.cardGroupID = groupMembersID
+                opts.cardLevelIDList = []
             } else if(this.state.cardLevelRangeType == '7') {
                 opts.customerRangeConditionIDs = customerRangeConditionIDs
+                opts.cardLevelIDList = []
+            } else {
+                opts.cardGroupID = '0'
+                opts.customerRangeConditionIDs = []
             }
         }
         if (this.props.type === '22' && (maxPartInPerson === '' || maxPartInPerson === null)) {
