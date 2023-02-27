@@ -705,14 +705,13 @@ class StepTwo extends React.Component {
         const amountTypeSelect = (
             <Select 
                 onChange={this.handleAmountTypeChange}
-                value={this.state.amountType}
+                value={String(this.state.amountType)}
                 getPopupContainer={(node) => node.parentNode}
             >
-                <Option key="1" value={1}>账单金额不足</Option>
-                <Option key="2" value={2}>实收金额不足</Option>
+                <Option key="1" value={"1"}>账单金额不足</Option>
+                <Option key="2" value={"2"}>实收金额不足</Option>
             </Select>
         );
-
         return (
             <Form>
                 {
@@ -798,6 +797,27 @@ class StepTwo extends React.Component {
                                     </FormItem> : null
                             }
                             
+                            <FormItem
+                                label={`累计条件`}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                                validateStatus={this.state.giveStatus}
+                                help={this.state.giveStatus == 'success' ? null : `${this.props.intl.formatMessage(STRING_SPE.d17013b4f2ba72)}${tip}`}
+                            >
+                                {this.props.form.getFieldDecorator('give', {
+                                    rules: [{
+                                        required: true,
+                                        message: `${this.props.intl.formatMessage(STRING_SPE.d5g3303e750262)}`,
+                                    }],
+                                    initialValue: this.state.numberValue,
+                                })(<PriceInput
+                                    onChange={this.handleNumberChange}
+                                    addonBefore={giveSelect}
+                                    addonAfter={this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}` : `${this.props.intl.formatMessage(STRING_SPE.d2164523635bb18198)}`}
+                                />)
+                                }
+                            </FormItem>
                             {
                                 this.state.consumeType % 2 != 0 && 
                                 <FormItem
@@ -812,9 +832,9 @@ class StepTwo extends React.Component {
                                         this.props.form.getFieldDecorator('consumeRuleAmount', {
                                             rules: [{
                                                 required: true,
-                                                message: '1111',
+                                                message: '请输入',
                                             }],
-                                            initialValue: this.state.consumeRuleAmountValue,
+                                            initialValue: {number: this.state.consumeRuleAmountValue, modal:'int'},
                                         })(<PriceInput
                                             onChange={this.handleConsumeRuleAmountChange}
                                             addonBefore={amountTypeSelect}
