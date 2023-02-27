@@ -1023,7 +1023,7 @@ class LotteryThirdStep extends React.Component {
                 if(couponObj.effectType == '1' || couponObj.effectType == '3'){
                     tempObj.giftEffectTimeHours = typeof couponObj.giftEffectiveTime.value === 'object' ? '0' : couponObj.giftEffectiveTime.value;
                 } else if (couponObj.effectType ==  '99' || couponObj.effectType ==  '4' || couponObj.effectType == '5') {
-                    tempObj.effectType = couponObj.weekEffectType || '4';
+                    tempObj.effectType = couponObj.effectType || '4';
                 }else{
                     tempObj.effectTime = couponObj.giftEffectiveTime.value[0].format('YYYYMMDD');
                     tempObj.validUntilDate = couponObj.giftEffectiveTime.value[1].format('YYYYMMDD');
