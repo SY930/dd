@@ -249,7 +249,8 @@ class NewActivity extends React.Component {
                     marginBottom: 20
                 }}
             >
-                {ACTIVITY_CATEGORIES_FILTER.filter(item => !item.isOffline).map((activity, index) => {
+                {/* 下线消费返礼品3010、消费返积分3020，20230301迭代 */}
+                {ACTIVITY_CATEGORIES_FILTER.filter(item => !item.isOffline).filter(item => item.key != '3010' && item.key != '3020').map((activity, index) => {
                 return (
                     <div
                         key={`NewActivity${index}`}

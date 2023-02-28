@@ -388,7 +388,7 @@ class PromotionCreateModal extends Component {
             },
             {
                 title: k6316iac,
-                list: REPEAT_PROMOTION_TYPES_FILTER,
+                list: REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '3010' && item.key != '3020'),//下线消费返礼品3010、消费返积分3020，20230301迭代,
             },
             {
                 title: k6316hlc,
