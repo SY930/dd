@@ -150,7 +150,7 @@ class AddSeckillGoods extends Component {
         }
     }
     render() {
-        const { accountInfo, isView } = this.props;
+        const { accountInfo, isView, itemID} = this.props;
         const { giftList, couponVisible, sortableDom = true } = this.state;
         if (!giftList[0]) {
             giftList.push({ ...initVal });
@@ -158,6 +158,7 @@ class AddSeckillGoods extends Component {
         return (
                 sortableDom ? 
                 <div id="items">
+                    {isView == "false" && itemID ? <div className={styles.stepOneDisabled} style={{height: 360 * (giftList.length)}}></div> : null}
                     {giftList.map((v, i) => (
                         <div key={v.id || i} data-id={i} key={i} className={classNames(styles.addGiftsBox, 'draggable')}>
                             <div className={styles.addGiftsConntet}>

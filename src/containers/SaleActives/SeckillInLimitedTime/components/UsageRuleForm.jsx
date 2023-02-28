@@ -45,7 +45,7 @@ class UsageRuleForm extends Component {
 
     resetFormItems = () => {
         const { gifts, eventRange } = ruleFormItem;
-        const { accountInfo, getGiftForm, isView} = this.props;
+        const { accountInfo, getGiftForm, isView, itemID} = this.props;
         let cycleType = "";
         return {
             ...ruleFormItem,
@@ -62,6 +62,7 @@ class UsageRuleForm extends Component {
                             getGiftForm={getGiftForm}
                             onGiftChange={this.onGiftChange}
                             isView={isView}
+                            itemID={itemID}
                         />
                     )
             },
