@@ -4756,7 +4756,7 @@ class SpecialDetailInfo extends Component {
                     <Row>
                         <Col span={17} offset={4}>
                             <AddGifts
-                                maxCount={type == "21" || type == "30" ? 1 : 10}
+                                maxCount={type == "21" || type == "30" ? 1 : type == "52" ? 12 : 10}
                                 disabledGifts={
                                     type == "67" && this.state.disabledGifts
                                 }
