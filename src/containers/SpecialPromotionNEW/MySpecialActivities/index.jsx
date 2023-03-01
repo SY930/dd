@@ -83,7 +83,7 @@ import { crmCardTypeNew as sale_crmCardTypeNew } from "../../../redux/reducer/sa
 import { promotion_decoration as sale_promotion_decoration } from "../../../redux/reducer/decoration";
 import { selectPromotionForDecoration } from "../../../redux/actions/decoration";
 import { Iconlist } from "../../../components/basic/IconsFont/IconsFont";
-import { axiosData, checkAuthLicense, sensorsAutoTrack } from "../../../helpers/util";
+import { axiosData, checkAuthLicense, sensorsAutoTrack, checkAcessWhiteList } from "../../../helpers/util";
 import { queryWeixinAccounts } from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
 import {
     fetchPromotionCategoriesAC,
@@ -337,10 +337,11 @@ class MySpecialActivities extends React.Component {
             paramsValueList: [],
             eventCode: "", //活动编码
             expand: false,//高级查询展开收起
-	    //周黑鸭新增
-	    auditStatus: '', // 审批状态
+	        //周黑鸭新增
+	        auditStatus: '', // 审批状态
             onlyModifyShop: false, //是否只能修改门店
             urlContentAllParts: '', //H5全国二维码
+            isConsumeWhiteList: true
         };
         this.cfg = {
             eventWay: [
@@ -897,6 +898,12 @@ class MySpecialActivities extends React.Component {
         // 千人千面活动创建和更新完，点去装修跳转页面
         this.handleFromOtherPage();
         this.getSearchListContent(); // 查询方案列表
+        //消费送礼白名单校验
+        checkAcessWhiteList('consume_send_gifts').then((boolen) => {
+            this.setState({
+                isConsumeWhiteList: boolen
+            })
+        });
         sensorsAutoTrack("活动管理");
     }
 
@@ -2569,7 +2576,8 @@ class MySpecialActivities extends React.Component {
         const opts = [];
         let groupID = this.props.user.accountInfo.groupID;
         // 消费送礼白名单
-        if (!consumeGivingWhiteList.includes(groupID)) {
+        console.log(this.state.isConsumeWhiteList,'this.state.isConsumeWhiteList============')
+        if (!this.state.isConsumeWhiteList) {
             this.cfg.eventWay = this.cfg.eventWay.filter(item => item.value != '87');
         }
         this.cfg.eventWay.forEach((item, index) => {
@@ -4332,6 +4340,9 @@ class MySpecialActivities extends React.Component {
 }
 
 function mapValueToLabel(cfg, val) {
+    console.log(val,'val======')
+    console.log(cfg,'cfg---------')
+    console.log(_.result(_.find(cfg, { value: val }), "label"),'_.result(_.find(cfg, { value: val }), "label")')
     return _.result(_.find(cfg, { value: val }), "label");
 }
 export default MySpecialActivities;

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Tabs, Button, Icon, Modal, message } from 'antd';
 import _ from 'lodash';
 import { throttle } from 'lodash';
-import { axiosData, fetchData, isFilterShopType, timeFormat } from '../../../helpers/util';
+import { axiosData, fetchData, isFilterShopType, timeFormat, checkAcessWhiteList } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
 import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
@@ -72,6 +72,7 @@ class GiftDetailTable extends Component {
             tableHeight: '100%',
             usedTotalSize: 0,
             treeData: [],
+            isSpecialRightCouponWhiteList: false
         };
         this.tableRef = null;
         this.setTableRef = el => this.tableRef = el;
@@ -163,6 +164,11 @@ class GiftDetailTable extends Component {
             FetchGiftSchemaAC(parm)
         }
         this.props.queryWechatMpInfo();
+        checkAcessWhiteList('special_right_coupon').then((bool)=> {
+            this.setState({
+                isSpecialRightCouponWhiteList: bool
+            })
+        } )
         sensorsAutoTrack('礼品信息');
     }
 
@@ -955,7 +961,7 @@ class GiftDetailTable extends Component {
                     width={960}
                 >
 
-                    <CreateGiftsPanel onClose={this.handleCreateModalCancel} />
+                    <CreateGiftsPanel onClose={this.handleCreateModalCancel} isSpecialRightCouponWhiteList={this.state.isSpecialRightCouponWhiteList}/>
                 </Modal>
                 {
                     this.state.linkModalVisible && (

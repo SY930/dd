@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import registerPage from "../../../index";
 import { NEW_SALE_ACTIVITY_BOX, SALE_CENTER_PAYHAVEGIFT, SALE_ACTIVE_NEW_PAGE } from "../../constants/entryCodes";
 import SensorsCodes from "../../constants/SensorsCodes";
-import { axiosData, checkAuthLicense, setSensorsData, sensorsAutoTrack, checkPermission } from "../../helpers/util";
+import { axiosData, checkAuthLicense, setSensorsData, sensorsAutoTrack, checkPermission, checkAcessWhiteList } from "../../helpers/util";
 import { COMMON_STRING } from "i18n/common";
 import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";
 import { injectIntl } from "./IntlDecor";
@@ -70,14 +70,12 @@ import Chou2Le from "../PromotionV3/Chou2Le"; // 抽抽乐
 import BlindBox from "../PromotionV3/BlindBox"; // 盲盒
 import PassWordCoupon from "../PromotionV3/PassWordCoupon"; // 口令领券
 // import ActivityMain from '../WeChat2Mall/WeChatMaLLActivityMain'; // 秒杀 基础
-import ManyFace from '../PromotionV3/ManyFace'; // 千人千面
 import { jumpPage, closePage } from '@hualala/platform-base';
 import {
     specialPromotionBasicDataAdapter,
 } from '../../redux/actions/saleCenterNEW/types';
 import newPromotionCardPageConfig from '../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
 import { updateCurrentPromotionPageAC } from '../SaleActives/NewPromotionCardPages/store/action';
-import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList";
 
 //周黑鸭新增
 import { isZhouheiya, isGeneral } from "../../constants/WhiteList";
@@ -121,6 +119,13 @@ class NewCustomerPage extends Component {
         this.props.getAuthLicenseData({ productCode: "HLL_CRM_Marketingbox" }).then(res => {
             this.setState({ authLicenseData: res });
         });
+        console.log(checkAcessWhiteList('consume_send_gifts'),'111112222')
+        //消费送礼白名单校验
+        checkAcessWhiteList('consume_send_gifts').then((boolen) => {
+            this.setState({
+                isConsumeWhiteList: boolen
+            })
+        })
         // setSensorsData("wtcrm_promotion_clk");
         sensorsAutoTrack("营销活动");
     }
@@ -769,14 +774,14 @@ class NewCustomerPage extends Component {
     };
 
     render() {
-        const { whiteList, v3visible, curKey } = this.state;
+        const { whiteList, v3visible, curKey, isConsumeWhiteList } = this.state;
         const state = getStore().getState();
         const { groupID } = state.user.get("accountInfo").toJS();
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316iac = intl.formatMessage(SALE_STRING.k6316iac);
         let REPEAT_PROMOTION_TYPES_FILTER = REPEAT_PROMOTION_TYPES;
-        if (!consumeGivingWhiteList.includes(groupID)) {
+        if (!isConsumeWhiteList) {
             REPEAT_PROMOTION_TYPES_FILTER = REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '87');
         }
         let ALL_PROMOTION_CATEGORIES = [

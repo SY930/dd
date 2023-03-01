@@ -39,16 +39,14 @@ import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfo
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from '../IntlDecor';
-import { isFilterShopType } from '../../../helpers/util'
+import { isFilterShopType, checkAcessWhiteList } from '../../../helpers/util'
 
 //周黑鸭需求
 import { isZhouheiya, zhouheiyaPromotiontype, WJLPGroupID } from '../../../constants/WhiteList';
 import ShopAreaSelector from '../../../components/ShopAreaSelector/index.jsx';
 import { isGeneral } from "../../../constants/WhiteList";
 import ExportJsonExcel from "js-export-excel";
-import { SALE_PROMOTION_TYPES } from '../../../constants/promotionType';
 const Immutable = require('immutable');
-const shopTreeData = [];
 // 买减、买折活动增加团购订单，白名单开放
 const WhiteGroup = ['11157', '189702', '345780'];
 // 店铺不选默认选择了全部店铺
@@ -57,7 +55,6 @@ const SELECT_ALL_SHOP = ['2020','1010','1050','1070','1090','2010','1030','1020'
 class PromotionScopeInfo extends React.Component {
     constructor(props) {
         super(props);
-
         const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
         const ifOffLine = props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === '1021'
         const ifGroupSale = props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '10071'
@@ -98,6 +95,7 @@ class PromotionScopeInfo extends React.Component {
                 type: 'shop', //shop | area
             },
             shopScopeList: [],
+            isUseGroupPurchaseWhiteList: false
         };
 
         // bind this.
@@ -201,6 +199,11 @@ class PromotionScopeInfo extends React.Component {
         });
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         this.loadShopSchema();
+        checkAcessWhiteList('use_group_purchase').then((bool) => {
+            this.setState({
+                isUseGroupPurchaseWhiteList: bool
+            })
+        })
         const { promotionScopeInfo, fetchPromotionScopeInfo, getPromotionShopSchema, promotionBasicInfo } = this.props;
         if (promotionBasicInfo.get('$filterShops').toJS().shopList) {
             this.setState({ filterShops: promotionBasicInfo.get('$filterShops').toJS().shopList })
@@ -563,7 +566,7 @@ class PromotionScopeInfo extends React.Component {
                 },
             ];
         }
-        if (promotionType === '2040' && WhiteGroup.includes(`${accountInfo.groupID}`)) {
+        if (promotionType === '2040' && this.state.isUseGroupPurchaseWhiteList) {
             plainOptions = [...plainOptions, { label: '团购订单', value: '60', disabled: isSelDefined }]
         }
         return (

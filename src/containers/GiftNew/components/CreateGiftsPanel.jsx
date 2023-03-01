@@ -23,7 +23,6 @@ import xcx from '../assets/xcx.png';
 import styles from '../GiftAdd/Crm.less';
 import { startCreateGift } from '../_action';
 import { specialInterestGiftType, specialInterestGroupIdWhiteList } from './whiteList';
-
 import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 
 const temporaryDisabledGifts = [
@@ -90,7 +89,7 @@ class CreateGiftsPanel extends Component {
   render() {
       let primaryGifts = GiftCfg.giftType.filter(gift => gift.category === 'primary');
       const { groupID } = this.props.user.accountInfo;
-      if (!specialInterestGroupIdWhiteList.includes(groupID)) {
+      if (!this.props.isSpecialRightCouponWhiteList) {
           primaryGifts = primaryGifts.filter(item => item.value != specialInterestGiftType)
       }
       const secondaryGifts = GiftCfg.giftType.filter(gift => gift.category === 'secondary');

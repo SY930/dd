@@ -897,3 +897,26 @@ export const formatEventRange = (eventRange) => {
     const eventEndDate = moment(ed).format(DF);
     return { eventStartDate, eventEndDate };
 }
+
+//白名单校验(接口链接http://wiki.hualala.com/pages/viewpage.action?pageId=86214528)
+export function checkAcessWhiteList(param = ""){
+    return axiosData(
+        '/promotion/configService_queryConfig.ajax',
+        { "configKey": param },
+        null,
+        {
+            path: 'data',
+        },
+        'HTTP_SERVICE_URL_PROMOTION_NEW',
+    ).then((data) => {
+        const { configs = [] } = data;
+        let resultArr = configs.filter((item) => item.configKey == param);
+        console.log(resultArr,'resultArr>>>>>>>>>>')
+        if(resultArr[0] && resultArr[0].configValue == 1){
+            return true
+        }
+        return false
+    }).catch((e) => {
+        console.log(e)
+    })
+} 
