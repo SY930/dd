@@ -31,6 +31,8 @@ export const getWJLPCoulums = (_this) => {
         fixed: 'left',
         render: (text, record, index) => {
           const isGroupPro = record.maintenanceLevel == '0'; // 区分集团和店铺
+          //禁用的消费返礼品、消费返积分不展示删除
+          const isHidden = (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
           return (
             <span>
               <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
@@ -44,7 +46,7 @@ export const getWJLPCoulums = (_this) => {
                   查看
                 </a>
               </Authority>
-              {!isHuaTian() && (
+              {isHuaTian() || isHidden ? null : (
                 <Authority rightCode={BASIC_PROMOTION_UPDATE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                   <a
                     href="#"
@@ -160,6 +162,11 @@ export const getWJLPCoulums = (_this) => {
               return record.userType == 1 || record.userType == 3 || !isGroupPro;
             }
           })();
+          //禁用的消费返礼品、消费返积分不展示删除
+          const isHidden = (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
+          if(isHidden) {
+            return null
+         }
           return (
             <Switch
               // size="small"
