@@ -188,7 +188,6 @@ const _channelUtils = (function () {
         lock: (name, fn) => {
             const channel = _choked.find(ch => ch === name);
             if (channel) {
-                console.warn(`fetchData: channel '${name}' is busy.`);
                 return _fakePromise;
             }
             _choked.push(name);
@@ -911,7 +910,6 @@ export function checkAcessWhiteList(param = ""){
     ).then((data) => {
         const { configs = [] } = data;
         let resultArr = configs.filter((item) => item.configKey == param);
-        console.log(resultArr,'resultArr>>>>>>>>>>')
         if(resultArr[0] && resultArr[0].configValue == 1){
             return true
         }

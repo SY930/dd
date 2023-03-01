@@ -57,7 +57,6 @@ class SwellGiftBag extends React.Component {
 
                  const { data, gifts } = res
                  const { eventRemark, eventStartDate,  eventEndDate , eventName, shareTitle, shareSubtitle} = data
-                console.log('_TODO 222', data);
                 if(data.tagLst){
                     data.tagLst = data.tagLst.split(',');
                 }

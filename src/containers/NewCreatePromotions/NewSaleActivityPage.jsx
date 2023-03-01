@@ -119,7 +119,6 @@ class NewCustomerPage extends Component {
         this.props.getAuthLicenseData({ productCode: "HLL_CRM_Marketingbox" }).then(res => {
             this.setState({ authLicenseData: res });
         });
-        console.log(checkAcessWhiteList('consume_send_gifts'),'111112222')
         //消费送礼白名单校验
         checkAcessWhiteList('consume_send_gifts').then((boolen) => {
             this.setState({

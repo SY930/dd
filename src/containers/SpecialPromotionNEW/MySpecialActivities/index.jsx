@@ -2576,7 +2576,6 @@ class MySpecialActivities extends React.Component {
         const opts = [];
         let groupID = this.props.user.accountInfo.groupID;
         // 消费送礼白名单
-        console.log(this.state.isConsumeWhiteList,'this.state.isConsumeWhiteList============')
         if (!this.state.isConsumeWhiteList) {
             this.cfg.eventWay = this.cfg.eventWay.filter(item => item.value != '87');
         }
@@ -4340,9 +4339,6 @@ class MySpecialActivities extends React.Component {
 }
 
 function mapValueToLabel(cfg, val) {
-    console.log(val,'val======')
-    console.log(cfg,'cfg---------')
-    console.log(_.result(_.find(cfg, { value: val }), "label"),'_.result(_.find(cfg, { value: val }), "label")')
     return _.result(_.find(cfg, { value: val }), "label");
 }
 export default MySpecialActivities;

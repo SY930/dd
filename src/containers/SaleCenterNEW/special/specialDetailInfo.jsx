@@ -135,7 +135,6 @@ class SpecialDetailInfo extends React.Component {
         if (isZhouheiya(this.props.user.groupID)) {
             priceLst = data
         } else {
-            console.log("🚀 ~ file: specialDetailInfo.jsx ~ line 149 ~ SpecialDetailInfo ~ priceLst=data.map ~ data", data)
             priceLst = data.map((item) => {
                 return {
                     foodUnitID: item.itemID,

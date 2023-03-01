@@ -3,7 +3,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2023-02-28 15:53:40
+ * @LastEditTime: 2023-03-01 10:26:06
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/index.jsx
  */
 
@@ -208,7 +208,6 @@ class SeckillInLimitedTime extends Component {
     };
 
     onSubmit = payload => {
-        console.log(payload,'paylODA=========')
         const { itemID, isActive } = this.props;
         const { event: {eventStartDate, eventEndDate}, timeList, gifts, startTimeStr, endTimeStr} = payload;
         let startTime = null;

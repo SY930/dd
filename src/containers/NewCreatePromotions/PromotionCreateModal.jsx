@@ -379,7 +379,6 @@ class PromotionCreateModal extends Component {
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         let REPEAT_PROMOTION_TYPES_FILTER = REPEAT_PROMOTION_TYPES;
         if (!isConsumeWhiteList) {
-            console.log('1112222----')
             REPEAT_PROMOTION_TYPES_FILTER = REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '87');
         }
         const ALL_PROMOTION_CATEGORIES = [

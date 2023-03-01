@@ -121,7 +121,6 @@ class Two extends React.Component {
             message.error('上传文件格式错误');
             return false;
         }
-        console.log(file);
         this.setState({
             fileList: [file],
         });

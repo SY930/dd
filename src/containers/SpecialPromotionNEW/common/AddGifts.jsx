@@ -1045,10 +1045,6 @@ class AddGifts extends React.Component {
         _infos[index].giftValidDays.validateStatus = 'success';
         _infos[index].giftEffectiveTime.msg = null;
         _infos[index].giftValidDays.msg = null;
-
-        console.log(333333, _infos);
-        console.log(555555, e.target.value);
-        
         this.setState({
             infos: _infos,
         }, () => {

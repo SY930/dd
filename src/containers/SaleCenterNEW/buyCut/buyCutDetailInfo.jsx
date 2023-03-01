@@ -274,7 +274,6 @@ class BuyCutDetailInfo extends React.Component {
     };
     // 优惠方式change
     onCutWayChange(e) {
-        console.log(this.state.ruleInfo)
         let { cutWay } = this.state;
         cutWay = e.target.value;
         this.setState({ cutWay });

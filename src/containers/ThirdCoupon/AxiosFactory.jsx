@@ -545,7 +545,6 @@ async function getBrands() {
     const params = { service, type, data: { groupID }, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: { shopBrandDetailList = [] } } = response;
-    console.log("🚀 ~ file: AxiosFactory.jsx:567 ~ getBrands ~ response", response)
     if (code === '000') {
         return shopBrandDetailList
         // return [{

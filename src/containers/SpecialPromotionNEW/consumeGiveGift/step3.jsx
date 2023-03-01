@@ -95,7 +95,6 @@ export const consumeGiveGiftStep3Render = function consumeGiveGiftStep3Render() 
         }
         this.setState({ activityList: list });
         setTimeout(() => {
-            console.log(activityList);
         }, 600)
     }
 
