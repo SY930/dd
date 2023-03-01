@@ -904,7 +904,7 @@ class MySpecialActivities extends React.Component {
                 isConsumeWhiteList: boolen
             })
         });
-        sensorsAutoTrack("活动管理");
+        // sensorsAutoTrack("活动管理");
     }
 
     // 产品授权

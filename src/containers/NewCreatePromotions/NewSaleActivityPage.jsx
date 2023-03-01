@@ -127,7 +127,7 @@ class NewCustomerPage extends Component {
             })
         })
         // setSensorsData("wtcrm_promotion_clk");
-        sensorsAutoTrack("营销活动");
+        // sensorsAutoTrack("营销活动");
     }
     componentWillReceiveProps(nextProps) {
         // todo:上线放开

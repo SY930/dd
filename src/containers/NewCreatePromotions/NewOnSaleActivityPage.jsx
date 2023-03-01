@@ -108,7 +108,7 @@ class NewOnSaleActivityPage extends Component {
                 isDeliveryReduceWhiteList: bool
             })
         })
-        sensorsAutoTrack("促销活动");
+        // sensorsAutoTrack("促销活动");
     }
     componentWillReceiveProps(nextProps) {
         // todo:上线放开
