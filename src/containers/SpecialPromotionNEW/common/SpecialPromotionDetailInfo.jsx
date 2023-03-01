@@ -177,7 +177,6 @@ class SpecialDetailInfo extends Component {
                 ? $benefitCardIds.toJS()
                 : [];
         // const { givePoints, presentValue, giveCoupon, giftGetRuleValue } = pointObj;
-        // const specialPromotion = props.specialPromotion.get('$eventInfo').toJS();
         this.state = {
             data,
             wakeupSendGiftsDataArray,
@@ -207,6 +206,10 @@ class SpecialDetailInfo extends Component {
                 "$eventInfo",
                 "restaurantShareImagePath",
             ]),
+            shareOpen: (props.type == 21 && !props.isNew) ? props.specialPromotion.getIn([
+                "$eventInfo",
+                "shareOpen",
+            ]) : true,
             /** 小程序分享相关结束 */
             /** 桌边砍相关 */
             moneyLimitType:
@@ -1778,12 +1781,14 @@ class SpecialDetailInfo extends Component {
                     shareSubtitle,
                     restaurantShareImagePath,
                     shareImagePath,
+                    shareOpen
                 } = this.state;
                 const shareInfo = {
                     shareTitle,
                     shareSubtitle,
                     restaurantShareImagePath,
                     shareImagePath,
+                    shareOpen: shareOpen ? 1 : 0,
                 };
                 this.props.setSpecialBasicInfo(shareInfo);
             }
@@ -2033,6 +2038,11 @@ class SpecialDetailInfo extends Component {
             shareSubtitle: value,
         });
     };
+    handleChangeSwitch = (value) => {
+        this.setState({
+            shareOpen: value,
+        })
+    }
     handleMoneyLimitTypeChange = (value) => {
         this.setState({
             moneyLimitType: +value,
@@ -2509,48 +2519,68 @@ class SpecialDetailInfo extends Component {
             shareImagePath,
             shareTitlePL,
             shareSubtitlePL,
+            shareOpen = true,
         } = this.state;
         return (
             <div>
                 <p className={selfStyle.shareTip}>分享设置</p>
-                <FormItem
-                    label="分享标题"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    {this.props.form.getFieldDecorator("shareTitle", {
-                        rules: [{ max: 35, message: "最多35个字符" }],
-                        initialValue: shareTitle,
-                        onChange: this.handleShareTitleChange,
-                    })(<Input placeholder={shareTitlePL} />)}
-                </FormItem>
-                <FormItem
-                    label="分享副标题"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    {this.props.form.getFieldDecorator("shareSubtitle", {
-                        rules: [{ max: 35, message: "最多35个字符" }],
-                        initialValue: shareSubtitle,
-                        onChange: this.handleShareSubTitleChange,
-                    })(<Input placeholder={shareSubtitlePL} />)}
-                </FormItem>
-                <FormItem
-                    label="分享图片"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                    style={{ position: "relative" }}
-                >
-                    <PhotoFrame
-                        restaurantShareImagePath={restaurantShareImagePath}
-                        shareImagePath={shareImagePath}
-                        onChange={this.onRestImg}
-                        type={type}
-                    />
-                </FormItem>
+                {
+                    type == '21' && <FormItem
+                        label="是否可分享"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        <Switch
+                            checkedChildren="是"
+                            unCheckedChildren="否"
+                            checked={shareOpen}
+                            onChange={this.handleChangeSwitch}
+                        />
+                    </FormItem>
+                }
+                {
+                    shareOpen && (<div>
+                        <FormItem
+                            label="分享标题"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            {this.props.form.getFieldDecorator("shareTitle", {
+                                rules: [{ max: 35, message: "最多35个字符" }],
+                                initialValue: shareTitle,
+                                onChange: this.handleShareTitleChange,
+                            })(<Input placeholder={shareTitlePL} />)}
+                        </FormItem>
+                        <FormItem
+                            label="分享副标题"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            {this.props.form.getFieldDecorator("shareSubtitle", {
+                                rules: [{ max: 35, message: "最多35个字符" }],
+                                initialValue: shareSubtitle,
+                                onChange: this.handleShareSubTitleChange,
+                            })(<Input placeholder={shareSubtitlePL} />)}
+                        </FormItem>
+                        <FormItem
+                            label="分享图片"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                            style={{ position: "relative" }}
+                        >
+                            <PhotoFrame
+                                restaurantShareImagePath={restaurantShareImagePath}
+                                shareImagePath={shareImagePath}
+                                onChange={this.onRestImg}
+                                type={type}
+                            />
+                        </FormItem>
+                    </div>)
+                }
             </div>
         );
     };

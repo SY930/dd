@@ -1,5 +1,7 @@
+
+
 import React, { PureComponent as Component } from 'react';
-import { Tabs, Button, Icon, Input, Checkbox, Radio, Select, Form, Row, Col } from 'antd';
+import { Tabs, Button, Icon, Input, Checkbox, Radio, Select, Form, Row, Col, Switch } from 'antd';
 import css from './style.less';
 import PhotoFrame from "../../../SpecialPromotionNEW/common/PhotoFrame";
 
@@ -23,6 +25,10 @@ class Share extends Component {
         this.onAllChange({ shareSubtitle: value });
     }
 
+    handleChangeSwitch = (value) => {
+        this.onAllChange({ shareOpen: value });
+    }   
+
     onRestImg = ({ key, value }) => {
         this.onAllChange({ [key]: value });
     };
@@ -34,7 +40,7 @@ class Share extends Component {
     }
     render() {
         const { value, decorator } = this.props;
-        let {type = '79', shareTitle = '', shareSubtitle = '', restaurantShareImagePath, shareImagePath} = value
+        let {type = '79', shareTitle = '', shareSubtitle = '', restaurantShareImagePath, shareImagePath, shareOpen = true } = value
         return (
             <div className={css.mainBox}>
                 <div>
@@ -42,36 +48,46 @@ class Share extends Component {
                 </div>
                 <div>
                     <FormItem
-                        label="标题"
+                        label="是否可分享"
                         className={css.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
-                        <Input onChange={this.handleShareTitleChange} value={shareTitle} placeholder={'请输入标题'} />
-                    </FormItem>
-                    <FormItem
-                        label="副标题"
-                        className={css.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
-                    >
-                        <Input  onChange={this.handleShareSubTitleChange} value={shareSubtitle} placeholder={'请输入副标题'} />
-                    </FormItem>
-                    <FormItem
-                        label="分享图片"
-                        className={css.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 18 }}
-                        style={{ position: "relative" }}
-                    >
-                        <PhotoFrame
-                            restaurantShareImagePath={restaurantShareImagePath}
-                            shareImagePath={shareImagePath}
-                            onChange={this.onRestImg}
-                            type={type}
-                            isMoveRestaurant={true}
+                        <Switch
+                            checkedChildren="是"
+                            unCheckedChildren="否"
+                            defaultChecked={true}
+                            checked={shareOpen}
+                            onChange={this.handleChangeSwitch}
                         />
                     </FormItem>
+                    {
+                        shareOpen && (<div>
+                            <FormItem
+                                label="标题"
+                                className={css.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                <Input onChange={this.handleShareTitleChange} value={shareTitle} placeholder={'请输入标题'} />
+                            </FormItem>
+                            <FormItem
+                                label="分享图片"
+                                className={css.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 18 }}
+                                style={{ position: "relative" }}
+                            >
+                                <PhotoFrame
+                                    restaurantShareImagePath={restaurantShareImagePath}
+                                    shareImagePath={shareImagePath}
+                                    onChange={this.onRestImg}
+                                    type={type}
+                                    isMoveRestaurant={true}
+                                />
+                            </FormItem>
+                        </div>)
+                    }
                 </div>
             </div>
 

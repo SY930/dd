@@ -104,7 +104,7 @@ class BlindBox extends Component {
         return { mpIDList, participateRule: `${participateRule}`, presentValue1, presentValue2, settleUnitID: (settleUnitID | 0), joinCount, defaultCardType, autoRegister: `${autoRegister}`, userCount };
     }
     setData4Step3(data, gifts) {
-        const { eventImagePath, shareTitle, shareSubtitle, shareImagePath, restaurantShareImagePath, userCount} = data;
+        const { eventImagePath, shareTitle, shareSubtitle, shareImagePath, restaurantShareImagePath, userCount, shareOpen} = data;
 
         let needShow = gifts.some(item => item.needShow > 0) ? 1 : 0
         this.setState({needShow})
@@ -178,7 +178,7 @@ class BlindBox extends Component {
         openLottery = JSON.stringify(openLottery) == '{}' ? defVal : openLottery
 
         const defaultShareTitle = 'duang!被一个盲盒砸中，看你手气了~';
-        let shareInfo = { type: '79', shareTitle: shareTitle || defaultShareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath }
+        let shareInfo = { type: '79', shareTitle: shareTitle || defaultShareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath, shareOpen: shareOpen == 1 ? true : false }
         return { eventImagePath, openLottery, lottery, shareInfo, userCount };
     }
 
@@ -269,9 +269,9 @@ class BlindBox extends Component {
         const newEventRange = this.formatEventRange(eventRange);
         const newTagLst = Array.isArray(tagLst) ? tagLst.join(',') : '';
         const step2Data = this.setStep2Data();
-        const { gifts,  eventImagePath, ...others3 } = formData3;
+        const { gifts,  eventImagePath, shareOpen, ...others3 } = formData3;
         const newEventImagePath = eventImagePath ? eventImagePath.url ? eventImagePath.url : eventImagePath : ''
-        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '79', eventImagePath: newEventImagePath, tagLst: newTagLst };
+        let event = { ...others1, ...others3, shareOpen: shareOpen ? 1 : 0, ...newEventRange, ...step2Data, eventWay: '79', eventImagePath: newEventImagePath, tagLst: newTagLst };
         if(id) {
             const itemID = id;
             const allData = { event: {...event, itemID}, gifts };

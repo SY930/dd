@@ -2,7 +2,7 @@
 
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, InputNumber, Input, Icon } from 'antd';
+import { Row, Col, Form, Select, Radio, InputNumber, Tooltip, Icon } from 'antd';
 import { connect } from 'react-redux'
 
 import styles from '../ActivityPage.less';
@@ -24,6 +24,7 @@ import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common
 const FormItem = Form.Item;
 const Immutable = require('immutable');
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
 const isValidNumber = (value) => value != null && value != '' && !Number.isNaN(value);
 
 export const notValidDiscountNum = (strNum) => {
@@ -64,6 +65,8 @@ class DiscountDetailInfo extends React.Component {
             display: !this.props.isNew,
             maxCount: 3,
             discountFlag: true,
+            subRule: 1,
+            subRuleFoods: 0, // 指定菜品消费满默认不参与
             ...this.initState(),
         };
         this.onCustomRangeInputChange = this.onCustomRangeInputChange.bind(this);
@@ -133,7 +136,9 @@ class DiscountDetailInfo extends React.Component {
             //周黑鸭需求
             countType: _rule.countType ? _rule.countType : '1',
             maxFreeLimitType: _rule.maxFreeLimitType ? _rule.maxFreeLimitType : '0',
-            maxFreeAmount: _rule.maxFreeAmount
+            maxFreeAmount: _rule.maxFreeAmount,
+            subRule: _ruleType != '2' ?  Number(_rule.subRule) : 1,
+            subRuleFoods: _ruleType == '2' ? Number(_rule.subRule) : 0,
         };
     }
 
@@ -158,8 +163,24 @@ class DiscountDetailInfo extends React.Component {
         }
     }
 
+
+    handleChangeSubRule = (e) => {
+        const { target } = e;
+        const { value } = target;
+        this.setState({
+            subRule: value,
+        })
+    }
+
+    handleChangeSubRuleFoods = ({ target }) => {
+        const { value } = target;
+        this.setState({
+            subRuleFoods: value,
+        })
+    }
+
     handleSubmit = (cbFn) => {
-        let { discount, discountFlag, ruleInfo } = this.state;
+        let { discount, discountFlag, ruleInfo, isDishVisibleIndex } = this.state;
         let rule;
         if (!isValidNumber(discount)) {
             discountFlag = false;
@@ -188,8 +209,8 @@ class DiscountDetailInfo extends React.Component {
                 requiredLst: this.state.requiredLst,
                 maxFreeLimitType: this.state.maxFreeLimitType,
                 maxFreeAmount: this.state.maxFreeAmount,
-                countType: this.state.countType
-
+                countType: this.state.countType,
+                subRule: isDishVisibleIndex == '2' ? this.state.subRuleFoods : this.state.subRule,
             };
             this.props.setPromotionDetail({
                 rule,
@@ -208,7 +229,8 @@ class DiscountDetailInfo extends React.Component {
                     requiredLst: this.state.requiredLst,
                     maxFreeLimitType: this.state.maxFreeLimitType,
                     maxFreeAmount: this.state.maxFreeAmount,
-                    countType: this.state.countType
+                    countType: this.state.countType,
+                    subRule: isDishVisibleIndex == '2' ? this.state.subRuleFoods : this.state.subRule,
                 }
                 this.props.setPromotionDetail({
                     rule,
@@ -619,6 +641,28 @@ class DiscountDetailInfo extends React.Component {
         )
     }
 
+    renderSubRule = () => {
+        return (
+            <FormItem
+                    label={'配菜是否参与计算'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup value={this.state.subRule} onChange={this.handleChangeSubRule} defaultValue={0}>
+                        <Radio key={1} value={1}>参与</Radio>
+                        <Radio key={0} value={0}>不参与</Radio>
+                        <Tooltip title={'配菜包括配菜、子菜、做法加价等'}>
+                            <Icon
+                                type="question-circle-o"
+                                className={styles.question}
+                            />
+                        </Tooltip>
+                    </RadioGroup>
+                </FormItem>
+        )
+    }
+
 
     render() {
         const payLimit = this.state.ruleType != 0;
@@ -631,16 +675,21 @@ class DiscountDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-		    {isZhouheiya(this.props.user.accountInfo.groupID)&&this.renderMaxCount()}
+		            {isZhouheiya(this.props.user.accountInfo.groupID)&&this.renderMaxCount()}
                     {!isZhouheiya(this.props.user.accountInfo.groupID) && this.state.isDishVisibleIndex !== '1' ?
                         <ConnectedScopeListSelector
                             component={component}
                             isShopMode={this.props.isShopFoodSelectorMode}
+                            handleChangeSubRule={this.handleChangeSubRule}
+                            subRule={this.state.subRule}
+                            subRuleFoods={this.state.subRuleFoods}
+                            handleChangeSubRuleFoods={this.handleChangeSubRuleFoods}
                         />
                         : null}
                     {isZhouheiya(this.props.user.accountInfo.groupID) && this.state.isDishVisibleIndex !== '1' ?
                         this.renderGoodRef()
                         : null}
+                    {!isZhouheiya(this.props.user.accountInfo.groupID) && this.state.isDishVisibleIndex == '1' ? this.renderSubRule() : null}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display && isZhouheiya(this.props.user.accountInfo.groupID) && this.renderMustFood()}
                     {this.state.display && !isZhouheiya(this.props.user.accountInfo.groupID) ? <AdvancedPromotionDetailSetting payLimit={payLimit} /> : null}

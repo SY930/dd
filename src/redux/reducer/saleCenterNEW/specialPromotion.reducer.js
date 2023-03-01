@@ -101,6 +101,9 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
                         giftInfo = [...giftInfo, ...rule1Data.gifts];
                     }
                 }
+                if (action.payload.data.eventWay == 21) {
+                    action.payload.data.shareOpen = action.payload.data.shareOpen == 1 ? true : false
+                }
                 return $$state
                     .mergeIn(
                         ["$eventInfo"],
