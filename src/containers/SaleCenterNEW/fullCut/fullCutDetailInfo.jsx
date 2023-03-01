@@ -184,7 +184,6 @@ class FullCutDetailInfo extends React.Component {
     // next is 0, finish is 1
     handleSubmit() {
         const { ruleInfo, ruleType } = this.state;
-        console.log(ruleInfo);return false
         let ruleValidation
         if (!isZhouheiya(this.props.user.groupID)) {
             ruleValidation = ruleInfo.reduce((p, c, index, arr) => {
