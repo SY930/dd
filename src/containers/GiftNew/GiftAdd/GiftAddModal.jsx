@@ -36,6 +36,7 @@ import SellerCode from "../components/SellerCode";
 import FakeBorderedLabel from "../components/FakeBorderedLabel";
 import GiftInfoHaveCoupon from './GiftInfoHaveCoupon';
 import decorator from '@hualala/react-lazyload/lib/decorator';
+import CategoryFormItem from './CategoryFormItem/index';
 import { getVersionUI } from 'utils'
 
 const Option = Select.Option;
@@ -249,6 +250,9 @@ class GiftAddModal extends React.Component {
             }
             params.pushMimiAppMsg = params.pushMessage && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
             params.toStatusAfterUseEnd = params.toStatusAfterUseEnd ? 17 : 0;
+            if(Array.isArray(params.tagLst)){
+                params.tagLst = params.tagLst.join(',');
+            }
             const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
             startSaving();
@@ -331,6 +335,17 @@ class GiftAddModal extends React.Component {
             quotaCardGiftConfList: params
         });
     }
+    hasTagLstKey = (keysObj) => {
+        let allKeys = [];
+        if(keysObj && Array.isArray(keysObj) && keysObj.length > 0){
+            keysObj.map(item => {
+                item.keys.map(key => {
+                    allKeys.push(key)
+                })
+            })
+        }
+        return allKeys.includes('tagLst');
+    }
     seeProtocal = () => {
         this.refs.protocol.seeProtocal && this.refs.protocol.seeProtocal()
     }
@@ -374,6 +389,9 @@ class GiftAddModal extends React.Component {
         }
         if (formData.toStatusAfterUseEndDelayTime){
             formData.toStatusAfterUseEndDelayTime = String(formData.toStatusAfterUseEndDelayTime)
+        }
+        if(formData.tagLst && !Array.isArray(formData.tagLst)){
+            formData.tagLst = formData.tagLst.split(',');
         }
         let formItems = {
             giftType: {
@@ -918,6 +936,7 @@ class GiftAddModal extends React.Component {
                         'giftValueCurrencyType',
                         'giftValue',
                         'giftRemark',
+                        'tagLst',
                         'shopNames',
                         'giftImagePath',
                         'giftRule',
@@ -938,6 +957,7 @@ class GiftAddModal extends React.Component {
                         'giftValue',
                         'cardTypeList',
                         'giftRemark',
+                        'tagLst',
                         'giftRule',
                         'showGiftRule',
                         'giftImagePath',
@@ -956,6 +976,7 @@ class GiftAddModal extends React.Component {
                         'giftValue',
                         'cardTypeList',
                         'giftRemark',
+                        'tagLst',
                         'giftRule',
                         'showGiftRule',
                         'giftImagePath',
@@ -1018,12 +1039,29 @@ class GiftAddModal extends React.Component {
                         'price',
                         'quotaCardGiftConfList',
                         'giftRemark',
+                        'tagLst',
                         'giftRule',
                         'showGiftRule',
                     ]
                 }
             ];
             newFormKeys = keys;
+        }
+        if(this.hasTagLstKey(newFormKeys)){
+            formItems.tagLst = {
+                label: '标签',
+                type: 'custom',
+                render: (decorator, form) => {
+                    return (
+                        <CategoryFormItem
+                            decorator={decorator}
+                            form={form}
+                            key='tagLst'
+                            phraseType='3'
+                        />
+                    )
+                }
+            }
         }
         const isPro = getVersionUI().styleName === 'professional'
         return (

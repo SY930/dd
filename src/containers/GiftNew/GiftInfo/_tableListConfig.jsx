@@ -1,4 +1,5 @@
 import { COMMON_LABEL } from 'i18n/common';
+import { Tooltip } from 'antd'
 import _ from 'lodash';
 import React from 'react';
 import Authority from '../../../components/common/Authority';
@@ -194,6 +195,14 @@ export const COLUMNS = groupID => [
     width: 150,
     render: (value) => {
       return <span title={value}>{value}</span>
+    },
+  }, {
+    title: '标签',
+    dataIndex: 'tagLst',
+    key: 'tagLst',
+    width: 150,
+    render: (value) => {
+      return <Tooltip title={value}>{value}</Tooltip>
     },
   }, {
     title: '创建人/修改人',

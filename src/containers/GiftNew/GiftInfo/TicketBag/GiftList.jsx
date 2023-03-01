@@ -1,6 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Button, Table, Icon, message } from 'antd';
+import { Row, Col, Button, Table, Icon, message, Form, Select } from 'antd';
 import styles from '../GiftInfo.less';
 import styles2 from '../../../SaleCenterNEW/ActivityPage.less';
 import BaseForm from '../../../../components/common/BaseForm';
@@ -21,7 +21,9 @@ import {
 } from '../../_action';
 import _ from 'lodash';
 import { axiosData } from '../../../../helpers/util';
+import CategoryFormItem from "containers/GiftNew/GiftAdd/CategoryFormItem";
 
+const FormItem = Form.Item;
 const searchDefaultPageParams = {
     pageNo: 1,
     pageSize: 25, 
@@ -33,6 +35,7 @@ class GiftList extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            phraseList: [],
             loading: false,
             exportLoading: false,
             visible: false,
@@ -42,6 +45,8 @@ class GiftList extends Component {
             },        // 临时查询缓存，具体对象查看QueryForm对象
             dataSource: [],
             total: 0,
+            expand: false,
+            tagLst: '', // 标签
         };
         this.setTableRef = el => this.tableRef = el;
         this.queryFroms = null;
@@ -49,6 +54,25 @@ class GiftList extends Component {
     componentDidMount() {
         this.onQueryList(searchDefaultPageParams);
         document.addEventListener('keydown', this.handleEnterKey);
+        this.getPhraseList()
+    }
+
+    getPhraseList = () => {
+        axiosData(
+            '/promotion/phrasePromotionService_query.ajax',
+            {
+                phraseType: '3'
+            },
+            {},
+            { path: 'data' },
+            'HTTP_SERVICE_URL_CRM'
+        ).then(res => {
+            const phraseList = res.phraseList || [];
+            this.setState({
+                phraseList
+            })
+        }).catch((error) => {
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -89,14 +113,17 @@ class GiftList extends Component {
         const { FetchGiftList } = this.props;
         this.queryFroms.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            const params = { ...values };
+            const params = { 
+                ...values,
+                tags: this.state.tagLst ? [this.state.tagLst] : undefined,
+            };
             this.setState({
                 queryParams: { 
                     pageNo: 1, 
                     pageSize: queryParams.pageSize || 1, 
                     action, 
                     ...params,
-                    ...pagingParams
+                    ...pagingParams,
                 },
             })
             FetchGiftList({
@@ -149,7 +176,7 @@ class GiftList extends Component {
             g.createBy = g.createBy == undefined ? '--' : g.createBy;
             g.modifyBy = g.modifyBy == undefined ? '--' : g.modifyBy;
             g.operator = `${g.createBy} / ${g.modifyBy}`;
-            g.giftRule = g.giftRule.split('</br>');
+            g.giftRule = (g.giftRule || '').split('</br>');
             g.num = i + 1 + (_pageSize * (_pageNo - 1));
             g.usingTimeType = (g.usingTimeType || '').split(',');
             g.usingDateType = (g.usingDateType || '').split(',');
@@ -189,7 +216,10 @@ class GiftList extends Component {
         const { queryParams } = this.state;
         this.queryFroms.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            const params = { ...values };
+            const params = {
+                ...values,
+                tags: this.state.tagLst ? [this.state.tagLst] : undefined,
+            };
             this.setState({
                 queryParams: { pageNo: 1, pageSize: queryParams.pageSize || 1, action, ...params },
             })
@@ -226,6 +256,19 @@ class GiftList extends Component {
         });
     }
 
+    toggleExpandState = () => {
+        this.setState({
+            expand: !this.state.expand,
+            tagLst: '',
+        });
+    }
+
+    changeCategoryFormItem = (value) => {
+        this.setState({
+            tagLst: value
+        })
+    }
+
     render() {
         const { loading, queryParams, dataSource = [], total } = this.state;
         const { groupID, formItems, formKeys, getTableColumns, } = this.props;
@@ -233,9 +276,10 @@ class GiftList extends Component {
         return (
             <div className={styles2.pageContentWrapper}>
                 <div style={{ padding: '0' }} className="layoutsHeader">
-                    <div className="layoutsSearch">
-                        <ul>
+                    <div>
+                        <ul style={{ display: 'flex' }}>
                             <li className={styles.formWidth}>
+                                {/* _TODO */}
                                 <BaseForm
                                     getForm={form => this.queryFroms = form}
                                     formItems={formItems}
@@ -245,15 +289,41 @@ class GiftList extends Component {
                                 // onChange={(key, value) => this.handleFormChange(key, value)}
                                 />
                             </li>
+                            {/* <li style={{display: 'flex', alignItems: 'center'}} className={styles2.categoryFormItemLi}>
+                                <a style={{ margin: '0 10px' }} onClick={this.toggleExpandState}>
+                                    高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+                                </a>
+                            </li> */}
                             <li>
                                 <Authority rightCode={GIFT_LIST_QUERY}>
-                                    <Button type="primary" onClick={() => this.onQueryList(searchDefaultPageParams)}>
+                                    <Button type="primary" style={{ marginLeft: 10 }} onClick={() => this.onQueryList(searchDefaultPageParams)}>
                                         <Icon type="search" />
                                         查询
                                     </Button>
                                 </Authority>
                             </li>
                         </ul>
+                        {
+                            this.state.expand && 
+                            <Form inline>
+                                <FormItem label='标签' style={{ width: 220 }} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                                    <Select
+                                        style={{ width: 150 }}
+                                        allowClear={true}
+                                        placeholder=""
+                                        onChange={this.changeCategoryFormItem}
+                                    >
+                                        {this.state.phraseList.map((tag, index) => {
+                                            return (
+                                                <Select.Option key={`${index}`} value={`${tag.name}`}>
+                                                    {tag.name}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </FormItem>
+                            </Form>
+                        }
                     </div>
                     <div className={styles2.rightBtnBox}>
                         <Button onClick={this.onExport} loading={this.state.exportLoading} disabled={this.state.exportLoading}>导出</Button>

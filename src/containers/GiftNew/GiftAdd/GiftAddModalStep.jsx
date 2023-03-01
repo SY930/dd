@@ -88,6 +88,7 @@ import {
 import { CategoryAndFoodSelectors } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelectors';
 import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
 import { GiftCategoryAndFoodSelectorNew } from '../../SaleCenterNEW/common/CategoryAndFoodSelectorNew';
+import CategoryFormItem from './CategoryFormItem/index';
 // 周黑鸭需求
 // import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
 import AdvancedPromotionDetailSettingNew from './common/AdvancedPromotionDetailSettingNew'
@@ -1284,6 +1285,10 @@ class GiftAddModalStep extends React.PureComponent {
             }
             
             params.pushMimiAppMsg = params.pushMessage && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
+            if(Array.isArray(params.tagLst)){
+                params.tagLst = params.tagLst.join(',');
+            }
+
             // 商城券参数调整
             if(hasMallArr.includes(value)){
                 this.adjustParamsOfMallGift(params);
@@ -3192,6 +3197,35 @@ shopAreaSelectorChange = (value) => {
         })
         return flag
     }
+
+    hasTagLstKey = (keysObj) => {
+        let allKeys = [];
+        if(keysObj && Array.isArray(keysObj) && keysObj.length > 0){
+            keysObj.map(item => {
+                item.keys.map(key => {
+                    allKeys.push(key)
+                })
+            })
+        }
+        return allKeys.includes('tagLst');
+    }
+
+    addCategoryFormItem = (formItems) => {
+        formItems.tagLst = {
+            label: '标签',
+            type: 'custom',
+            render: (decorator, form) => {
+                return (
+                    <CategoryFormItem
+                        decorator={decorator}
+                        form={form}
+                        key='tagLst'
+                        phraseType='3'
+                    />
+                )
+            }
+        }
+    }
     
     /**
      * @description
@@ -3206,7 +3240,7 @@ shopAreaSelectorChange = (value) => {
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
         let formData =JSON.stringify(values) == '{}' ? data : values ;
-        const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys,thirdKeysToDisplay:displayThirdKeys,fourthKeysToDisplay:displayFourthKeys} = this.justifyFormKeysToDisplay();
+        let { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys,thirdKeysToDisplay:displayThirdKeys,fourthKeysToDisplay:displayFourthKeys} = this.justifyFormKeysToDisplay();
 
         if (formData.shopNames && formData.shopNames.length > 0 && formData.shopNames[0].id) {
             formData.shopNames = formData.shopNames.map(shop => shop.id);
@@ -4279,6 +4313,22 @@ shopAreaSelectorChange = (value) => {
         }else if(formData.shopScopeType == 2){
             formData.excludeShops = formData.shopNames;
             formData.selectedShops = [];
+        }
+        // _TODO
+        if(this.hasTagLstKey(displayFirstKeys)){
+            this.addCategoryFormItem(formItems);
+        }
+        if(this.hasTagLstKey(displaySecondKeys)){
+            this.addCategoryFormItem(formItems);
+        }
+        if(this.hasTagLstKey(displayThirdKeys)){
+            this.addCategoryFormItem(formItems);
+        }
+        if(this.hasTagLstKey(displayFourthKeys)){
+            this.addCategoryFormItem(formItems);
+        }
+        if(formData.tagLst && !Array.isArray(formData.tagLst)){
+            formData.tagLst = formData.tagLst.split(',');
         }
 
 
