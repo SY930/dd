@@ -3,7 +3,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-12-14 15:40:35
+ * @LastEditTime: 2023-02-28 15:53:40
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/index.jsx
  */
 
@@ -208,6 +208,7 @@ class SeckillInLimitedTime extends Component {
     };
 
     onSubmit = payload => {
+        console.log(payload,'paylODA=========')
         const { itemID, isActive } = this.props;
         const { event: {eventStartDate, eventEndDate}, timeList, gifts, startTimeStr, endTimeStr} = payload;
         let startTime = null;
@@ -231,9 +232,9 @@ class SeckillInLimitedTime extends Component {
             const allData = {
                 timeList: timeList,
                 event: {
-                    ...event,
                     itemID,
-                    isActive: isActive == "0" ? 0 : 1
+                    isActive: isActive == "0" ? 0 : 1,
+                    ...payload.event,
                 },
                 gifts
             };
@@ -303,14 +304,15 @@ class SeckillInLimitedTime extends Component {
     }
     render() {
         const { basicForm, ruleForm, formData, settlesOpts, groupCardTypeList } = this.state;
-        const { accountInfo, user, cardTypeLst, loading, isView } = this.props;
+        const { accountInfo, user, cardTypeLst, loading, isView, itemID } = this.props;
         const itemProps = {
             accountInfo,
             user,
             cardTypeLst,
             settlesOpts,
             groupCardTypeList,
-            isView
+            isView,
+            itemID
         };
         return (
             <div className={`${styles.formContainer} ${ isView ? styles.isViewContainer : ''}`} >

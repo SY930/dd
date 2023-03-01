@@ -3118,7 +3118,7 @@ class MySpecialActivities extends React.Component {
                         {/* {this.props.intl.formatMessage(STRING_SPE.dk46ld30bk34245)} */}
                     </a>
                 )}
-		{
+		        {
                     isDecorationAvailable(record) && record.eventWay == 69 && (
                         <a
                             href="#"
@@ -3431,7 +3431,6 @@ class MySpecialActivities extends React.Component {
                                 entryId={SPECIAL_PROMOTION_MANAGE_PAGE}
                             >
                                 <a
-                                    style={{display: record.eventWay === 95 ? 'none' : 'inline'}}
                                     href="#"
                                     disabled={
                                         record.eventWay == "64"
@@ -3469,7 +3468,7 @@ class MySpecialActivities extends React.Component {
                                             );
                                             return;
                                         }
-                                        if ([78, 79, 83, 85, 23, 95, 91].includes(record.eventWay)) {
+                                        if ([78, 79, 83, 85, 23, 95, 91].includes(record.eventWay)) {//跳转页面的
                                             this.handleEditActive(record)(() =>
                                                 this.onV3Click(
                                                     record.itemID,
