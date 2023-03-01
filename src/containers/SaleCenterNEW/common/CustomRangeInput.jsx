@@ -104,7 +104,7 @@ class CustomRangeInput extends React.Component {
         if(promotionType == '2010' && (ruleType == '1' || ruleType == '4')) {
             return (
                 <Row className={styles.rightInput} gutter={6} style={{ display: 'flex', alignItems: 'center' }}>
-                    <Col span={12}>
+                    <Col span={10}>
                         <PriceInput
                             disabled={this.props.disabled}
                             addonBefore={this.state.addonBefore}
@@ -127,7 +127,7 @@ class CustomRangeInput extends React.Component {
                         />
                     </Col>
                     <Col style={{ margin: '0 5px' }}>最高优惠</Col>
-                    <Col span={4}>
+                    <Col span={5}>
                         <PriceInput
                             discountMode={this.props.discountMode}
                             placeholder={'不填则不限制'}
