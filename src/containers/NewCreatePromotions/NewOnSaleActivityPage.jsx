@@ -38,6 +38,7 @@ import {
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
+    fetchFoodMenuInfoLightAC,
     saleCenterResetDetailInfoAC as saleCenterResetBasicDetailInfoAC,
     getMallGoodsAndCategories,
 } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
@@ -480,7 +481,7 @@ function mapDispatchToProps(dispatch) {
             dispatch(fetchFoodCategoryInfoAC(opts))
         },
         fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
+            dispatch(fetchFoodMenuInfoLightAC(opts))
         },
         setSpecialPromotionCardGroupID: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoCardGroupID(opts));
