@@ -3442,12 +3442,7 @@ class MySpecialActivities extends React.Component {
                                     disabled={
                                         record.eventWay == "64"
                                             ? null
-                                            : isGroupOfHuaTianGroupList(
-                                                this.props.user.accountInfo
-                                                    .groupID
-                                            ) &&
-                                            (record.isActive != "0" ||
-                                                !isMine(record))
+                                            : (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != "0" || !isMine(record))) || (record.eventWay == "95" && record.isActive == "1")
                                     }
                                     onClick={(e) => {
                                         // if (record.eventWay == '64') {
