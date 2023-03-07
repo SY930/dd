@@ -322,7 +322,7 @@ class CollocationTableWithoutBrandID extends Component {
                     }
                 }
                 return (
-                    <span className={styles.rightAlign}>
+                    <span className={styles.rightAlign} style={{position:"relative", zIndex:0}}>
                         <PriceInputIcon
                             key={`table${index}`}
                             type="text"
