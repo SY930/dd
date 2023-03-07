@@ -4570,16 +4570,17 @@ class SpecialDetailInfo extends Component {
     };
     // type 30
     renderPointDuihuan() {
+        const allowedEditCode = ["30"];
         const { bag, sendTypeValue, giftTotalCountBag } = this.state;
         const { user, type, disabled } = this.props;
         const { groupID } = user.accountInfo;
-        const css = disabled ? styles.disabledModal : "";
+        const css = disabled && !allowedEditCode.includes(type) ? styles.disabledModal : "";
+        console.log(css, disabled, type,'shiye')
         const preErr =
         +giftTotalCountBag < 1 || +giftTotalCountBag > 999999
             ? "error"
             : "success";
-    const preErrText =
-        (+giftTotalCountBag < 1 || +giftTotalCountBag > 999999) &&
+        const preErrText = (+giftTotalCountBag < 1 || +giftTotalCountBag > 999999) &&
         "请输入大于1小于等于999999的正整数";
         return (
             <div style={{ position: "relative" }}>
