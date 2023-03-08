@@ -27,7 +27,9 @@ export default class Main extends React.PureComponent {
             list: [],
             total: 0,
             pageObj: {},
-            queryParams: {},
+            queryParams: {
+                executeStatus: null
+            },
             currentPanelType: 1,
             statusPanels: [
                 {
@@ -164,21 +166,30 @@ export default class Main extends React.PureComponent {
     }
 
     onOperate = (record, type) => {
-        const { groupID } = getStore().getState().user.get('accountInfo').toJS();
+        const { groupID, accountID } = getStore().getState().user.get('accountInfo').toJS();
         const tabList = getStore().getState().user.get('tabList').toJS();
         const tab = tabList.find(item => item.key === 'sale_automated_sale_detail');
         const tab1 = tabList.find(item => item.key === 'sale_automated_stat_detail');
+        const tab2 = tabList.find(item => item.key === '10000740000');
+        const tab3 = tabList.find(item => item.key === '10000740001');
         if (tab && tab.key === 'sale_automated_sale_detail') {
             closePage(SALE_AUTOMATED_SALE_DETAIL);
         }
         if(tab1 && tab1.key === 'sale_automated_stat_detail'){
             closePage(SALE_AUTOMATED_STAT_DETAIL);
         }
+        if(tab2 && tab2.key === '10000740000'){
+            closePage('10000740000');
+        }
+        if(tab3 && tab3.key === '10000740001'){
+            closePage('10000740001');
+        }
         // 统计
         let pageParams = {
             menuID: SALE_AUTOMATED_SALE_DETAIL,
             type,
             groupID,
+            accountID
         }
         if(type == 'stat'){
             pageParams.menuID = SALE_AUTOMATED_STAT_DETAIL;
@@ -193,12 +204,17 @@ export default class Main extends React.PureComponent {
 
     changePanel = (currentPanelType) => {
         this.setState({
-            currentPanelType
+            currentPanelType,
+            queryParams: {
+                ...this.state.queryParams,
+                executeStatus: currentPanelType
+            }
+        }, () => {
+            this.onQueryList({
+                ...initialPaging,
+                executeStatus: currentPanelType
+            })
         });
-        this.onQueryList({
-            ...initialPaging,
-            executeStatus: currentPanelType
-        })
     }
 
     render() {

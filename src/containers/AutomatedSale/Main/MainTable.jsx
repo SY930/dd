@@ -67,32 +67,32 @@ class MainTable extends Component {
                 title: '活动名称',
                 dataIndex: 'flowName',
                 className: tc,
-                width: 90,
+                width: 150,
             },
             {
                 title: '活动编码',
                 dataIndex: 'flowCode',
                 className: tc,
-                width: 80,
+                width: 150,
             },
             {
                 title: '活动类型',
                 dataIndex: 'maEventType',
                 className: tc,
-                width: 80,
+                width: 150,
                 render: (text, record, index) => (maEventTypeList[record.maEventType])
             },
             {
                 title: '创建时间',
                 className: tc,
-                width: 100,
+                width: 150,
                 render: (text, record, index) => {
                     return `${transformTime(record.createStamp)}`;
                 }
             },
             {
                 title: '创建人/修改人',
-                width: 100,
+                width: 150,
                 render: (text, record, index) => {
                     return (
                         <span>
@@ -105,9 +105,10 @@ class MainTable extends Component {
                 title: '启用/暂停',
                 dataIndex: 'status',
                 className: tc,
-                width: 60,
+                width: 100,
                 render: (text, record) => {
-                    let millseconds = moment(record.eventEndDate, 'YYYYMMDDHHmmss').valueOf();
+                    let currentDate = moment(moment(new Date().getTime()).format('YYYY-MM-DD').valueOf()).valueOf();
+                    let eventEndDate = moment(record.eventEndDate, 'YYYY-MM-DD').valueOf();
                     return (
                         <Switch
                             style={{width: '28px', height: '14px'}}
@@ -115,7 +116,7 @@ class MainTable extends Component {
                             size="small"
                             className={styles.switchBox}
                             onChange={() => this.changeStatus(record)}
-                            disabled={Date.now() > millseconds}
+                            disabled={currentDate > eventEndDate}
                         />
                     )
                 }
@@ -123,13 +124,16 @@ class MainTable extends Component {
             {
                 title: '操作',
                 className: tc,
-                width: 100,
+                // width: 100,
                 // fixed: 'right',
                 render: (text, record) => {
+                    let millseconds = moment(record.eventEndDate, 'YYYYMMDDHHmmss').valueOf();
                     return (
                         <div className={styles.optBtn}>
                             {
-                                record.status == 1 ? null : <a href="#" onClick={() => this.props.onOperate(record, 'edit')}>编辑</a>
+                                record.status == 1 ? null : 
+                                <a href="#" onClick={() => this.props.onOperate(record, 'edit')} 
+                                    disabled={Date.now() > millseconds}>编辑</a>
                             }
                             <a href="#" onClick={() => this.props.onOperate(record, 'see')}>查看</a>
                             {
@@ -170,6 +174,7 @@ class MainTable extends Component {
                     columns={columns}
                     rowKey="itemID"
                     dataSource={dataSource}
+                    style={{ maxWidth: 1200 }}
                     scroll={{ y: 'calc(100vh - 440px)' }}
                     pagination={pagination}
                 />
