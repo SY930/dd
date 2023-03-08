@@ -853,6 +853,7 @@ class SpecialDetailInfo extends Component {
     }
     initState = () => {
         let giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
+        console.log(giftInfo,'giftINfo')
         let eventRecommendSettings = this.props.specialPromotion
             .get("$eventRuleInfos")
             .toJS();
@@ -911,6 +912,11 @@ class SpecialDetailInfo extends Component {
                 }
                 return gift.presentType !== 2;
             });
+        }
+        if (type == 30){
+            if(giftInfo && giftInfo[0] && giftInfo[0].presentType == 4){
+                editItemID = giftInfo[0].itemID;
+            }
         }
         if (type == 60 || type == 61 || type == 53) {
             giftInfo = giftInfo.filter(
@@ -1473,6 +1479,7 @@ class SpecialDetailInfo extends Component {
             perfectReturnGiftCheckBoxStatus,
             upGradeReturnGiftCheckBoxStatus,
             freeGetLimit,
+            pointItemID,
             ...instantDiscountState
         } = this.state;
 
@@ -1502,7 +1509,6 @@ class SpecialDetailInfo extends Component {
                 givePoints,
                 giveCoupon,
                 giftGetRuleValue,
-                pointItemID,
             } = this.state;
             if (!givePoints && !giveCoupon) {
                 message.warning("赠送积分和优惠券必选一项");
@@ -1559,6 +1565,7 @@ class SpecialDetailInfo extends Component {
                     giftOdds: "3",
                     giftTotalCount: giftTotalCountBag,
                     giftConfImagePath,
+                    itemID: pointItemID
                 };
                 this.props.setSpecialGiftInfo([params]);
                 const { shareTitle, shareImagePath } = this.state;
@@ -4562,6 +4569,7 @@ class SpecialDetailInfo extends Component {
         this.setState({ sendTypeValue: target.value });
     };
     onBagChange = (item) => {
+        console.log(item,'item----------')
         if (item) {
             this.setState({ bag: [item] });
             return;
