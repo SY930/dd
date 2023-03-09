@@ -15,7 +15,7 @@ import { initializationOfMyActivities, toggleSelectedActivityStateAC, fetchPromo
 import { getAuthLicenseData } from "../../../redux/actions/saleCenterNEW/specialPromotion.action";
 import { fetchPromotionCategoriesAC, fetchPromotionTagsAC, saleCenterResetBasicInfoAC } from "../../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
 import { fetchPromotionScopeInfo, saleCenterResetScopeInfoAC } from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
-import { saleCenterResetDetailInfoAC, fetchFoodCategoryInfoAC, fetchFoodMenuInfoAC, saleCenterSetPromotionDetailOnlyModifyShopAC } from "../../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
+import { saleCenterResetDetailInfoAC, fetchFoodCategoryInfoAC, fetchFoodMenuInfoAC, saleCenterSetPromotionDetailOnlyModifyShopAC, fetchFoodMenuInfoLightAC } from "../../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import { fetchPromotionDetail, resetPromotionDetail, fetchPromotionDetailCancel } from "../../../redux/actions/saleCenterNEW/promotion.action";
 import { ACTIVITY_CATEGORIES, SALE_CENTER_ACTIVITY_ORDER_TYPE_LIST, SALE_CENTER_ACTIVITY_SUITSENCE_LIST, getPromotionIdx, promotionBasicDataAdapter, promotionScopeInfoAdapter, promotionDetailInfoAdapter, TRIPLE_STATE } from "../../../redux/actions/saleCenterNEW/types";
 import axios from "axios";
@@ -132,7 +132,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(fetchFoodCategoryInfoAC(opts, flag, id));
         },
         fetchFoodMenuInfo: (opts, flag, id) => {
-            dispatch(fetchFoodMenuInfoAC(opts, flag, id));
+            dispatch(fetchFoodMenuInfoLightAC(opts, flag, id));
         },
         queryPromotionAutoRunList: opts => {
             dispatch(queryPromotionAutoRunList(opts));
