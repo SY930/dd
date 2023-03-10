@@ -1106,6 +1106,9 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'EGfitValidUntilDayCount',
                 key: 'EGfitValidUntilDayCount',
                 className: 'TableTxtRight',
+                render: (t, record) => {
+                    return record.effectType == '4' ? '当周' : record.effectType == '5' ? '当月' : t
+                }
             },
         ];
         if(way == 95){//如果是限时秒杀
@@ -1162,6 +1165,7 @@ class SpecialPromotionDetail extends React.Component {
                 benefitCardName: gift.cardTypeName,  
                 helpEventCount: gift.helpEventCount,
                 launchEventCount: gift.launchEventCount,
+                effectType: gift.effectType,
             }
         });
         if (this.props.record.eventInfo.data.eventWay == 68) {
