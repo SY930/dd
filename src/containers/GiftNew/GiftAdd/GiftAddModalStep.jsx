@@ -2495,7 +2495,8 @@ shopAreaSelectorChange = (value) => {
                 // 区分回显还是新建
                 if(values.hasOwnProperty('shopIDs') && values.shopIDs instanceof Array && values.shopIDs.length > 0) {
                     // 满足以上全部条件（回显模式下需要满足）
-                    this.handleMallChange(values.shopIDs[0]);
+                    const len = values.shopIDs.length
+                    this.handleMallChange(values.shopIDs[len - 1]);
                 }
             } else {
                 // 前端传到后端采用拼接，组合成 couponFoodScope， 后端返回字段名称又改为 couponFoodScopeList
@@ -2613,6 +2614,7 @@ shopAreaSelectorChange = (value) => {
             showToolTips = false;
         }
         let initialValue = [];
+        console.log(values)
         if(values.applyScene == '1' || values.applyScene == '2') {
 
             // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制
@@ -2620,9 +2622,10 @@ shopAreaSelectorChange = (value) => {
             if(goodCategories instanceof Array && goodCategories.length == 0) {
                 // data.selectBrands[0].targetID; 当前店铺 ID
                 // 区分回显还是新建
-                if(values.hasOwnProperty('shopIDs')) {
+                if(values.hasOwnProperty('shopIDs') && values.shopIDs instanceof Array && values.shopIDs.length > 0) {
+                    const len = values.shopIDs.length
                     // 满足以上全部条件（回显模式下需要满足）
-                    this.handleMallChange(values.shopIDs[0]);
+                    this.handleMallChange(values.shopIDs[len - 1]);
                 }
             }
 
