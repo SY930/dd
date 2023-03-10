@@ -1060,7 +1060,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'EGiftName',
                 key: 'EGiftName',
                 render: (text, record) => {
-                    return <span title={record.EGiftName}>{record.EGiftName}</span>
+                    return <span title={`${record.EGiftName}${record.giftLastConfig == '1' ? '（发放中）' : ''}`}>{record.EGiftName}{record.giftLastConfig == '1' && '（发放中）'}</span>
                 }
             },
             {
@@ -1107,7 +1107,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'EGfitValidUntilDayCount',
                 className: 'TableTxtRight',
                 render: (t, record) => {
-                    return record.effectType == '4' ? '当周' : record.effectType == '5' ? '当月' : t
+                    return record.effectType == '4' ? '领取当周有效' : record.effectType == '5' ? '领取当月有效' : t
                 }
             },
         ];
@@ -1166,6 +1166,7 @@ class SpecialPromotionDetail extends React.Component {
                 helpEventCount: gift.helpEventCount,
                 launchEventCount: gift.launchEventCount,
                 effectType: gift.effectType,
+                giftLastConfig: gift.giftLastConfig
             }
         });
         if (this.props.record.eventInfo.data.eventWay == 68) {
