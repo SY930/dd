@@ -51,6 +51,7 @@ import { isZhouheiya, isGeneral, WJLPGroupID, isWeijia, isSellGroupID } from "..
 import GoodsRef from '@hualala/sc-goodsRef';
 import { getWJLPCoulums } from './config'
 import { isFormalRelease } from "../../../utils/index";
+import DietOpenGroupIDs from "../../../constants/DietOpenWhite";
 
 const { GoodsSelector } = GoodsRef;
 const Option = Select.Option;
@@ -2129,7 +2130,7 @@ class MyActivities extends React.Component {
                 render: (text, record, index) => {
                     const isGroupPro = record.maintenanceLevel == "0"; //区分集团和店铺
                     //禁用的消费返礼品、消费返积分不展示删除
-                    const isHidden = (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
+                    const isHidden = DietOpenGroupIDs.includes(this.props.user.accountInfo.groupID) ? false : (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
                     return (
                         <span>
                             <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
@@ -2261,7 +2262,7 @@ class MyActivities extends React.Component {
                         }
                     })();
                      //禁用的消费返礼品、消费返积分不展示启用停用
-                     const isHidden = (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
+                     const isHidden = DietOpenGroupIDs.includes(this.props.user.accountInfo.groupID) ? false : (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
                      if(isHidden) {
                         return null
                      }

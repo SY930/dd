@@ -57,6 +57,7 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 import newPromotionCardPageConfig from '../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
 import { updateCurrentPromotionPageAC } from '../SaleActives/NewPromotionCardPages/store/action';
 import { zhouheiyaMarketingtype } from '../../constants/WhiteList'
+import DietOpenGroupIDs from "../../constants/DietOpenWhite";
 
 // 跳转到带装修的活动设置页面
 const activityList = [
@@ -392,7 +393,7 @@ class PromotionCreateModal extends Component {
             },
             {
                 title: k6316iac,
-                list: REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '3010' && item.key != '3020'),//下线消费返礼品3010、消费返积分3020，20230301迭代,
+                list: DietOpenGroupIDs.includes(groupID) ? REPEAT_PROMOTION_TYPES_FILTER : REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '3010' && item.key != '3020'),//下线消费返礼品3010、消费返积分3020，20230301迭代,
             },
             {
                 title: k6316hlc,
