@@ -959,6 +959,9 @@ class SpecialDetailInfo extends Component {
                 }
                 if (this.props.type == '30') {
                     data[index].giftConfImagePath = gift.giftConfImagePath;
+                    if (gift.presentType == '4') { // 券包场景下 effectType为0，需重置
+                        data[index].effectType = '1';
+                    }
                 }
                 data[index].needCount.value = gift.needCount || 0;
                 data[index].giftInfo.giftItemID = gift.giftID;

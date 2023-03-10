@@ -881,8 +881,6 @@ class AddGifts extends React.Component {
                                 }
                             </Select>
                         </FormItem>
-
-
                         <FormItem
                             className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
                             labelCol={{ span: 8 }}
@@ -905,7 +903,7 @@ class AddGifts extends React.Component {
                             />
                         </FormItem> </div>) :
                         // 周期
-                        (<div>
+                          type == '21' ? (<div>
                             <FormItem
                                 className={[styles.FormItemStyle].join(' ')}
                             >
@@ -930,7 +928,8 @@ class AddGifts extends React.Component {
                                     }
                                 </RadioGroup>
                             </FormItem>
-                        </div>)}
+                        </div>) : null
+                        }
 
                 </div>
             );
