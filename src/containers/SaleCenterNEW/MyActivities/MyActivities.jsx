@@ -490,7 +490,10 @@ class MyActivities extends React.Component {
                 nextActive,
                 modalTip,
                 sale_promotionVersion: record ? record.promotionVersion : '1.0',
-                cb: () => {}
+                cb: (val) => {
+                    message.success(val);
+                    this.handleQuery(this.state.pageNo);
+                }
             });
         }
 
