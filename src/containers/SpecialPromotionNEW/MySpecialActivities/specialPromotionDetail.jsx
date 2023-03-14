@@ -1080,6 +1080,9 @@ class SpecialPromotionDetail extends React.Component {
                             text = '不限制'
                         }
                     }
+                    if (record.giftLastConfig == 1 && record.stockType == 2) {
+                        text = '不限制'
+                    }
                     return text
                 }
             },
