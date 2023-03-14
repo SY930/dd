@@ -6,11 +6,10 @@ import { BASIC_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import Authority from '../../../components/common/Authority';
 import { isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian, isMine } from '../../../constants/projectHuatianConf';
 import { isZhouheiya, isGeneral, businessTypesList } from '../../../constants/WhiteList';
-import DietOpenGroupIDs from "../../../constants/DietOpenWhite";
 import styles from '../ActivityPage.less';
 
 // 活动列表字段针对魏家重新排序
-export const getWJLPCoulums = (_this) => {
+export const getWJLPCoulums = (_this, state) => {
   return (
     [
       {
@@ -33,7 +32,7 @@ export const getWJLPCoulums = (_this) => {
         render: (text, record, index) => {
           const isGroupPro = record.maintenanceLevel == '0'; // 区分集团和店铺
           //禁用的消费返礼品、消费返积分不展示删除
-          const isHidden = DietOpenGroupIDs.includes(_this.props.user.accountInfo.groupID) ? false : (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
+          const isHidden = _this.state.isConsumeReturnWhiteList ? false : (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
           return (
             <span>
               <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
@@ -164,7 +163,7 @@ export const getWJLPCoulums = (_this) => {
             }
           })();
           //禁用的消费返礼品、消费返积分不展示删除
-          const isHidden = DietOpenGroupIDs.includes(_this.props.user.accountInfo.groupID) ? false : (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
+          const isHidden = _this.state.isConsumeReturnWhiteList ? false : (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
           if(isHidden) {
             return null
          }

@@ -57,7 +57,6 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 import newPromotionCardPageConfig from '../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
 import { updateCurrentPromotionPageAC } from '../SaleActives/NewPromotionCardPages/store/action';
 import { zhouheiyaMarketingtype } from '../../constants/WhiteList'
-import DietOpenGroupIDs from "../../constants/DietOpenWhite";
 
 // 跳转到带装修的活动设置页面
 const activityList = [
@@ -79,6 +78,7 @@ class PromotionCreateModal extends Component {
             currentCategoryIndex: 0,
             whiteList: [],
             v3visible: false,       // 第三版活动组件是否显示
+            isConsumeReturnWhiteList: false,
         };
         this.handleNewPromotionCardClick = this.handleNewPromotionCardClick.bind(this);
     }
@@ -88,6 +88,12 @@ class PromotionCreateModal extends Component {
         checkAcessWhiteList('consume_send_gifts').then((boolen) => {
             this.setState({
                 isConsumeWhiteList: boolen
+            })
+        })
+        //消费返礼品、消费返积分白名单校验
+        checkAcessWhiteList('consume_return').then((boolen) => {
+            this.setState({
+                isConsumeReturnWhiteList: boolen
             })
         })
     }
@@ -368,7 +374,7 @@ class PromotionCreateModal extends Component {
     renderModalContent() {
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
-        const {whiteList, v3visible, curKey, isConsumeWhiteList} = this.state;
+        const {whiteList, v3visible, curKey, isConsumeWhiteList, isConsumeReturnWhiteList} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
@@ -393,7 +399,7 @@ class PromotionCreateModal extends Component {
             },
             {
                 title: k6316iac,
-                list: DietOpenGroupIDs.includes(groupID) ? REPEAT_PROMOTION_TYPES_FILTER : REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '3010' && item.key != '3020'),//下线消费返礼品3010、消费返积分3020，20230301迭代,
+                list: isConsumeReturnWhiteList ? REPEAT_PROMOTION_TYPES_FILTER : REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '3010' && item.key != '3020'),//下线消费返礼品3010、消费返积分3020，20230301迭代,
             },
             {
                 title: k6316hlc,

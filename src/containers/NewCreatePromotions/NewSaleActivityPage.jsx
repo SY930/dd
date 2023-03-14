@@ -76,7 +76,6 @@ import {
 } from '../../redux/actions/saleCenterNEW/types';
 import newPromotionCardPageConfig from '../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
 import { updateCurrentPromotionPageAC } from '../SaleActives/NewPromotionCardPages/store/action';
-import DietOpenGroupIDs from "../../constants/DietOpenWhite";
 
 //周黑鸭新增
 import { isZhouheiya, isGeneral } from "../../constants/WhiteList";
@@ -109,7 +108,8 @@ class NewCustomerPage extends Component {
         gentGiftStatus: false, //是否有智能发券
         isJumpNew: true,
         ifJumpSetData: false,
-        ifJumpSelfDefine: false
+        ifJumpSelfDefine: false,
+        isConsumeReturnWhiteList: false,
     };
 
     componentDidMount() {
@@ -124,6 +124,12 @@ class NewCustomerPage extends Component {
         checkAcessWhiteList('consume_send_gifts').then((boolen) => {
             this.setState({
                 isConsumeWhiteList: boolen
+            })
+        })
+        //消费返礼品、消费返积分白名单校验
+        checkAcessWhiteList('consume_return').then((boolen) => {
+            this.setState({
+                isConsumeReturnWhiteList: boolen
             })
         })
         // setSensorsData("wtcrm_promotion_clk");
@@ -774,7 +780,7 @@ class NewCustomerPage extends Component {
     };
 
     render() {
-        const { whiteList, v3visible, curKey, isConsumeWhiteList } = this.state;
+        const { whiteList, v3visible, curKey, isConsumeWhiteList, isConsumeReturnWhiteList } = this.state;
         const state = getStore().getState();
         const { groupID } = state.user.get("accountInfo").toJS();
         const { intl } = this.props;
@@ -795,7 +801,7 @@ class NewCustomerPage extends Component {
             },
             {
                 title: k6316iac, // 促进复购
-                list: DietOpenGroupIDs.includes(groupID) ? REPEAT_PROMOTION_TYPES_FILTER : REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '3010' && item.key != '3020'),//下线消费返礼品3010、消费返积分3020，20230301迭代,0315对饮食通集团放开李利
+                list: isConsumeReturnWhiteList ? REPEAT_PROMOTION_TYPES_FILTER : REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '3010' && item.key != '3020'),//下线消费返礼品3010、消费返积分3020，20230301迭代,0315对饮食通集团放开李利
             },
             {
                 title: "互动营销",
