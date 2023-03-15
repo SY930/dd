@@ -489,11 +489,6 @@ class NewCustomerPage extends Component {
                 .toJS()
                 .findIndex(promotion => promotion.key === key);
             this.handleBasicPromotionCreate(basicIndex, promotionEntity);
-            if(key == '3010' || key == '3020') {
-                setTimeout(() => {
-                    this.setState({ showTips: true })
-                }, 100)
-            }
         }
         let params = {
             platform: currentPlatformName,
@@ -523,14 +518,18 @@ class NewCustomerPage extends Component {
         this.props.setBasicPromotionType({
             promotionType: key
         });
-        this.setBasicModalVisible(true);
+        this.setBasicModalVisible(true, key);
         this.setState({
             basicIndex: index
         });
     }
 
-    setBasicModalVisible(basicModalVisible) {
-        this.setState({ basicModalVisible });
+    setBasicModalVisible(basicModalVisible, key) {
+        this.setState({ basicModalVisible }, () => {
+            if(key == '3010' || key == '3020') {
+                this.setState({ showTips: true })
+            }
+        });
         if (!basicModalVisible) {
             this.props.saleCenterResetBasicBasicInfo();
             this.props.saleCenterResetBasicScopeInfo();
