@@ -1,4 +1,4 @@
-import { Button, Col } from 'antd';
+import { Button, Col, Alert } from 'antd';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import {
@@ -31,7 +31,10 @@ class HeaderTitle extends Component {
 
         return (
             <Col className={styles.headerTitle}>
-                <h1>{currentPromotion.title}</h1>
+                <h1 style={{ display: 'flex', alignItems: 'center' }}>
+                    {currentPromotion.title}
+                    {promotionKey == '87' ? <Alert style={{ marginBottom: 0, marginLeft: 10 }} message="请升级POS2.0-20221130beta/微信小程序SR-3.21.0以上版本使用" type="warning" showIcon /> : null}
+                </h1>
                 <span>
                     <Button onClick={onClose}>取消</Button>
                     {

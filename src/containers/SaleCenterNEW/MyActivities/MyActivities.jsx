@@ -34,7 +34,7 @@ import { saleCenter_NEW as sale_saleCenter_NEW } from "../../../redux/reducer/sa
 import { promotionAutoRunState as sale_promotionAutoRunState } from "../../../redux/reducer/saleCenterNEW/promotionAutoRun.reducer";
 import { giftInfoNew as sale_giftInfoNew } from "../../GiftNew/_reducers";
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from "../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer";
-import { axiosData, getAccountInfo } from "../../../helpers/util";
+import { axiosData, getAccountInfo, checkAcessWhiteList } from "../../../helpers/util";
 import ENV from '../../../helpers/env';
 import PromotionAutoRunModal from "./PromotionAutoRunModal";
 import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
@@ -216,6 +216,7 @@ class MyActivities extends React.Component {
             executeTimeType: 0,
             executeFoodUnitType: 1,
 	        auditStatus: '-1', // 审批状态
+            isConsumeReturnWhiteList: false,
         };
         this.cfg = {
             auditStatus: [
@@ -248,6 +249,12 @@ class MyActivities extends React.Component {
         this.props.getAuthLicenseData({ productCode: "HLL_CRM_Marketingbox" }).then(res => {
             this.setState({ authLicenseData: res });
         });
+        //消费返礼品、消费返积分白名单校验
+        checkAcessWhiteList('consume_return').then((boolen) => {
+            this.setState({
+                isConsumeReturnWhiteList: boolen
+            })
+        })
         queryPromotionAutoRunList();
         this.onWindowResize();
         this.getSearchListContent(); // 查询方案列表
@@ -2107,6 +2114,7 @@ class MyActivities extends React.Component {
         const k5ey8l0e = intl.formatMessage(SALE_STRING.k5ey8l0e);
         const k5ey8lip = intl.formatMessage(SALE_STRING.k5ey8lip);
         const l88f03b4 = intl.formatMessage(SALE_STRING.l88f03b4);
+        const { isConsumeReturnWhiteList } = this.state
         
         let columns = [
             {
@@ -2129,7 +2137,7 @@ class MyActivities extends React.Component {
                 render: (text, record, index) => {
                     const isGroupPro = record.maintenanceLevel == "0"; //区分集团和店铺
                     //禁用的消费返礼品、消费返积分不展示删除
-                    const isHidden = (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
+                    const isHidden = isConsumeReturnWhiteList ? false : (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
                     return (
                         <span>
                             <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
@@ -2261,7 +2269,7 @@ class MyActivities extends React.Component {
                         }
                     })();
                      //禁用的消费返礼品、消费返积分不展示启用停用
-                     const isHidden = (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
+                     const isHidden = isConsumeReturnWhiteList ? false : (record.promotionType == '3010' || record.promotionType == '3020') && (record.isActive == '0' || record.status == 3)
                      if(isHidden) {
                         return null
                      }

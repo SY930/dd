@@ -101,6 +101,9 @@ class NewPromotionCard extends Component {
             }
             return null
         }
+        if(['3010', '3020'].includes(key)) {
+            return <em className={styles.redValidDate}>近期下线</em>
+        }
         return null
     }
 
