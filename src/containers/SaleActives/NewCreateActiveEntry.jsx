@@ -104,7 +104,6 @@ class NewCreateActiveEntry extends Component {
 
     render() {
         const { typeKey = "", itemID, isView, isActive, mode } = this.state.urlObj;
-        console.log(mode,'mode123')
         const { loading, clientType } = this.state;
         const currentInfo = createActiveList.find(v => v.key === typeKey) || {};
         let Comp = currentInfo.comp;

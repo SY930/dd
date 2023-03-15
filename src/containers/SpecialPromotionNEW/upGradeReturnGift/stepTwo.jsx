@@ -166,7 +166,6 @@ class StepTwo extends React.Component {
                 addUpOpts.amountType = specialPromotion.amountType;
                 addUpOpts.consumeRuleAmount = specialPromotion.consumeRuleAmount;
                 addUpOpts.consumeRuleAmountValue = specialPromotion.consumeRuleAmount;
-                console.log('_TODO specialPromotion', specialPromotion);
 
             }
             const opts = {
@@ -375,7 +374,6 @@ class StepTwo extends React.Component {
         });
     }
     handleAmountTypeChange(value){
-        console.log('_TODO 1', value);
          this.setState({
             amountType: value,
             consumeRuleAmountValue: 0,
@@ -413,7 +411,6 @@ class StepTwo extends React.Component {
         }
     }
     handleConsumeRuleAmountChange(value){
-        console.log('_TODO value', value);
         let pattern = /^((([1-9]\d{0,4}))(\.\d{0,2})?$)|(0\.\d{0,2}?$)/;
         if (pattern.test(value.number) || value.number == 0) {
             this.setState({

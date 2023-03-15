@@ -853,7 +853,6 @@ class SpecialDetailInfo extends Component {
     }
     initState = () => {
         let giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
-        console.log(giftInfo,'giftINfo')
         let eventRecommendSettings = this.props.specialPromotion
             .get("$eventRuleInfos")
             .toJS();
@@ -4569,7 +4568,6 @@ class SpecialDetailInfo extends Component {
         this.setState({ sendTypeValue: target.value });
     };
     onBagChange = (item) => {
-        console.log(item,'item----------')
         if (item) {
             this.setState({ bag: [item] });
             return;
@@ -4583,7 +4581,6 @@ class SpecialDetailInfo extends Component {
         const { user, type, disabled } = this.props;
         const { groupID } = user.accountInfo;
         const css = disabled && !allowedEditCode.includes(type) ? styles.disabledModal : "";
-        console.log(css, disabled, type,'shiye')
         const preErr =
         +giftTotalCountBag < 1 || +giftTotalCountBag > 999999
             ? "error"
