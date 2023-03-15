@@ -110,6 +110,7 @@ class NewCustomerPage extends Component {
         ifJumpSetData: false,
         ifJumpSelfDefine: false,
         isConsumeReturnWhiteList: false,
+        showTips: false,
     };
 
     componentDidMount() {
@@ -488,6 +489,11 @@ class NewCustomerPage extends Component {
                 .toJS()
                 .findIndex(promotion => promotion.key === key);
             this.handleBasicPromotionCreate(basicIndex, promotionEntity);
+            if(key == '3010' || key == '3020') {
+                setTimeout(() => {
+                    this.setState({ showTips: true })
+                }, 100)
+            }
         }
         let params = {
             platform: currentPlatformName,
@@ -780,7 +786,7 @@ class NewCustomerPage extends Component {
     };
 
     render() {
-        const { whiteList, v3visible, curKey, isConsumeWhiteList, isConsumeReturnWhiteList } = this.state;
+        const { whiteList, v3visible, curKey, isConsumeWhiteList, isConsumeReturnWhiteList, showTips } = this.state;
         const state = getStore().getState();
         const { groupID } = state.user.get("accountInfo").toJS();
         const { intl } = this.props;
@@ -913,6 +919,19 @@ class NewCustomerPage extends Component {
                 {v3visible && curKey == "83" && <PassWordCoupon onToggle={this.onV3Click} />}
                 {/* {(v3visible && curKey == '10072') && this.renderWeChat2MallModal()} */}
                 {/* {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} />} */}
+                <Modal 
+                    title="活动POS版本提示" 
+                    visible={showTips} 
+                    onCancel={() => this.setState({ showTips: false })}
+                    footer={[<div style={{ textAlign: 'center' }}><Button onClick={() => this.setState({ showTips: false })}>知道了</Button></div>]}
+                >
+                    <div>特别注意：</div>
+                    <div>消费返礼品、消费返积分活动和消费送礼活动适用的POS2.0版本不同，活动不能同时在不同POS版本生效，为避免影响您的营销效果，请详细阅读以下活动提示：</div>
+                    <div>1.【消费返礼品】和【消费返积分】POS2.0版本要求：</div>
+                    <div>POS2.0必须低于20221130beta版本使用，为保证您配置活动的正常使用，请确保集团下所有门店POS2.0指定版本。POS2.0高于20221130beta版本不支持。</div>
+                    <div>2.【消费送礼】活动POS2.0版本要求：</div>
+                    <div>POS2.0必须高于20221130beta版本使用，烦请统一升级集团下所有门店的POS2.0版本到20221130beta版以上。</div>
+                </Modal>
             </div>
         );
     }
