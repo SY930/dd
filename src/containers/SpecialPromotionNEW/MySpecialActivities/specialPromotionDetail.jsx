@@ -1025,7 +1025,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'EGiftSingleCount',
                 key: 'EGiftSingleCount',
                 className: 'TableTxtRight',
-                render(text) {
+                render(text, record) {
                     if (way == '30') {
                         return text == 0 ? '' : text
                     }
