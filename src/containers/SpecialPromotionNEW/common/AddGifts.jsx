@@ -132,6 +132,7 @@ class AddGifts extends React.Component {
             couponData: [],
             wxCouponData: []
         };
+        const { type } = this.props;
 
         this.handlegiftTotalCountChange = this.handlegiftTotalCountChange.bind(this);
         this.handlegiftCountChange = this.handlegiftCountChange.bind(this);
@@ -146,7 +147,7 @@ class AddGifts extends React.Component {
         this.handleRangePickerChange = this.handleRangePickerChange.bind(this);
         this.proGiftTreeData = this.proGiftTreeData.bind(this);
         this.VALIDATE_TYPE = Object.freeze(
-            this.props.type == '53' ? 
+            type == '53' ? 
             [
                 { key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}` },
                 { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` },
@@ -408,7 +409,7 @@ class AddGifts extends React.Component {
             disArr[index] = toggle;
             this.setState({ disArr })
         }
-        const { intl, theme } = this.props;
+        const { intl, theme, type } = this.props;
         const eventStartDate = this.props.specialPromotion.getIn(['$eventInfo', 'eventStartDate']);
         const eventEndDate = this.props.specialPromotion.getIn(['$eventInfo', 'eventEndDate']);
 
@@ -579,7 +580,7 @@ class AddGifts extends React.Component {
                                     // value={info.effectType == '2' ? '2' : info.effectType == '99' ? '99' : '1'}
                                     value={
                                         info.effectType == '2' ? '2' 
-                                        : (info.effectType == '99' || info.effectType == '4' || info.effectType == '5') ? '99' : '1'
+                                        : ((info.effectType == '99' || info.effectType == '4' || info.effectType == '5') && type == '53') ? '99'  : '1'
                                     }
                                     onChange={val => this.handleValidateTypeChange(val, index)}
                                     disabled={info.effectTypeIsDisabled}
@@ -796,7 +797,8 @@ class AddGifts extends React.Component {
     // form的label样式，三种实现，哎，
     // 相对有效期 OR 固定有效期 OR 周期有效期
     renderValidOptions(info, index) {
-        if(info.effectType == '99' || info.effectType == '4' || info.effectType == '5'){
+        const { type } = this.props;
+        if((info.effectType == '99' || info.effectType == '4' || info.effectType == '5') && type == '53'){
             return (
                 <FormItem
                     className={[styles.FormItemStyle].join(' ')}
@@ -822,6 +824,13 @@ class AddGifts extends React.Component {
             );
         }
         if (info.effectType != '2') {
+            const { effectType } = info;
+            const effectiveTimeOpt = type == '21' ? [{ value: '0', label: `${this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n925113)}` }, 
+            { value: '1', label: `${this.props.intl.formatMessage(STRING_SPE.d1e04rqggt261)}` },
+            { value: '4', label: '按周期'}
+        ] 
+            : [{ value: '0', label: `${this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n925113)}` }, { value: '1', label: `${this.props.intl.formatMessage(STRING_SPE.d1e04rqggt261)}` }];
+
             return (
                 <div>
                     <FormItem
@@ -830,10 +839,10 @@ class AddGifts extends React.Component {
                         <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}</span>
                         <RadioGroup
                             className={styles.radioMargin}
-                            value={info.effectType == '3' ? '1' : '0'}
+                            value={info.effectType == '3' ? '1' : (effectType == '4' || effectType == '5') ? '4' : '0'}
                             onChange={e => {
                                 const infos = this.state.infos;
-                                infos[index].effectType = e.target.value == '1' ? '3' : '1';
+                                infos[index].effectType = e.target.value == '1' ? '3' : e.target.value == '4' ? '4' : '1';
                                 infos[index].giftEffectiveTime.value = e.target.value;
                                 this.setState({
                                     infos,
@@ -843,59 +852,87 @@ class AddGifts extends React.Component {
                             }}
                         >
                             {
-                                [{ value: '0', label: `${this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n925113)}` }, { value: '1', label: `${this.props.intl.formatMessage(STRING_SPE.d1e04rqggt261)}` }].map((item, index) => {
+                               effectiveTimeOpt.map((item, index) => {
                                     return <Radio value={item.value} key={index}>{item.label}</Radio>
                                 })
                             }
                         </RadioGroup>
                     </FormItem>
-                    <FormItem
-                        label={this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd27139)}
-                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
-                    >
-                        <Select
-                            size="default"
-                            value={
-                                typeof this.state.infos[index].giftEffectiveTime.value === 'object' ?
-                                    '0' :
-                                    `${this.state.infos[index].giftEffectiveTime.value}`
-                            }
-                            onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
-                            getPopupContainer={(node) => node.parentNode}
+                    {(effectType == '1' || effectType == '3') ? (<div>
+                        <FormItem
+                            label={this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd27139)}
+                            className={[styles.FormItemStyle, styles.labeleBeforeSlect, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}
                         >
-                            {
-                                (info.effectType == '1' ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)
-                                    .map((item, index) => {
-                                        return (<Option value={item.value} key={index}>{item.label}</Option>);
-                                    })
-                            }
-                        </Select>
-                    </FormItem>
+                            <Select
+                                size="default"
+                                value={
+                                    typeof this.state.infos[index].giftEffectiveTime.value === 'object' ?
+                                        '0' :
+                                        `${this.state.infos[index].giftEffectiveTime.value}`
+                                }
+                                onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
+                                getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    (info.effectType == '1' ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)
+                                        .map((item, index) => {
+                                            return (<Option value={item.value} key={index}>{item.label}</Option>);
+                                        })
+                                }
+                            </Select>
+                        </FormItem>
+                        <FormItem
+                            className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}
+                            label={`${this.props.intl.formatMessage(STRING_SPE.d17009bd421d28267)}`}
+                            required={true}
+                            validateStatus={info.giftValidDays.validateStatus}
+                            help={info.giftValidDays.msg}
+                        >
 
 
-                    <FormItem
-                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
-                        label={`${this.props.intl.formatMessage(STRING_SPE.d17009bd421d28267)}`}
-                        required={true}
-                        validateStatus={info.giftValidDays.validateStatus}
-                        help={info.giftValidDays.msg}
-                    >
+                            <PriceInput
+                                addonBefore=""
+                                addonAfter={this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}
+                                maxNum={5}
+                                modal="int"
+                                value={{ number: info.giftValidDays.value }}
+                                onChange={(val) => { this.handleGiftValidDaysChange(val, index); }}
+                                placeholder="请输入有效天数"
+                            />
+                        </FormItem> </div>) :
+                        // 周期
+                          type == '21' ? (<div>
+                            <FormItem
+                                className={[styles.FormItemStyle].join(' ')}
+                            >
+                                <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>有效期限</span>
+                                <RadioGroup
+                                    className={styles.radioMargin}
+                                    value={info.effectType}
+                                    onChange={e => {
+                                        const infos = this.state.infos;
+                                        infos[index].effectType = e.target.value
+                                        this.setState({
+                                            infos,
+                                        }, () => {
+                                            this.props.onChange && this.props.onChange(this.state.infos);
+                                        })
+                                    }}
+                                >
+                                    {
+                                        [{ value: '4', label: '当周有效'}, { value: '5', label: '当月有效'}].map((item, index) => {
+                                            return <Radio value={item.value} key={index}>{item.label}</Radio>
+                                        })
+                                    }
+                                </RadioGroup>
+                            </FormItem>
+                        </div>) : null
+                        }
 
-
-                        <PriceInput
-                            addonBefore=""
-                            addonAfter={this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}
-                            maxNum={5}
-                            modal="int"
-                            value={{ number: info.giftValidDays.value }}
-                            onChange={(val) => { this.handleGiftValidDaysChange(val, index); }}
-                            placeholder="请输入有效天数"
-                        />
-                    </FormItem>
                 </div>
             );
         }

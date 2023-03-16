@@ -967,6 +967,9 @@ class SpecialDetailInfo extends Component {
                 }
                 if (this.props.type == '30') {
                     data[index].giftConfImagePath = gift.giftConfImagePath;
+                    if (gift.presentType == '4') { // 券包场景下 effectType为0，需重置
+                        data[index].effectType = '1';
+                    }
                 }
                 data[index].needCount.value = gift.needCount || 0;
                 data[index].giftInfo.giftItemID = gift.giftID;
@@ -1286,7 +1289,7 @@ class SpecialDetailInfo extends Component {
     getGiftInfo = (data) => {
         const giftArr = data.map((giftInfo, index) => {
             let gifts;
-            if(giftInfo.effectType == '99' || giftInfo.effectType == '4' || giftInfo.effectType == '5'){
+            if((giftInfo.effectType == '99' || giftInfo.effectType == '4' || giftInfo.effectType == '5') && this.props.type == '53'){
                 gifts = {
                     effectType: giftInfo.weekEffectType || '4',
                     giftID: giftInfo.giftInfo.giftItemID,

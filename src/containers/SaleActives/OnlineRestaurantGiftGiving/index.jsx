@@ -53,6 +53,20 @@ class OnlineRestaurantGiftGiving extends Component {
         }
     };
 
+    getCountType = (item) => {
+    const effectType = `${item.effectType}`
+       switch (effectType) {
+        case '3':
+            return '1'
+        case '1':
+            return '0'
+        case '2':
+            return ''
+        default:
+            return '4';
+       }
+    }
+
     setSlectedWxCouponList = (slectedWxCouponList) => {
         this.setState({
             slectedWxCouponList,
@@ -76,7 +90,7 @@ class OnlineRestaurantGiftGiving extends Component {
                 return {
                     ...item,
                     giftIDNumber: item.giftID,
-                    countType: item.effectType == 3 ? "1" : "0",
+                    countType: this.getCountType(item),
                     giftEffectTimeHours: item.giftEffectTimeHours ? String(item.giftEffectTimeHours) : '',
                     rangeDate:
                         item.effectType == 2 &&
@@ -88,6 +102,7 @@ class OnlineRestaurantGiftGiving extends Component {
                               ]
                             : [],
                     effectType: item.effectType == 2 ? 2 : 1,
+                    weekEffectType: `${item.effectType}`,
                 };
             }),
             timeList: timeList.length
@@ -264,7 +279,7 @@ class OnlineRestaurantGiftGiving extends Component {
                             ? 2
                             : item.countType == "0"
                             ? 1
-                            : 3,
+                            : item.countType == '1' ? 3 : (item.weekEffectType || '4'),
                     effectTime:
                         item.effectType == 2 &&
                         item.rangeDate &&

@@ -155,7 +155,7 @@ class LotteryThirdStep extends React.Component {
                     //在相对有效期被选中的情况下，的维持有效时间 。在固定有效期的时候这个值为0
                     infos[index].giveCoupon.value.giftValidDays.value = gift.giftValidUntilDayCount;
                     //生效时间类型： 按小时 还是 按天。
-                    infos[index].giveCoupon.value.dependType = gift.effectType == '3' ? '3' : '1';
+                    infos[index].giveCoupon.value.dependType = gift.effectType == '3' ? '3' : gift.effectType == '1' ? '1' : '4';
                     // 礼品生效时间
                     infos[index].giveCoupon.value.giftEffectiveTime.value= gift.effectType != '2' ? gift.giftEffectTimeHours
                         : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')];
@@ -680,10 +680,18 @@ class LotteryThirdStep extends React.Component {
         if(val == '3'){
             //点击到按天的时候把按天模式下的默认值设置为1天生效
             _infos[index].giveCoupon.value.giftEffectiveTime.value = '1';
-        }else{
+        }else if (val == '1'){
             //点击到按小时的时候把按小时模式下的默认值设置为立即生效
             _infos[index].giveCoupon.value.giftEffectiveTime.value = '0';
         }
+        this.setState({
+            infos: _infos,
+        });
+    }
+
+    handleWeekEffectTypeeChange = (val, index) =>{
+        const _infos = this.state.infos;
+        _infos[index].giveCoupon.value.effectType = val;
         this.setState({
             infos: _infos,
         });
@@ -941,6 +949,8 @@ class LotteryThirdStep extends React.Component {
                                             this.handleGiftValidDaysChange({number: tempobj.giftValidDays.value},activeKey);
                                             this.handleGiftEffectiveTimeChange(tempobj.giftEffectiveTime.value,activeKey);
                                         }
+                                    } else if (tempobj.effectType == '4' || tempobj.effectType == '5' || tempobj.effectType == '99') {
+                                        tempResult = true;
                                     }else{
                                         //固定有效期
                                         if(tempobj.giftEffectiveTime.value.constructor != Array){ // Array.isArray(val) val instanceof Array
@@ -1013,6 +1023,8 @@ class LotteryThirdStep extends React.Component {
                 tempObj.giftCount = '1';
                 if(couponObj.effectType == '1' || couponObj.effectType == '3'){
                     tempObj.giftEffectTimeHours = typeof couponObj.giftEffectiveTime.value === 'object' ? '0' : couponObj.giftEffectiveTime.value;
+                } else if (couponObj.effectType ==  '99' || couponObj.effectType ==  '4' || couponObj.effectType == '5') {
+                    tempObj.effectType = couponObj.effectType || '4';
                 }else{
                     tempObj.effectTime = couponObj.giftEffectiveTime.value[0].format('YYYYMMDD');
                     tempObj.validUntilDate = couponObj.giftEffectiveTime.value[1].format('YYYYMMDD');
@@ -1133,6 +1145,7 @@ class LotteryThirdStep extends React.Component {
                     handleDependTypeChange={this.handleDependTypeChange}
                     handleGiftEffectiveTimeChange={this.handleGiftEffectiveTimeChange}
                     handleRangePickerChange={this.handleRangePickerChange}
+                    handleWeekEffectTypeeChange={this.handleWeekEffectTypeeChange}
                     disabled={this.props.disabled}
                     onBagChange={this.onBagChange}
                     isCopy={this.props.isCopy}

@@ -1017,7 +1017,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'EGiftName',
                 key: 'EGiftName',
                 render: (text, record) => {
-                    return <span title={record.EGiftName}>{record.EGiftName}</span>
+                    return <span title={`${record.EGiftName}${record.giftLastConfig == '1' ? '（发放中）' : ''}`}>{record.EGiftName}{record.giftLastConfig == '1' && '（发放中）'}</span>
                 }
             },
             {
@@ -1030,6 +1030,9 @@ class SpecialPromotionDetail extends React.Component {
                         return text == 0 ? '' : text
                     }
                     if (way == '21' && text == 2147483647) {
+                        text = '不限制'
+                    }
+                    if (record.giftLastConfig == 1 && record.stockType == 2) {
                         text = '不限制'
                     }
                     return text
@@ -1058,6 +1061,9 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'EGfitValidUntilDayCount',
                 key: 'EGfitValidUntilDayCount',
                 className: 'TableTxtRight',
+                render: (t, record) => {
+                    return record.effectType == '4' ? '领取当周有效' : record.effectType == '5' ? '领取当月有效' : t
+                }
             },
         ];
         if(way == 95){//如果是限时秒杀
@@ -1109,7 +1115,13 @@ class SpecialPromotionDetail extends React.Component {
                 EGfitValidUntilDayCount: gift.giftValidUntilDayCount > 0 ? gift.giftValidUntilDayCount : days,
                 resumeGiftsCount: gift.resumeGiftsCount || 0,
                 resumeGiftsCountPercent: gift.giftSendCount == 0 ? '0%' : `${Math.round((gift.resumeGiftsCount || 0) / (gift.giftSendCount) * 10000) / 100}%`,
-                giftIncome: gift.giftIncome ? gift.giftIncome : 0
+                giftIncome: gift.giftIncome ? gift.giftIncome : 0,
+                stockType: gift.stockType,
+                benefitCardName: gift.cardTypeName,  
+                helpEventCount: gift.helpEventCount,
+                launchEventCount: gift.launchEventCount,
+                effectType: gift.effectType,
+                giftLastConfig: gift.giftLastConfig
             }
         });
         if (this.props.record.eventInfo.data.eventWay == 68) {

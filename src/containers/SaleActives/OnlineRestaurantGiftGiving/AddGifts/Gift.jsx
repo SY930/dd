@@ -8,6 +8,7 @@ import {
     formItems,
     formKeys2,
     formItemLayout,
+    formKeys3
 } from "./common";
 
 export default class Gift extends Component {
@@ -21,6 +22,15 @@ export default class Gift extends Component {
     onFormChange = (key, value) => {
         const { idx, onChange } = this.props;
         if (key === "countType") {
+            if (value == '4') { // 按周期
+                this.setState({
+                    formKeys: formKeys3,
+                })
+            } else if (value == '0' || value == '1') {
+                this.setState({
+                    formKeys: formKeys1,
+                })
+            }
             // 相对有效期
             const options = value == "0" ? timeOpts : dayOpts;
             this.setState({
@@ -35,9 +45,11 @@ export default class Gift extends Component {
                 if (value == "1") {
                     this.form.setFieldsValue({ giftEffectTimeHours: "1" });
                     onChange(idx, { giftEffectTimeHours: "1", [key]: value });
-                } else {
+                } else if (value == '0') {
                     this.form.setFieldsValue({ giftEffectTimeHours: "0" });
                     onChange(idx, { giftEffectTimeHours: "0", [key]: value });
+                } else { // 周期
+                    onChange(idx, { [key]: value });
                 }
             }
             this.isInit = true;
@@ -46,9 +58,14 @@ export default class Gift extends Component {
         if (key === "effectType") {
             // 生效方式
             if (value == "1") {
-                this.setState({ formKeys: formKeys1 }, () => {
+                this.setState({ formKeys: formKeys1,  }, () => {
                     const countType = this.form.getFieldValue("countType");
-                    // this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
+                    let options = timeOpts;
+                    this.setState({
+                        options: countType == '1' ? dayOpts : options, // 切回按小时的生效时间
+                        formKeys: countType == '4' ? formKeys3 : formKeys1,
+                    })
+                    
                 });
             } else {
                 this.setState({ formKeys: formKeys2 });
