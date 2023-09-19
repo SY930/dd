@@ -1094,9 +1094,9 @@ export const THIRD_KEYS = (() => ({
             keys: [
                 'selectBrands',
                 'foodsboxs',
+                'subRule',
                 'selectedShops',
                 'excludeShops',
-                // 'subRule',
                 'isNeedCustomerInfo'
             ]
         },

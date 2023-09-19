@@ -531,8 +531,8 @@ class GiftAddModalStep extends React.PureComponent {
                 if(firstKeys[describe][1] != undefined && firstKeys[describe][1].hasOwnProperty('keys')) {
                     let keys = [...firstKeys[describe][1].keys];
                     if (value != 0) {
-                        // keys.push('foodsboxs','subRule')
-                        keys.push('foodsboxs')
+                        keys.push('foodsboxs','subRule')
+                        // keys.push('foodsboxs')
                     } else {
                         keys = []
                     }
@@ -4211,7 +4211,19 @@ shopAreaSelectorChange = (value) => {
                 },
             },
             subRule: {
-                label: '配菜计算',
+                label: (<span>
+                    <span>配菜计算</span>
+                    <Tooltip title={
+                        <p>
+                            配菜包括：配菜、做法加价等
+                        </p>
+                    }>
+                        <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
+                    </Tooltip>
+                    </span>
+                ),
+                labelCol: {span: 4},
+                wrapperCol: {span: 16},
                 type: 'custom',
                 defaultValue: 0,
                 render: (decorator, form) => {
