@@ -531,10 +531,10 @@ class GiftAddModalStep extends React.PureComponent {
                 if(firstKeys[describe][1] != undefined && firstKeys[describe][1].hasOwnProperty('keys')) {
                     let keys = [...firstKeys[describe][1].keys];
                     if (value != 0) {
-                        keys.push('foodsboxs','subRule')
+                        keys = ['foodsboxs','subRule']
                         // keys.push('foodsboxs')
                     } else {
-                        keys = []
+                        keys = ['subRule']
                     }
                     firstKeys[describe][1].keys = [...keys];
                     this.setState({ firstKeys });
