@@ -22,7 +22,8 @@ import {
     Icon,
     Modal,
     Checkbox,
-    Switch
+    Switch,
+    Alert,
 } from 'antd';
 import styles from './GiftAdd.less';
 import styles2 from './Crm.less';
@@ -4222,18 +4223,25 @@ shopAreaSelectorChange = (value) => {
                     </Tooltip>
                     </span>
                 ),
-                labelCol: {span: 4},
+                labelCol: value == 110 ? { span: 8 } : {span: 4},
                 wrapperCol: {span: 16},
                 type: 'custom',
                 defaultValue: 0,
                 render: (decorator, form) => {
                     const giftVal = this.props.gift.value;
-                    return decorator({})(
-                        <RadioGroup className={ giftVal == '111' ? styles.subRule  : ''}>
-                            <Radio value={0}>不参与</Radio>
-                            <Radio value={1}>参与</Radio>
-                        </RadioGroup>
-                    )
+                    return <div>
+                        <div>
+                            {decorator({})(
+                                <RadioGroup className={ giftVal == '111' ? styles.subRule  : ''}>
+                                    <Radio value={0}>不参与</Radio>
+                                    <Radio value={1}>参与</Radio>
+                                </RadioGroup>
+                            )}
+                        </div>
+                        {giftVal == '111' || giftVal == '10' ? <div style={{ marginLeft: -60 }}>
+                            <Alert message="配菜是否参与：仅POS2.0至0230916beta版本和微信小程序SR-3.22.0以上版本支持" type="warning" showIcon />
+                        </div> : null}
+                    </div>
                 },
             },
             // 买赠券折扣
