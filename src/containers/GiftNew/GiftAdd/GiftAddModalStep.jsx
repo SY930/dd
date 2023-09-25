@@ -4239,7 +4239,7 @@ shopAreaSelectorChange = (value) => {
                             )}
                         </div>
                         {giftVal == '111' || giftVal == '10' ? <div style={{ marginLeft: -60 }}>
-                            <Alert message="配菜是否参与：仅POS2.0至0230916beta版本和微信小程序SR-3.22.0以上版本支持" type="warning" showIcon />
+                            <Alert message="配菜是否参与：仅POS2.0-20230916beta版本和微信小程序SR-3.22.0以上版本支持" type="warning" showIcon />
                         </div> : null}
                     </div>
                 },
