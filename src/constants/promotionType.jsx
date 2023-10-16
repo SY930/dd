@@ -417,12 +417,13 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 3,
         bottom: 0
     },
-    // 群发短信
+    // 群发信息
     {
         title: SALE_LABEL.k67b2q7c,
         isSpecial: true,
         text: SALE_LABEL.k67b4te2,
-        signs: [],
+        tags: ["小程序"],
+        signs: ["app"],
         example: "",
         key: "50",
         right: 13,

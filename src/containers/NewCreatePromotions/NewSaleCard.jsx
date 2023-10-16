@@ -149,13 +149,13 @@ class NewPromotionCard extends Component {
                             }
                         </div>
                     </div>
-                    <div style={{ marginTop: `${key == '53' || key == '50' || key == '90' ? '-15px' : ''}`}}>
+                    <div style={{ marginTop: `${key == '53' || key == '90' ? '-15px' : ''}`}}>
                         <div className={styles.title} title={title}>
                             <Tooltip title={title}>{title}</Tooltip>
                         </div>
                         {/* 标题后面的图标 */}
                         {
-                            key == '53' || key == '50' || key == '90' ? null : <div className={styles.speTagNew}>
+                            key == '53' || key == '90' ? null : <div className={styles.speTagNew}>
                                 {tags.map((tag, i) => {
                                     if (!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
                                         return null;
