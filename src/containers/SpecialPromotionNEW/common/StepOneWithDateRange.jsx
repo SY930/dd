@@ -1602,7 +1602,7 @@ class StepOneWithDateRange extends React.Component {
                             </FormItem> : null
                     }
                     {
-                        (this.props.type == '50' || this.state.smsGate == 1 || this.state.smsGate == 3 || this.state.smsGate == 4) && (
+                        (this.props.type != '50' && (this.state.smsGate == 1 || this.state.smsGate == 3 || this.state.smsGate == 4)) && (
                             <FormItem
                                 label={this.props.intl.formatMessage(STRING_SPE.d4546grade9251)}
                                 className={styles.FormItemStyle}

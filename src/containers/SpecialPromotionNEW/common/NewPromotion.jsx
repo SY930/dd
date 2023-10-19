@@ -46,8 +46,7 @@ export default class NewPromotion extends React.Component {
     async onFinish(cb, flag) {
         const { specialPromotion, user } = this.props;
         const smsGate = specialPromotion.$eventInfo.smsGate;
-        if (specialPromotion.$eventInfo.eventWay == '50'
-            || (smsGate == '1' || smsGate == '3' || smsGate == '4')) {
+        if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
             if (specialPromotion.$eventInfo.accountNo > 0) { // 权益账户的情况
                 const equityAccountInfoList = specialPromotion.$eventInfo.equityAccountInfoList;
                 const selectedAccount = equityAccountInfoList.find(entity => entity.accountNo === specialPromotion.$eventInfo.accountNo) || {};

@@ -19,6 +19,7 @@ import {
     Col,
     TreeSelect,
     message,
+    Alert,
 } from 'antd';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
@@ -44,6 +45,7 @@ import { axiosData } from 'helpers/util';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 
 const moment = require('moment');
+const showPushMsgMpGroupId = ['11157', '189702', '292086']
 
 const Immutable = require('immutable');
 @injectIntl
@@ -68,6 +70,9 @@ class StepTwo extends React.Component {
             testPhoneNumber: undefined,
 
             localType:'5',
+            smsGate: '1',
+            appsList: [],
+            signID: '',
             filters:[],
             selectedTags:[],
             tagIncludes:[],
@@ -87,33 +92,41 @@ class StepTwo extends React.Component {
     validate() {
         let flag = true;
         const {tagsCount,message:smsTemplate} = this.state;
-        if(!smsTemplate){
-            message.warning('必须选择一条短信模板');
-            flag = false;
-        }
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
             if (err1) {
                 flag = false;
             }
         });
-        const equityAccountInfoList = this.props.specialPromotion.get('$eventInfo').toJS().equityAccountInfoList || [];
-        const equityAccountInfo = equityAccountInfoList.find(item => item.accountNo === this.state.accountNo) || {};
-        // 对权益账户短信条数做校验
-        if (flag && this.state.accountNo > 0 && this.state.localType == '5') {
-            if (!(this.getMinMessageCount() <= equityAccountInfo.smsCount)) {
+        const values = this.props.form.getFieldsValue()
+        if(this.state.smsGate == '2') {
+            if(!values.eventName && !values.goodsName && !values.preferentialBenefits && !values.preferentialName && !values.reminder) {
+                message.warning('活动名称/商品名称/优惠名称/优惠权益/温馨提示不可同时为空');
                 flag = false;
-                message.warning('所选权益账户短信条数不足，请更换账户或充值')
             }
-        }
-        if (flag && this.state.accountNo > 0 && this.state.localType == '7') {
-            if (!(tagsCount <= equityAccountInfo.smsCount)) {
+        } else if(this.state.smsGate == '1') {
+            if(!smsTemplate){
+                message.warning('必须选择一条短信模板');
                 flag = false;
-                message.warning('所选权益账户短信条数不足，请更换账户或充值')
             }
-        }
-        // 校验最后消费时间
-        if (this.state.lastTransTimeFilter != '0' && (this.state.lastTransTime == '' || this.state.lastTransTime == '0')) {
-            flag = false;
+            const equityAccountInfoList = this.props.specialPromotion.get('$eventInfo').toJS().equityAccountInfoList || [];
+            const equityAccountInfo = equityAccountInfoList.find(item => item.accountNo === this.state.accountNo) || {};
+            // 对权益账户短信条数做校验
+            if (flag && this.state.accountNo > 0 && this.state.localType == '5') {
+                if (!(this.getMinMessageCount() <= equityAccountInfo.smsCount)) {
+                    flag = false;
+                    message.warning('所选权益账户短信条数不足，请更换账户或充值')
+                }
+            }
+            if (flag && this.state.accountNo > 0 && this.state.localType == '7') {
+                if (!(tagsCount <= equityAccountInfo.smsCount)) {
+                    flag = false;
+                    message.warning('所选权益账户短信条数不足，请更换账户或充值')
+                }
+            }
+            // 校验最后消费时间
+            if (this.state.lastTransTimeFilter != '0' && (this.state.lastTransTime == '' || this.state.lastTransTime == '0')) {
+                flag = false;
+            }
         }
         return flag;
     }
@@ -124,10 +137,10 @@ class StepTwo extends React.Component {
                 groupMembers = info;
             }
         });
+        const values = this.props.form.getFieldsValue()
         let flag = this.validate();
         if (flag) {
             const opts = {
-                smsTemplate: this.state.message,
                 lastTransTimeFilter: this.state.lastTransTimeFilter,
                 lastTransTime: this.state.lastTransTime || '',
                 lastTransShopID: this.state.lastTransShopID,
@@ -138,8 +151,22 @@ class StepTwo extends React.Component {
                 cardCount: groupMembers.totalMembers,
                 cardGroupRemark: groupMembers.groupMembersRemark,
                 cardLevelRangeType:  (this.state.cardLevelRangeType | 0) || (this.state.groupMembersID == '0' ? '0' : '2'),
-                settleUnitID: this.state.settleUnitID || '0',
-                accountNo: this.state.accountNo,
+                smsGate: this.state.smsGate,
+            }
+            if(this.state.smsGate == '1') {
+                opts.settleUnitID = this.state.settleUnitID || '0'
+                opts.accountNo = this.state.accountNo
+                opts.signID = this.state.signID
+                opts.smsTemplate = this.state.message
+            } else if(this.state.smsGate == '2') {
+                opts.pushMessageMpID = values.pushMessageMpID
+                opts.messageTemplate = {
+                    eventName: values.eventName || '',
+                    goodsName: values.goodsName || '',
+                    preferentialName: values.preferentialName || '',
+                    preferentialBenefits: values.preferentialBenefits || '',
+                    reminder: values.reminder || '',
+                }
             }
             if(this.state.cardLevelRangeType == '7'){
                 opts.customerRangeConditionIDs = this.state.selectedTags.map(item => item.tagRuleID)
@@ -157,6 +184,7 @@ class StepTwo extends React.Component {
             pageSize: 1000,
         };
         this.queryTagData();
+        this.getMiniProgramsAppIdList();
         this.props.queryGroupMembersList(opts);
         this.props.getSubmitFn({
             prev: undefined,
@@ -165,6 +193,7 @@ class StepTwo extends React.Component {
             cancel: undefined,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        const messageTemplate = specialPromotion.messageTemplate || {};
         if (Object.keys(specialPromotion).length > 30) {
             this.setState({
                 message: specialPromotion.smsTemplate,
@@ -179,7 +208,15 @@ class StepTwo extends React.Component {
                 cardGroupRemark: specialPromotion.groupMembersRemark,
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
                 localType:specialPromotion.cardLevelRangeType == '7' ? '7' : '5',
-                customerRangeConditionIDs:specialPromotion.customerRangeConditionIDs
+                customerRangeConditionIDs:specialPromotion.customerRangeConditionIDs,
+                signID: specialPromotion.signID,
+                smsGate: specialPromotion.smsGate + '',
+                pushMessageMpID: specialPromotion.pushMessageMpID,
+                eventName: messageTemplate.eventName,
+                goodsName: messageTemplate.goodsName,
+                preferentialName: messageTemplate.preferentialName,
+                preferentialBenefits: messageTemplate.preferentialBenefits,
+                reminder: messageTemplate.reminder,
             })
         }
         // 初始化店铺信息
@@ -203,6 +240,7 @@ class StepTwo extends React.Component {
         if (this.props.specialPromotion.get('$eventInfo') != nextProps.specialPromotion.get('$eventInfo') &&
             nextProps.specialPromotion.get('$eventInfo').size > 30) {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
+            const messageTemplate = specialPromotion.messageTemplate || {};
             this.setState({
                 message: specialPromotion.smsTemplate,
                 lastTransTimeFilter: specialPromotion.lastTransTimeFilter,
@@ -216,7 +254,15 @@ class StepTwo extends React.Component {
                 cardGroupRemark: specialPromotion.groupMembersRemark,
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
                 localType:specialPromotion.cardLevelRangeType == '7' ? '7' : '5',
-                customerRangeConditionIDs:specialPromotion.customerRangeConditionIDs
+                customerRangeConditionIDs:specialPromotion.customerRangeConditionIDs,
+                signID: specialPromotion.signID,
+                smsGate: specialPromotion.smsGate + '',
+                pushMessageMpID: specialPromotion.pushMessageMpID,
+                eventName: messageTemplate.eventName,
+                goodsName: messageTemplate.goodsName,
+                preferentialName: messageTemplate.preferentialName,
+                preferentialBenefits: messageTemplate.preferentialBenefits,
+                reminder: messageTemplate.reminder,
             })
         }
         // 获取会员等级信息
@@ -511,6 +557,47 @@ class StepTwo extends React.Component {
             selectedTags:null
         })
     }
+    handleSmsGateChange = (e) => {
+        this.setState({
+            smsGate: e.target.value,
+        })
+    }
+    getAllAvailableMiniInfo = () => {
+        const { appsList } = this.state;
+        return [
+            ...appsList.map(item => (
+                {
+                    value: JSON.stringify({mpID: item.appID, appID: item.appID, appType: 2}),//appType:1是公众号，2是小程序
+                    label: item.nickName,
+                }
+            ))
+        ];
+    }
+    getMiniProgramsAppIdList = () => {
+        axiosData('/miniProgramCodeManage/getApps', {
+            'groupID':this.props.user.accountInfo.groupID,
+            'page': {
+                "current": 1,
+                "pageSize": 10000000,
+            }
+        }, null, {
+            path: '',
+        }, 'HTTP_SERVICE_URL_WECHAT')
+            .then((res) => {
+                const { result, apps } = res
+                const code = (result || {}).code
+                if (code === '000') {
+                    this.setState({
+                        appsList: apps || []
+                    })
+                }
+            })
+    }
+    handleSignIDChange = (val) => {
+        this.setState({
+            signID: val,
+        })
+    }
     render() {
         const sendFlag = true;
         let { lastTransTimeFilter, lastTransTime, lastTransShopID, lastTransShopName, lastTransTimeStatus } = this.state,
@@ -640,6 +727,37 @@ class StepTwo extends React.Component {
                             }
                         </FormItem> : null
                 }
+                {showPushMsgMpGroupId.includes(this.props.user.accountInfo.groupID) ? <FormItem
+                    label="推送方式"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup onChange={this.handleSmsGateChange} value={`${this.state.smsGate}`}>
+                        <Radio key={'1'} value={'1'}>短信推送</Radio>
+                        <Radio key={'2'} value={'2'}>服务通知</Radio>
+                    </RadioGroup>
+                </FormItem> : null}
+                {this.state.smsGate == '1' ? <div>
+                <FormItem
+                    label={this.props.intl.formatMessage(STRING_SPE.d4546grade9251)}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <Select size="default"
+                            value={`${this.state.signID}`}
+                            onChange={this.handleSignIDChange}
+                            getPopupContainer={(node) => node.parentNode}
+                    >
+                        <Option value={''} key={''}>{this.props.intl.formatMessage(STRING_SPE.d2c89sj1s61092)}</Option>
+                        {
+                            this.props.specialPromotion.get('SMSSignList').toJS().map((item) => {
+                                return (<Option value={`${item.signID}`} key={`${item.signID}`}>{item.signName}</Option>)
+                            })
+                        }
+                    </Select>
+                </FormItem>
                 <SendMsgInfo
                     sendFlag={sendFlag}
                     form={this.props.form}
@@ -688,6 +806,115 @@ class StepTwo extends React.Component {
                         </Col>
                     </Row>
                 </FormItem>
+                </div>: <div>
+                    <FormItem
+                        label="选择小程序"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        {getFieldDecorator('pushMessageMpID', {
+                            rules: [{
+                                required: true,
+                                message: `请选择推送的小程序`,
+                            }],
+                            initialValue: this.state.pushMessageMpID,
+                        })(
+                            <Select
+                                notFoundContent={'未搜索到结果'}
+                                placeholder="请选择推送的小程序"
+                                showSearch={true}
+                            >
+                                {
+                                    this.getAllAvailableMiniInfo().map(({ value, label }) => {
+                                        return <Option key={value} value={value}>{label}</Option>
+                                    })
+                                }
+                            </Select>
+                        )}
+                    </FormItem>
+                    <Alert style={{ marginLeft: 110, width: 540 }} type='warning' showIcon message='受小程序隐私保护条款限制，未勾选接收小程序消息订阅的会员，无法收到消息推送' />
+                    <FormItem
+                        label="活动名称"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        {getFieldDecorator('eventName', {
+                            rules: [{
+                                message: '仅限20个以内汉字、数字、字母或符号组合',
+                                max: 20,
+                            },],
+                            initialValue: this.state.eventName,
+                        })(
+                            <Input placeholder='限制20个以内字符' />
+                        )}
+                    </FormItem>
+                    <FormItem
+                        label="商品名称"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        {getFieldDecorator('goodsName', {
+                            rules: [{
+                                message: '仅限20个以内汉字、数字、字母或符号组合',
+                                max: 20,
+                            },],
+                            initialValue: this.state.goodsName,
+                        })(
+                            <Input placeholder='限制20个以内字符' />
+                        )}
+                    </FormItem>
+                    <FormItem
+                        label="优惠名称"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        {getFieldDecorator('preferentialName', {
+                            rules: [{
+                                message: '仅限20个以内汉字、数字、字母或符号组合',
+                                max: 20,
+                            },],
+                            initialValue: this.state.preferentialName,
+                        })(
+                            <Input placeholder='限制20个以内字符' />
+                        )}
+                    </FormItem>
+                    <FormItem
+                        label="优惠权益"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        {getFieldDecorator('preferentialBenefits', {
+                            rules: [{
+                                message: '仅限20个以内汉字、数字、字母或符号组合',
+                                max: 20,
+                            },],
+                            initialValue: this.state.preferentialBenefits,
+                        })(
+                            <Input placeholder='限制20个以内字符' />
+                        )}
+                    </FormItem>
+                    <FormItem
+                        label="温馨提示"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        {getFieldDecorator('reminder', {
+                            rules: [{
+                                message: '仅限20个以内汉字、数字、字母或符号组合',
+                                max: 20,
+                            },],
+                            initialValue: this.state.reminder,
+                        })(
+                            <Input placeholder='限制20个以内字符' />
+                        )}
+                    </FormItem>
+                </div>}
             </Form>
         );
     }

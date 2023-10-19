@@ -520,6 +520,8 @@ class SpecialPromotionDetail extends React.Component {
     // 基本信息
     renderBaseInfo() {
         const record = this.state.eventInfo.data;
+        const messageTemplate = record.messageTemplate || {}
+        const way = this.state.eventInfo.data.eventWay;
         function getTitle(eventWay) {
             if (eventWay === undefined) {
                 return
@@ -529,7 +531,8 @@ class SpecialPromotionDetail extends React.Component {
             }).title
         }
         return (
-            <div style={{ marginBottom: 20 }}>
+            <Row>
+            <Col span={way == 50 && record.smsGate == '2' ? 12 : 24}>
                 <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}</h5>
                 <div className={styles.baseInfoBox}>
                     <div>
@@ -601,7 +604,18 @@ class SpecialPromotionDetail extends React.Component {
                         }
                     </div>
                 </div>
-            </div>
+            </Col>
+            {way == '50' && record.smsGate == '2' ? <Col span={11} offset={1}>
+                <h5><span></span>小程序消息</h5>
+                <div style={{marginLeft: 20}}>
+                    <div><span style={{ color: '#787878' }}>活动名称：</span>{messageTemplate.eventName}</div>
+                    <div><span style={{ color: '#787878' }}>商品名称：</span>{messageTemplate.goodsName}</div>
+                    <div><span style={{ color: '#787878' }}>优惠名称：</span>{messageTemplate.preferentialName}</div>
+                    <div><span style={{ color: '#787878' }}>优惠权益：</span>{messageTemplate.preferentialBenefits}</div>
+                    <div><span style={{ color: '#787878' }}>温馨提示：</span>{messageTemplate.reminder}</div>
+                </div>
+            </Col> : null}
+            </Row>
         );
     }
 
@@ -887,11 +901,14 @@ class SpecialPromotionDetail extends React.Component {
         }
         return (
             <div>
+                {/* 群发信息去掉统计信息 */}
+                {way != 50 ? <div>
                 <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
                 <Col span={24}>
                     {this.renderGiftInfoTable(records, way)}
 
                 </Col>
+                </div> : null}
                 {this.renderSearch()}
                 <Col span={24}>
                     {this.renderActivityInfoTable()}
@@ -1646,7 +1663,8 @@ class SpecialPromotionDetail extends React.Component {
     // 活动参与表格
     renderActivityInfoTable() {
         const hasChannelActivity = [20, 21, 22, 30, 65, 68, 66, 83, 79]
-        const eventWay = this.state.eventInfo.data.eventWay;
+        const data = this.state.eventInfo.data;
+        const eventWay = data.eventWay;
         const columns = [
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
@@ -1728,6 +1746,16 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'joinTime',
                 className: 'TableTxtCenter',
                 width: 180,
+            }),
+            eventWay == 50 && data.smsGate == '2' && ({
+                title: `状态`,
+                dataIndex: 'eventCustomerStatus',
+                key: 'eventCustomerStatus',
+                className: 'TableTxtCenter',
+                width: 60,
+                render: (e) => {
+                    return e == 3 ? '成功' : '失败'
+                }
             }),
             eventWay == 23 && ({
                 title: '参与位置',
