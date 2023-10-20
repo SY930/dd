@@ -97,13 +97,7 @@ class StepTwo extends React.Component {
                 flag = false;
             }
         });
-        const values = this.props.form.getFieldsValue()
-        if(this.state.smsGate == '2') {
-            if(!values.eventName && !values.goodsName && !values.preferentialBenefits && !values.preferentialName && !values.reminder) {
-                message.warning('活动名称/商品名称/优惠名称/优惠权益/温馨提示不可同时为空');
-                flag = false;
-            }
-        } else if(this.state.smsGate == '1') {
+        if(this.state.smsGate == '1') {
             if(!smsTemplate){
                 message.warning('必须选择一条短信模板');
                 flag = false;
@@ -833,7 +827,14 @@ class StepTwo extends React.Component {
                             </Select>
                         )}
                     </FormItem>
-                    <Alert style={{ marginLeft: 110, width: 540 }} type='warning' showIcon message='受小程序隐私保护条款限制，未勾选接收小程序消息订阅的会员，无法收到消息推送' />
+                    <FormItem
+                        label=" "
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        <Alert type='warning' showIcon message='受小程序隐私保护条款限制，未勾选接收小程序消息订阅的会员，无法收到消息推送' />
+                    </FormItem>
                     <FormItem
                         label="活动名称"
                         className={styles.FormItemStyle}
@@ -844,7 +845,10 @@ class StepTwo extends React.Component {
                             rules: [{
                                 message: '仅限20个以内汉字、数字、字母或符号组合',
                                 max: 20,
-                            },],
+                            }, {
+                                message: '活动名称不可为空',
+                                required: true,
+                            }],
                             initialValue: this.state.eventName,
                         })(
                             <Input placeholder='限制20个以内字符' />
@@ -860,7 +864,10 @@ class StepTwo extends React.Component {
                             rules: [{
                                 message: '仅限20个以内汉字、数字、字母或符号组合',
                                 max: 20,
-                            },],
+                            }, {
+                                message: '商品名称不可为空',
+                                required: true,
+                            }],
                             initialValue: this.state.goodsName,
                         })(
                             <Input placeholder='限制20个以内字符' />
@@ -876,7 +883,10 @@ class StepTwo extends React.Component {
                             rules: [{
                                 message: '仅限20个以内汉字、数字、字母或符号组合',
                                 max: 20,
-                            },],
+                            }, {
+                                message: '优惠名称不可为空',
+                                required: true,
+                            }],
                             initialValue: this.state.preferentialName,
                         })(
                             <Input placeholder='限制20个以内字符' />
@@ -892,7 +902,10 @@ class StepTwo extends React.Component {
                             rules: [{
                                 message: '仅限20个以内汉字、数字、字母或符号组合',
                                 max: 20,
-                            },],
+                            }, {
+                                message: '优惠权益不可为空',
+                                required: true,
+                            }],
                             initialValue: this.state.preferentialBenefits,
                         })(
                             <Input placeholder='限制20个以内字符' />
@@ -908,7 +921,10 @@ class StepTwo extends React.Component {
                             rules: [{
                                 message: '仅限20个以内汉字、数字、字母或符号组合',
                                 max: 20,
-                            },],
+                            }, {
+                                message: '温馨提示不可为空',
+                                required: true,
+                            }],
                             initialValue: this.state.reminder,
                         })(
                             <Input placeholder='限制20个以内字符' />
