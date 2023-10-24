@@ -45,7 +45,7 @@ import { axiosData } from 'helpers/util';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 
 const moment = require('moment');
-const showPushMsgMpGroupId = ['11157', '189702', '292086']
+const showPushMsgMpGroupId = ['11157', '189702', '292086', '97957']
 
 const Immutable = require('immutable');
 @injectIntl
