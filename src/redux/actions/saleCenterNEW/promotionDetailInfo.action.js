@@ -263,7 +263,7 @@ export const fetchFoodCategoryInfoAC = (opts = {}, isHuaTian, subGroupID) => {
         dispatch(getRawFoodCatgorySuccess({records: []}))
         dispatch(fetchFoodCategoryStart());
         const url = opts.shopID && opts.shopID > 0 ?
-  	            '/shopapi/queryShopFoodClass.svc' : '/shopapi/queryGroupFoodCategory.svc';
+  	            '/shopapi/queryShopFoodClass.svc' : '/shopapi/querySubGroupFoodCategoryInfo.svc';
         axiosData(url, { ...opts, bookID: 0 }, {}, { path: 'data' }, 'HTTP_SERVICE_URL_SHOPAPI')
         .then((data) => {
             dispatch(getFoodCategorySuccessToProcess(data));
