@@ -1366,6 +1366,7 @@ class CheckInSecondStep extends React.Component {
                         const goOnRule = e.target.value;
                         this.setState({ goOnRule });
                     }}
+                    disabled={this.props.disabled}
                 >
                     <Radio value={'0'}>循环执行</Radio >
                     <Radio value={'1'}>持续执行</Radio >
