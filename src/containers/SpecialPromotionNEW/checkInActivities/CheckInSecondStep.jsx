@@ -1180,6 +1180,8 @@ class CheckInSecondStep extends React.Component {
         }
         return (
             <Row>
+                <Col span={2}></Col>
+                <Col span={22}>超过最大签到天数后，仍持续签到每天赠送以下礼品：</Col>
                 <Col span={2}>
                 </Col>
                 <Col span={22}>
