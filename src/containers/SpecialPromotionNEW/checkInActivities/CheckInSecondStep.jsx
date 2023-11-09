@@ -326,6 +326,7 @@ class CheckInSecondStep extends React.Component {
             let dataObj = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE))[0].gifts[0];
             tempGift.push(dataObj);
             EveryObj.gifts = tempGift;
+            showGiftGoOn = false;
         } else {
             let tempGift = [];
             formData[`ifHaveGiftGoOn`] = ['1'];
@@ -440,7 +441,6 @@ class CheckInSecondStep extends React.Component {
             resultFormData.ifHaveGiftGoOn = ['1']
             showGiftGoOn = true
         }
-        resultFormData.ifHaveGiftGoOn = ['1']
         if( giftGetRule == 5 ) {
             simpleData = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
             resultFormData.ifHaveGift1 = ['1'];
@@ -711,6 +711,7 @@ class CheckInSecondStep extends React.Component {
         let giftList = [];
         let goOnGiftList = [];
         let validateFlag = true;
+        let goOnValidateFlag = true;
         // FIXME: 这个校验在不人为输入(触发相应onChange)时等于无效, 比如编辑时直接下一步下一步保存时, 如果产品要求, 可以改掉
         if(this.state.giftGetRule == 5){
             giftList = data.reduce((acc, curr, index) => {
@@ -722,8 +723,24 @@ class CheckInSecondStep extends React.Component {
                     acc.push(...curr.gifts.map(item => ({...item, giftIndex: index,})));
                     return acc;
                 }, [])
+                goOnValidateFlag = goOnGiftList.reduce((p, ruleInfo, index) => {
+                    const _validStatusOfCurrentIndex = Object.keys(ruleInfo)
+                        .reduce((flag, key) => {
+                            if (key === 'giftMaxUseNum' && this.state.rule.stageType == 2) return flag;
+                            if (ruleInfo[key] instanceof Object && ruleInfo[key].hasOwnProperty('validateStatus')) {
+                                if(this[`baseFormGoOn`].getFieldValue(`ifHaveGiftGoOn`).length){
+                                    const _valid = ruleInfo[key].validateStatus === 'success';
+                                    return flag && _valid;
+                                }else{
+                                    return flag;
+                                }
+                            }
+                            return flag
+                        }, true);
+                    return p && _validStatusOfCurrentIndex;
+                }, true);
             }
-            validateFlag = giftList.concat(goOnGiftList).reduce((p, ruleInfo, index) => {
+            validateFlag = giftList.reduce((p, ruleInfo, index) => {
                 const _validStatusOfCurrentIndex = Object.keys(ruleInfo)
                     .reduce((flag, key) => {
                         if (key === 'giftMaxUseNum' && this.state.rule.stageType == 2) return flag;
@@ -761,8 +778,9 @@ class CheckInSecondStep extends React.Component {
         } 
         let giftGetRule = this.state.giftGetRule;
         let gifts = this.gatherGiftsInfo(giftGetRule);
-        let athNeedCount = giftGetRule == 4 ? 1 : this.state.goOnRule == '1' ? gifts[gifts.length - 1].needCount : 0;
-        if (validateFlag) {
+        const upData = gifts.filter(item => item.needCount != 0)
+        let athNeedCount = giftGetRule == 4 ? 1 : upData[upData.length - 1].needCount;
+        if (validateFlag && goOnValidateFlag) {
             this.props.setSpecialBasicInfo({
                 giftGetRule,
                 needCount: athNeedCount,
@@ -1068,7 +1086,7 @@ class CheckInSecondStep extends React.Component {
                     formKeysGoOn: tempArr
                 })
             }
-        } else {
+        } else if(key == 'ifHaveGiftGoOn') {
             if(value.length){
                 this.setState({
                     showGiftGoOn: true,
