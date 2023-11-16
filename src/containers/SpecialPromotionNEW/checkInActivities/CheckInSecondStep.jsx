@@ -9,7 +9,7 @@
 */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Icon, Popconfirm, Checkbox, message } from 'antd';
+import { Row, Col, Form, Select, Radio, Icon, Popconfirm, Checkbox, message, Alert } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import selfStyle from '../../SaleCenterNEW/returnGift/style.less';
@@ -1376,8 +1376,10 @@ class CheckInSecondStep extends React.Component {
                 label='执行规则'
                 className={styles.FormItemStyle}
                 labelCol={{ span: 3 }}
-                wrapperCol={{ span: 17 }}
+                wrapperCol={{ span: 21 }}
             >
+                <Row>
+                <Col span={8}>
                 <RadioGroup
                     value={this.state.goOnRule}
                     onChange={(e) => {
@@ -1389,6 +1391,11 @@ class CheckInSecondStep extends React.Component {
                     <Radio value={'0'}>循环执行</Radio >
                     <Radio value={'1'}>持续执行</Radio >
                 </RadioGroup >
+                </Col>
+                {this.state.goOnRule == '1' ? <Col span={14}>
+                <Alert style={{ marginBottom: 0 }} type='warning' showIcon message="升级至小程序SR3.22.24以上版本支持此能力" />
+                </Col> : null}
+                </Row>
             </FormItem>
             {this.state.goOnRule == '0' ? <Row><Col span={3}></Col><Col span={19}>签到超过最大天数后，重新从第一天签到开始执行</Col></Row> : this.continueGoOn()}
             </div>
