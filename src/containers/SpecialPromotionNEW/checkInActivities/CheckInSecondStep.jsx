@@ -9,7 +9,7 @@
 */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Icon, Popconfirm, Checkbox, message } from 'antd';
+import { Row, Col, Form, Select, Radio, Icon, Popconfirm, Checkbox, message, Alert } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import selfStyle from '../../SaleCenterNEW/returnGift/style.less';
@@ -90,7 +90,7 @@ const DEFAULT_GIFT_STAGE = [
 class CheckInSecondStep extends React.Component {
     constructor(props) {
         super(props);
-        const { parsedRule, data, simpleData, giftGetRule, resultFormData, showGiftTrue, changeFormKeysArr, showGift1 } = this.getInitState();
+        const { parsedRule, data, simpleData, continueData, showGiftGoOn, giftGetRule, resultFormData, showGiftTrue, changeFormKeysArr, showGift1, goOnRule, formKeysGoOn } = this.getInitState();
         this.state = {
             display: !props.isNew,
             rule: parsedRule,
@@ -112,7 +112,12 @@ class CheckInSecondStep extends React.Component {
             showGift8: false,
             showGiftTrue: showGiftTrue,
             changeFormKeysArr: changeFormKeysArr,
+            goOnRule,
+            showGiftGoOn,
+            continueData,
+            formKeysGoOn,
         }
+        this.baseFormGoOn = null;
         this.baseForm1 = null;
         this.baseForm2 = null;
         this.baseForm3 = null;
@@ -129,6 +134,7 @@ class CheckInSecondStep extends React.Component {
     formBeginGetData = (giftList) => {
         let tempObj = {};
         giftList.forEach((item) => {
+            if(item.needCount != 0) {
             if(tempObj[item.needCount]){
                 if(tempObj[item.needCount][item.presentType]){
                     let athObj = {};
@@ -147,6 +153,7 @@ class CheckInSecondStep extends React.Component {
                 athObj = item;
                 tempObj[item.needCount][item.presentType].push(athObj);
             }
+        }
         })
         return tempObj;
     }
@@ -297,6 +304,60 @@ class CheckInSecondStep extends React.Component {
         })
         return {resultArr, formData, tempShowGift, tempKeysArr};
     }
+    formatContinueGift = (continueGift) => {
+        let formData = {}
+        let formKeysGoOn = ['ifGivePointsGoOn', 'ifHaveGiftGoOn']
+        let EveryObj = {}
+        let showGiftGoOn = false
+        let continueData = []
+        const pointData = continueGift.filter(item => item.presentType == 2)
+        const giftData = continueGift.filter(item => item.presentType == 1)
+        if(!pointData.length) {
+            formData.ifGivePointsGoOn = []
+        } else {
+            formData.ifGivePointsGoOn = ['1']
+            formData[`presentValueGoOn`] = pointData[0].presentValue;
+            formData[`cardTypeIDGoOn`] = pointData[0].cardTypeID;
+            formKeysGoOn = [`ifGivePointsGoOn`, `presentValueGoOn`, `cardTypeIDGoOn`, `ifHaveGiftGoOn`]
+        }
+        if(!giftData.length) {
+            formData[`ifHaveGiftGoOn`] = [];
+            let tempGift = []
+            let dataObj = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE))[0].gifts[0];
+            tempGift.push(dataObj);
+            EveryObj.gifts = tempGift;
+            showGiftGoOn = false;
+        } else {
+            let tempGift = [];
+            formData[`ifHaveGiftGoOn`] = ['1'];
+            showGiftGoOn = true
+            giftData.forEach((item) => {
+                let dataObj = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE))[0].gifts[0];
+                dataObj.giftNum.value = item.giftCount;
+                dataObj.giftMaxUseNum.value = item.giftMaxUseNum || 1;
+                dataObj.giftInfo.giftName = item.giftName;
+                dataObj.giftInfo.giftItemID = item.giftID;
+                dataObj.giftInfo.msg = null;
+                dataObj.giftInfo.validateStatus = 'success';
+                dataObj.giftInfo.giftType = item.giftType || null;
+                dataObj.giftInfo.giftValue = item.giftValue || null;
+                dataObj.giftValidDays.value = item.giftValidUntilDayCount || '0';
+                dataObj.giftValidType = item.effectType == 2 ? 1 :  item.effectType == 3 ? 2 : 0;
+                if(item.effectType == 2) {
+                    dataObj.giftEffectiveTime.value = [];
+                    dataObj.giftEffectiveTime.value[0] = moment(item.effectTime, 'YYYYMMDD');
+                    dataObj.giftEffectiveTime.value[1] = moment(item.validUntilDate, 'YYYYMMDD');
+                }else{
+                    dataObj.giftEffectiveTime.value = item.giftEffectTimeHours;
+                }
+                //整合每一个gifts数组中的data数据
+                tempGift.push(dataObj);
+            })
+            EveryObj.gifts = tempGift;
+        }
+        continueData.push(EveryObj)
+        return { continueData1: continueData, showGiftGoOn1: showGiftGoOn, formKeysGoOn1: formKeysGoOn, formData1:  formData}
+    }
 
     getInitState = () => {
         const $rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
@@ -306,12 +367,16 @@ class CheckInSecondStep extends React.Component {
         const eventInfo = specialPromotion.$eventInfo;
         const giftInfo = specialPromotion.$giftInfo;
         let showGift1 = false;
+        let goOnRule = '0'
+        let showGiftGoOn = false
         let resultFormData = {}
         let showGiftTrue = [];
         let changeFormKeysArr = [];
         let parsedRule;
         let data = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
         let simpleData;
+        let continueData = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
+        let formKeysGoOn = ['ifGivePointsGoOn', 'ifHaveGiftGoOn'];
         let giftGetRule = eventInfo.giftGetRule ? eventInfo.giftGetRule + '' : '4';
         if (stageType) {
             parsedRule = {
@@ -348,7 +413,19 @@ class CheckInSecondStep extends React.Component {
                 showGiftTrue = tempShowGift;
                 const { tempKeysArr } = this.groupGiftsByStageAmount(beginObj);
                 changeFormKeysArr = tempKeysArr;
-            }   
+                const continueGift = giftInfo.filter(item => item.needCount == 0)
+                goOnRule = continueGift.length ? '1' : '0'
+                if(continueGift.length) {
+                    const { continueData1, showGiftGoOn1, formKeysGoOn1, formData1 } = this.formatContinueGift(continueGift)
+                    continueData = continueData1
+                    showGiftGoOn = showGiftGoOn1
+                    formKeysGoOn = formKeysGoOn1
+                    resultFormData = Object.assign(resultFormData, formData1)
+                    goOnRule = '1'
+                } else {
+                    goOnRule = '0'
+                }
+            }
         }
         if (data.length === 0) {
             data = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
@@ -360,6 +437,9 @@ class CheckInSecondStep extends React.Component {
                 resultFormData[`ifHaveGift${i + 2}`] = ['1'];
             }
             showGift1 = true;
+            continueData = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
+            resultFormData.ifHaveGiftGoOn = ['1']
+            showGiftGoOn = true
         }
         if( giftGetRule == 5 ) {
             simpleData = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
@@ -374,7 +454,8 @@ class CheckInSecondStep extends React.Component {
             }
         }   
         return {
-            parsedRule, data, simpleData, giftGetRule, resultFormData, showGiftTrue, changeFormKeysArr, showGift1
+            parsedRule, data, simpleData, continueData, giftGetRule, resultFormData, showGiftGoOn, showGiftTrue, changeFormKeysArr, showGift1,
+            goOnRule, formKeysGoOn
         }
     }
 
@@ -600,6 +681,17 @@ class CheckInSecondStep extends React.Component {
                     }
                 });
             }
+            if(this.state.goOnRule == '1') {
+                this.baseFormGoOn.validateFieldsAndScroll((error, basicValues) => {
+                    if (error) {
+                        flag = false;
+                    }
+                    if(basicValues[`ifGivePointsGoOn`].length == 0 && basicValues[`ifHaveGiftGoOn`].length == 0 ){
+                        message.error('赠送积分和赠送礼品券表项中必须选择一个');
+                        flag = false;
+                    }
+                });
+            }
             return flag;
         }
         
@@ -615,15 +707,39 @@ class CheckInSecondStep extends React.Component {
             }
         });
         if (!formFlag) return;
-        const { rule, needSyncToAliPay, data, simpleData } = this.state;
+        const { rule, needSyncToAliPay, data, simpleData, continueData } = this.state;
         let giftList = [];
+        let goOnGiftList = [];
         let validateFlag = true;
+        let goOnValidateFlag = true;
         // FIXME: 这个校验在不人为输入(触发相应onChange)时等于无效, 比如编辑时直接下一步下一步保存时, 如果产品要求, 可以改掉
         if(this.state.giftGetRule == 5){
             giftList = data.reduce((acc, curr, index) => {
                 acc.push(...curr.gifts.map(item => ({...item, stageAmount: curr.stageAmount, giftIndex: index,})));
                 return acc;
             }, [])
+            if(this.state.goOnRule == '1') {
+                goOnGiftList = continueData.reduce((acc, curr, index) => {
+                    acc.push(...curr.gifts.map(item => ({...item, giftIndex: index,})));
+                    return acc;
+                }, [])
+                goOnValidateFlag = goOnGiftList.reduce((p, ruleInfo, index) => {
+                    const _validStatusOfCurrentIndex = Object.keys(ruleInfo)
+                        .reduce((flag, key) => {
+                            if (key === 'giftMaxUseNum' && this.state.rule.stageType == 2) return flag;
+                            if (ruleInfo[key] instanceof Object && ruleInfo[key].hasOwnProperty('validateStatus')) {
+                                if(this[`baseFormGoOn`].getFieldValue(`ifHaveGiftGoOn`).length){
+                                    const _valid = ruleInfo[key].validateStatus === 'success';
+                                    return flag && _valid;
+                                }else{
+                                    return flag;
+                                }
+                            }
+                            return flag
+                        }, true);
+                    return p && _validStatusOfCurrentIndex;
+                }, true);
+            }
             validateFlag = giftList.reduce((p, ruleInfo, index) => {
                 const _validStatusOfCurrentIndex = Object.keys(ruleInfo)
                     .reduce((flag, key) => {
@@ -662,8 +778,9 @@ class CheckInSecondStep extends React.Component {
         } 
         let giftGetRule = this.state.giftGetRule;
         let gifts = this.gatherGiftsInfo(giftGetRule);
-        let athNeedCount = giftGetRule == 4 ? 1 : gifts[gifts.length - 1].needCount;
-        if (validateFlag) {
+        const upData = gifts.filter(item => item.needCount != 0)
+        let athNeedCount = giftGetRule == 4 ? 1 : upData[upData.length - 1].needCount;
+        if (validateFlag && goOnValidateFlag) {
             this.props.setSpecialBasicInfo({
                 giftGetRule,
                 needCount: athNeedCount,
@@ -745,6 +862,38 @@ class CheckInSecondStep extends React.Component {
                     tempData.push(tempObj)
                 } 
             })
+            if(this.state.goOnRule == '1') {
+                this.state.continueData.forEach(({gifts}, index) => {
+                    if(this.baseFormGoOn.getFieldValue(`ifHaveGiftGoOn`).length){
+                        gifts.forEach((giftItem) => {
+                            let tempObj = {};
+                            tempObj.sortIndex = 0;
+                            tempObj.presentType = 1;
+                            tempObj.effectType = giftItem.giftValidType == 1 ? 2 : giftItem.giftValidType == 2 ? 3 : 1;
+                            if(tempObj.effectType != 2){
+                                tempObj.giftEffectTimeHours = giftItem.giftEffectiveTime.value;
+                            } else {
+                                tempObj.effectTime = giftItem.giftEffectiveTime.value[0].format('YYYYMMDD');;
+                                tempObj.validUntilDate = giftItem.giftEffectiveTime.value[1].format('YYYYMMDD');;
+                            }
+                            tempObj.giftValidUntilDayCount = giftItem.giftValidDays.value;
+                            tempObj.giftID = giftItem.giftInfo.giftItemID;
+                            tempObj.giftCount = giftItem.giftNum.value;
+                            tempObj.needCount = 0;
+                            tempData.push(tempObj);
+                        })
+                    } 
+                    if(this.baseFormGoOn.getFieldValue(`ifGivePointsGoOn`).length) {
+                        let tempObj = {};
+                        tempObj.presentType = 2;
+                        tempObj.sortIndex = 0;
+                        tempObj.presentValue = this.baseFormGoOn.getFieldValue(`presentValueGoOn`);
+                        tempObj.cardTypeID = this.baseFormGoOn.getFieldValue(`cardTypeIDGoOn`);
+                        tempObj.needCount = 0;
+                        tempData.push(tempObj)
+                    } 
+                })
+            }
         }
         return tempData      
     }
@@ -767,6 +916,11 @@ class CheckInSecondStep extends React.Component {
         const { simpleData } = this.state;
         simpleData[index].gifts = val;
         this.setState({simpleData});
+    }
+    handleGoOnStageChange = (val, index) => {
+        const { continueData } = this.state;
+        continueData[index].gifts = val;
+        this.setState({continueData});
     }
     removeStage = (index) => {
         const { data } = this.state;
@@ -915,6 +1069,35 @@ class CheckInSecondStep extends React.Component {
             </Row>
         )
     }
+    handleGoOnFormChange = (key, value) => {
+        if(key == 'ifGivePointsGoOn') {
+            if(value.length) {
+                let tempArr = Array.from(new Set(this.state.formKeysGoOn))
+                tempArr.splice(1, 0, 'cardTypeIDGoOn')
+                tempArr.splice(1, 0, 'presentValueGoOn')
+                this.setState({formKeysGoOn: tempArr})
+            } else {
+                let tempArr = Array.from(new Set(this.state.formKeysGoOn));
+                if(tempArr.indexOf(`cardTypeIDGoOn`) != -1){
+                    tempArr.splice(tempArr.indexOf(`cardTypeIDGoOn`), 1);
+                    tempArr.splice(tempArr.indexOf(`presentValueGoOn`), 1);
+                }
+                this.setState({
+                    formKeysGoOn: tempArr
+                })
+            }
+        } else if(key == 'ifHaveGiftGoOn') {
+            if(value.length){
+                this.setState({
+                    showGiftGoOn: true,
+                })
+            }else{
+                this.setState({
+                    showGiftGoOn: false,
+                })
+            }
+        }
+    }
     handleFormChange = (key, value) => {
         const PrimeKey = key.substring(0, key.length-1);
         const whichNum = key.substring(key.length-1);
@@ -959,6 +1142,106 @@ class CheckInSecondStep extends React.Component {
             })
         }
     }
+    continueGoOn() {
+        const isMultiple = this.state.rule.stageType == 1;
+        const { formData, formKeysGoOn } = this.state;
+        const formItemsGoOn = {
+            ifGivePointsGoOn: {
+                label: ``,
+                type: 'checkbox',
+                defaultValue: [],
+                disabled: this.props.disabled,
+                options: [
+                    { label: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`, value: '1' },
+                ]
+            },
+            presentValueGoOn: {
+                label: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`,
+                type: 'text',
+                surfix: '积分',
+                disabled: this.props.disabled,
+                defaultValue: '',
+                rules: [
+                    {
+                        required: true,
+                        message: '赠送积分为必填项',
+                    },
+                    {
+                        pattern: /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/,
+                        message: "请输入1~1000000数字，支持两位小数"
+                    }],
+                labelCol: { span: 5 },
+                wrapperCol: { span: 10 },
+            },
+            cardTypeIDGoOn: {
+                label: `${this.props.intl.formatMessage(STRING_SPE.d2b1c76536683246)}`,
+                type: 'combo',
+                defaultValue: this.state.cardTypeArr[0] ? this.state.cardTypeArr[0].value : '',
+                options: this.state.cardTypeArr,
+                disabled: this.props.disabled,
+                rules: [{
+                        message: `${this.props.intl.formatMessage(STRING_SPE.d2b1c7560ae71124)}`,
+                        pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/,
+                    }],
+                labelCol: { span: 5 },
+                wrapperCol: { span: 10 },
+            },
+            ifHaveGiftGoOn: {
+                label: ``,
+                type: 'checkbox',
+                defaultValue: [],
+                disabled: this.props.disabled,
+                options: [
+                    { label: `${this.props.intl.formatMessage(STRING_SPE.dd5aa6c59a74233)}`, value: '1' },
+                ]
+            }
+        }
+        return (
+            <Row>
+                <Col span={2}></Col>
+                <Col span={22}>超过最大签到天数后，仍持续签到每天赠送以下礼品：</Col>
+                <Col span={2}>
+                </Col>
+                <Col span={22}>
+                    <BaseForm
+                        getForm={form => this.baseFormGoOn = form}
+                        getRefs={refs => this.refMap = refs}
+                        formItems={formItemsGoOn}
+                        formData={formData}
+                        formKeys={formKeysGoOn}
+                        onChange={(key, value) => this.handleGoOnFormChange(key, value)}
+                        disabled={this.props.disabled}
+                    />
+                </Col>  
+                {this.state.continueData.map(({stageAmount, gifts}, index, arr) => {
+                    if(this.state.showGiftGoOn){
+                        return(
+                            <div>
+                                <Col span={2}>
+                                </Col>
+                                <Col span={18}>
+                                    <ReturnGift
+                                        key={`${index}`}
+                                        eventWay={"78"}
+                                        weChatCouponList={this.state.weChatCouponList}
+                                        isMultiple={isMultiple}
+                                        value={gifts}
+                                        maxAddGift={10}
+                                        onChange={(val) => this.handleGoOnStageChange(val, index)}
+                                        filterOffLine={this.state.rule.gainCodeMode != '0'}
+                                        ifExcludeWechat={true}
+                                        disabled={this.props.disabled}
+                                    />
+                                </Col>
+                            </div>
+                        )
+                    } else {
+                        return null;
+                    }
+                    })}
+            </Row>
+        )
+    }
     renderRuleDetail() {
         const { intl } = this.props;
         const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
@@ -972,6 +1255,7 @@ class CheckInSecondStep extends React.Component {
         const isMultiple = this.state.rule.stageType == 1;
         const { formData, formKeys2,  formKeys3, formKeys4, formKeys5, formKeys6, formKeys7, formKeys8} = this.state;
         return (
+            <div><div>{
             this.state.data.map(({stageAmount, gifts}, index, arr) => {
                 return(
                     <Row key={`${index}`}>
@@ -1086,6 +1370,36 @@ class CheckInSecondStep extends React.Component {
             }
             )
 
+            }</div>
+            <div>
+            <FormItem
+                label='执行规则'
+                className={styles.FormItemStyle}
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 21 }}
+            >
+                <Row>
+                <Col span={8}>
+                <RadioGroup
+                    value={this.state.goOnRule}
+                    onChange={(e) => {
+                        const goOnRule = e.target.value;
+                        this.setState({ goOnRule });
+                    }}
+                    disabled={this.props.disabled}
+                >
+                    <Radio value={'0'}>循环执行</Radio >
+                    <Radio value={'1'}>持续执行</Radio >
+                </RadioGroup >
+                </Col>
+                {this.state.goOnRule == '1' ? <Col span={14}>
+                <Alert style={{ marginBottom: 0 }} type='warning' showIcon message="升级至小程序SR3.22.24以上版本支持此能力" />
+                </Col> : null}
+                </Row>
+            </FormItem>
+            {this.state.goOnRule == '0' ? <Row><Col span={3}></Col><Col span={19}>签到超过最大天数后，重新从第一天签到开始执行</Col></Row> : this.continueGoOn()}
+            </div>
+            </div>
         )
     }
     render() {
