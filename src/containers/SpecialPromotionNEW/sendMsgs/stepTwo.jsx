@@ -739,11 +739,12 @@ class StepTwo extends React.Component {
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
-                        {getFieldDecorator('signIDs', {
+                        {getFieldDecorator('signID', {
                             rules: [{
                                 required: true,
                                 message: '群发短信需要使用您的自有签名发送，请联系销售经理，申请自有签名',
                             }],
+                            initialValue: `${this.state.signID}`,
                         })(
                             <Select size="default"
                                 value={`${this.state.signID}`}
