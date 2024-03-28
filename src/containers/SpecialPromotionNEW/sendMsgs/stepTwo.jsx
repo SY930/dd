@@ -733,25 +733,31 @@ class StepTwo extends React.Component {
                     </RadioGroup>
                 </FormItem> : null}
                 {this.state.smsGate == '1' ? <div>
-                <FormItem
-                    label={this.props.intl.formatMessage(STRING_SPE.d4546grade9251)}
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <Select size="default"
-                            value={`${this.state.signID}`}
-                            onChange={this.handleSignIDChange}
-                            getPopupContainer={(node) => node.parentNode}
+                    <FormItem
+                        label={this.props.intl.formatMessage(STRING_SPE.d4546grade9251)}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
                     >
-                        <Option value={''} key={''}>{this.props.intl.formatMessage(STRING_SPE.d2c89sj1s61092)}</Option>
-                        {
-                            this.props.specialPromotion.get('SMSSignList').toJS().map((item) => {
-                                return (<Option value={`${item.signID}`} key={`${item.signID}`}>{item.signName}</Option>)
-                            })
-                        }
-                    </Select>
-                </FormItem>
+                        {getFieldDecorator('signIDs', {
+                            rules: [{
+                                required: true,
+                                message: '群发短信需要使用您的自有签名发送，请联系销售经理，申请自有签名',
+                            }],
+                        })(
+                            <Select size="default"
+                                value={`${this.state.signID}`}
+                                onChange={this.handleSignIDChange}
+                                getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    this.props.specialPromotion.get('SMSSignList').toJS().map((item) => {
+                                        return (<Option value={`${item.signID}`} key={`${item.signID}`}>{item.signName}</Option>)
+                                    })
+                                }
+                            </Select>
+                        )}
+                    </FormItem>
                 <SendMsgInfo
                     sendFlag={sendFlag}
                     form={this.props.form}
