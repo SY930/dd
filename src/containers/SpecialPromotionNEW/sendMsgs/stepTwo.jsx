@@ -742,7 +742,7 @@ class StepTwo extends React.Component {
                         {getFieldDecorator('signID', {
                             rules: [{
                                 required: true,
-                                message: '群发短信需要使用您的自有签名发送，请联系销售经理，申请自有签名',
+                                message: " ",
                             }],
                             initialValue: `${this.state.signID}`,
                         })(
@@ -759,6 +759,7 @@ class StepTwo extends React.Component {
                             </Select>
                         )}
                     </FormItem>
+                    <p style={{ marginLeft: '112px', color: '#f04134', position: 'relative', top: '-10px'}}>群发短信需要使用您的自有签名发送，请联系销售经理，申请自有签名</p>
                 <SendMsgInfo
                     sendFlag={sendFlag}
                     form={this.props.form}
